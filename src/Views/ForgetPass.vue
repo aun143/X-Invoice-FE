@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import Button from "../components/Button.vue";
+import Swal from "sweetalert2";
 
 import { Colors } from "../utils/color";
 import { ForgetUserApi } from "../service/ForgetPassService";
@@ -35,6 +36,11 @@ const forgetPassUser = async () => {
     ForgetPass.value.email = "";
     ForgetPass.value.newPassword = "";
     router.push("/login")
+    Swal.fire({
+      icon: "success",
+      title: " Forget Password  ",
+      text: " Password has been Changed successfully.",
+    });
   } catch (error) {
     // Handle errors
     console.error("Error during ForgetPass:", error);

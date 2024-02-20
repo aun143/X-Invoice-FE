@@ -6,6 +6,7 @@ import { useRouter } from "vue-router";
 import { PostBusinessProfilerIndiviualApi } from "../service/BusinessProfileService";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
+import Swal from "sweetalert2";
 
 const invoice = useInvoiceStore();
 const proceedClicked = ref(false);
@@ -116,6 +117,11 @@ const submit = async () => {
     //console.log("account response >>>>>", response);
     openNotificationWithIcon("success", "Profiles Created Successfully");
     router.push("/");
+    Swal.fire({
+      icon: "success",
+      title: " Account Created ",
+      text: " Account has been Created successfully.",
+    });
   } catch (error) {
     let errorMessage =
     "An Error Occurred During Profile Creation ";

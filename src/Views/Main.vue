@@ -31,7 +31,11 @@ const response = await invoiceSer.postInvoiceData(invoice.formData);
 //console.log('Invoice submitted successfully:', response);
 router.push("/")
 invoice.resetFormData();
-
+Swal.fire({
+      icon: "success",
+      title: " Invoice Created ",
+      text: " Invoice has been Created successfully.",
+    });
   } catch (error) {
     Swal.fire({
       icon: 'error',

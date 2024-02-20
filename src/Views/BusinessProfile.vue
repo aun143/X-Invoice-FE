@@ -73,6 +73,11 @@ const submitbusinessProfileDataOrganization = async (id) => {
     );
     //console.log(response);
     invoice.updateUserProfileAndBusinessProfile(response.data);
+    Swal.fire({
+      icon: "success",
+      title: "Business Profile Updated ",
+      text: "Business Profile has been Updated successfully.",
+    });
   } catch (error) {
     Swal.fire({
       icon: "error",
@@ -93,6 +98,11 @@ const submitbusinessProfileDataindividual = async (Id) => {
     );
     //console.log(response);
     invoice.updateUserProfileAndBusinessProfile(response.data);
+    Swal.fire({
+      icon: "success",
+      title: "Business Profile Updated ",
+      text: "Business Profile has been Updated successfully.",
+    });
   } catch (error) {
     console.error("Error during data submit organization:", error);
   }

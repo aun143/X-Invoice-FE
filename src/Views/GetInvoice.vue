@@ -39,6 +39,11 @@ const changeStatus = async () => {
       updateData
     );
     router.push("/");
+    Swal.fire({
+      icon: "success",
+      title: " Invoice PaymentStatus Updated ",
+      text: " Invoice PaymentStatus has been Updated successfully.",
+    });
     //console.log("Status updated successfully:", status);
   } catch (error) {
     console.error("Error updating invoice status:", error);
@@ -59,6 +64,11 @@ const changeUnpaidStatus = async () => {
       updateData
     );
     router.push("/");
+    Swal.fire({
+      icon: "success",
+      title: " Invoice PaymentStatus Updated ",
+      text: " Invoice PaymentStatus has been Updated successfully.",
+    });
     //console.log("Status updated successfully:", unpaidStatus);
   } catch (error) {
     console.error("Error updating invoice status:", error);
@@ -71,6 +81,11 @@ const deleteInvoice = async () => {
   try {
     //console.log("Changing status for invoiceId:", invoiceId);
     const status = await invoiceService.deleteInvoice(invoiceId);
+    Swal.fire({
+      icon: "success",
+      title: " Invoice Deleted  ",
+      text: " Invoice  has been Deleted successfully.",
+    });
     //console.log("invoice deleted successfully:", status);
   } catch (error) {
     console.error("Error deleting invoice:", error);
@@ -115,8 +130,8 @@ const handleDropdownItemClickParent = (clickedItem) => {
     url.searchParams.append("clientId", clientId.value);
     url.searchParams.append("businessId", businessId.value);
     url.searchParams.append("invoiceId", invoiceId);
-
     window.open(url.toString(), "_blank");
+
   } else if (clickedItem.title === "Edit") {
     router.push(`/getinvoice/${invoiceId}/edit`);
   } else if (clickedItem.title === "Mark as Paid") {

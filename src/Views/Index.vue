@@ -39,11 +39,16 @@ onMounted(async () => {
   try {
     isLoading.value = true;
     const result = await getAllInvoice();
-    invoices.value = result.map((invoice) => ({ ...invoice, checked: false }));
-    //console.log("All invoices:", invoices.value);
 
+    const invoicesWithReceiverNames = await Promise.all(result.map(async (invoice) => {
+      const receiverDetails = await getSingleClient(invoice.receiver);
+  
+      const receiverName = receiverDetails.firstName + " " + receiverDetails.lastName;
+  return { ...invoice, receiverName };
+    }));
+    invoices.value = invoicesWithReceiverNames;
   } catch (error) {
-    //console.error("Error fetching all invoices:", error.message);
+    console.error("Error fetching all invoices:", error.message);
   } finally {
     isLoading.value = false;
   }
@@ -123,7 +128,7 @@ const columns = computed(() => {
     },
     {
       title: "Sender",
-      dataIndex: ["sender", "firstName"],
+      dataIndex: ["sender", "firstName" ],
       key: "sender",
       sorter: true,
       onHeaderCell: (column) => ({
@@ -132,8 +137,8 @@ const columns = computed(() => {
     },
     {
       title: "Receiver",
-      dataIndex: "receiver",
-      key: "receiver",
+      dataIndex: "receiverName", // Use receiverName instead of receiver
+      key: "receiverName", // Use receiverName instead of receiver
       sorter: true,
       onHeaderCell: (column) => ({
         onClick: () => handleHeaderClick(column),
@@ -159,17 +164,7 @@ const columns = computed(() => {
     },
   ];
 });
-// const handleFilter = () => {
-//   filteredInfo.value = invoices.value.filter((invoice) => {
-//     const matchesInvoice = invoice.invoiceNumber
-//       .toLowerCase()
-//       .includes(invoiceNumberFilter.value);
-// //console.log("filter",invoiceNumberFilter.value)
-    
 
-//     return matchesInvoice;
-//   });
-// };
 const handleFilter = () => {
   filteredInfo.value = invoices.value.filter((invoice) => {
     const matchesInvoiceNumber = invoice.invoiceNumber.toLowerCase().includes(invoiceNumberFilter.value.toLowerCase());

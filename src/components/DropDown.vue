@@ -26,7 +26,7 @@ const handleItemClick = (item) => {
     </div>
   
     <transition name="fade" appear>
-      <div class="sub-menu ml-2 " v-if="isOpen">
+      <div class="sub-menu  " v-if="isOpen">
         <div
           v-for="(item, i) in items"
           :key="i"

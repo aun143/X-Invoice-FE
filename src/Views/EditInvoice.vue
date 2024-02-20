@@ -28,7 +28,11 @@ const handleSaveDraftButtonClick = async (Id) => {
 //console.log("response",response);
 router.push("/")
       if (response) {
-        // alert('Invoice submitted successfully:');
+        Swal.fire({
+      icon: "success",
+      title: " Invoice Updated ",
+      text: " Invoice has been Updated successfully.",
+    });
       } else {
         // alert('Error updating invoice. Please check the console for details.');
         Swal.fire({

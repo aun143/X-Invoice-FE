@@ -7,6 +7,7 @@ import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
+import Swal from "sweetalert2";
 
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
@@ -56,6 +57,11 @@ const handleSaveDraftButtonClick = async () => {
 
     const response = await updateClient(clientId, dataToUpdate);
     router.push("/clients");
+    Swal.fire({
+      icon: "success",
+      title: "Client Updated ",
+      text: "Client has been Updated successfully.",
+    });
   } catch (error) {
     console.error("Error during client update:", error);
   }

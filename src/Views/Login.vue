@@ -7,6 +7,7 @@ import { Colors } from "../utils/color";
 import { loginUserApi } from "../service/LoginService";
 import {  Input, Alert ,notification } from "ant-design-vue";
 import { useInvoiceStore } from "../stores/index";
+import Swal from "sweetalert2";
 
 const showPassword = ref(false);
 
@@ -76,6 +77,11 @@ const logInUser = async () => {
       );
       openNotificationWithIcon("success", "Login successful");
       router.push({ name: "Index" });
+      Swal.fire({
+      icon: "success",
+      title: " Login   ",
+      text: "Login successfully.",
+    });
     } else {
       console.log("Access token not found in the response:", response.data);
       openNotificationWithIcon("error", "Error during login");

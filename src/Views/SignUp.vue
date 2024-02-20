@@ -101,8 +101,15 @@ const signUpUser = async () => {
       //   "Access token and UserId set successfully:",
       //   response.data.access_token
       // );
-
+      invoice.signupData.username="";
+      invoice.signupData.email="";
+      invoice.signupData.password="";
       router.push({ name: "Index" });
+      Swal.fire({
+      icon: "success",
+      title: " SignUp ",
+      text: " SignUp successfully.",
+    });
     } else {
       console.log("Access token not found in the response:", response.data.access_token);
     }
