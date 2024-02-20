@@ -357,7 +357,7 @@ const formData = invoice.formData;
           <div class=" ">
             <div class="mt-2 text-2xl ml-2 text-left ">
               <span class="mr-6 bg-[#bababa] text-[12px] text-white px-3 py-2  rounded">Draft</span>
-              <a-input
+              <span class="text-[#ff0000]">*</span> <a-input
    v-model:value="formData.invoiceName"
     class="w-[250px] h-12 text-left text-[15px]"
     type="text"
@@ -365,6 +365,7 @@ const formData = invoice.formData;
   />
             </div>
           </div>
+          <div> 
           <a-textarea
           v-model:value="formData.description"
             placeholder="Enter Description"
@@ -372,7 +373,7 @@ const formData = invoice.formData;
             id=""
             cols="60"
             rows="2"
-          ></a-textarea>
+          ></a-textarea></div>
         </div>
         <div class="flex flex-col w-1/2 items-end">
           <label for="logoInput" class="" >
@@ -392,7 +393,7 @@ const formData = invoice.formData;
       </div>
       <div class="mt-10 flex w-full">
         <div class="">
-          <p class="ml-auto  mr-8">Invoice No.</p>
+          <p class="ml-auto  mr-6"> <span class="text-[#ff0000]">*</span>Invoice No.</p>
           <a-input-number
           required
             type="number"
@@ -440,7 +441,7 @@ const formData = invoice.formData;
     </div>
           <div v-else>
             <div class="flex w-full">
-              <p>From:</p>
+              <p> <span class="text-[#ff0000]">*</span>From:</p>
               
               <p class="justify-end flex w-full text-left">
                 <router-link to="/businessProfile" class="text-[#10C0CB]" >Edit Business Profile</router-link>
@@ -478,7 +479,7 @@ const formData = invoice.formData;
            </div>
           </div>
           <div class="flex mt-2">
-            <p class="text-right ml-2">To:</p>
+            <p class="text-right ml-2"> <span class="text-[#ff0000]">*</span>To:</p>
             <div class="justify-end flex w-full text-left">
               <!-- <div  @click="toggleModal" class="">New Client</div> -->
               <div type="primary" class="text-[#10C0CB] cursor-pointer" @click="showModal">New Client</div>

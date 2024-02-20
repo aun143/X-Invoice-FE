@@ -255,7 +255,7 @@ watch(invoice.formData, (newValue) => {
               >
                 {{ invoice.formData.paymentStatus }}
               </span>
-              <a-input
+              <span class="text-[#ff0000]">*</span>   <a-input
    v-model:value="invoice.formData.invoiceName"
     class="w-[250px] h-8 text-left text-[13px]"
     type="text"
@@ -292,7 +292,7 @@ watch(invoice.formData, (newValue) => {
       </div>
       <div class="mt-10 flex w-full">
         <div class="">
-          <p class="ml-auto  mr-4">Invoice No.</p>
+          <p class="ml-auto  mr-4"> <span class="text-[#ff0000]">*</span>Invoice No.</p>
           <a-input-number
           required
             type="number"
@@ -340,7 +340,7 @@ watch(invoice.formData, (newValue) => {
     </div>
           <div v-else>
             <div class="flex w-full">
-              <p>From</p>
+              <p> <span class="text-[#ff0000]">*</span>From</p>
               <p class="justify-end flex w-full text-left">
                 <router-link to="/businessProfile">Edit Business Profile</router-link>
               </p>
@@ -377,7 +377,7 @@ watch(invoice.formData, (newValue) => {
            </div>
           </div>
           <div class="flex mt-2">
-            <p class="text-right ml-3">To</p>
+            <p class="text-right ml-3"> <span class="text-[#ff0000]">*</span>To</p>
             <div class="justify-end flex w-full text-left">
               <!-- <div  @click="toggleModal" class="">New Client</div> -->
               <div type="primary" class="text-[#10C0CB]" @click="showModal">New Client</div>

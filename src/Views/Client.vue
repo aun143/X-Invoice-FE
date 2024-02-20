@@ -7,10 +7,15 @@ import Button from "../components/Button.vue";
 import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
+import { notification } from "ant-design-vue";
+
+
 const router = useRouter();
 
 const submitclientDataOrganization = async () => {
   try {
+
+    if (!validateFormOrg()) return;
     const clientData = {
       ...invoice.clientDataOrganization,
       clientType: "organization",
@@ -18,6 +23,11 @@ const submitclientDataOrganization = async () => {
     const response = await clientApi(clientData);
     //console.log(response);
     router.push("/clients");
+    Swal.fire({
+      icon: "success",
+      title: "Client Created ",
+      text: "Client has been Created successfully.",
+    });
   } catch (error) {
     Swal.fire({
       icon: "error",
@@ -31,13 +41,18 @@ const submitclientDataOrganization = async () => {
 
 const submitclietDataindividual = async () => {
   try {
+    if (!validateFormInd()) return;
     const clientData = {
       ...invoice.clientDataindividual,
       clientType: "individual",
     };
     const response = await clientApi(clientData);
     router.push("/clients");
-
+    Swal.fire({
+      icon: "success",
+      title: "Client Created ",
+      text: "Client has been Created successfully.",
+    });
     //console.log(response);
   } catch (error) {
     Swal.fire({
@@ -50,12 +65,84 @@ const submitclietDataindividual = async () => {
   }
 };
 const invoice = useInvoiceStore();
+const validateFormOrg = () => {
+  const emptyFields = [];
 
+if (!invoice.clientDataOrganization.firstName) {
+    emptyFields.push("FirstName");
+  }
+  if (!invoice.clientDataOrganization.lastName) {
+    emptyFields.push("LastName");
+  }
+  if (!invoice.clientDataOrganization.phone) {
+    emptyFields.push("Phone Number");
+  }
+  if (!invoice.clientDataOrganization.email) {
+    emptyFields.push(" Email must contain '@'");
+  }if (!invoice.clientDataOrganization.state) {
+    emptyFields.push(" State must be Alphabetic");
+  }if (!invoice.clientDataOrganization.city) {
+    emptyFields.push(" City must be Alphaetic");
+  }
+  if (!invoice.clientDataOrganization.address1) {
+    emptyFields.push(" Address1");
+  }
+  if (!invoice.clientDataOrganization.country) {
+    emptyFields.push("Country");
+  }
+
+  if (emptyFields.length > 0) {
+    const alertMessage = `Please fill in the following required fields: and ${emptyFields.join(", ")}`;
+    openNotificationWithIcon("error", alertMessage);
+    return false;
+  }
+
+  return true;
+};
+const validateFormInd = () => {
+  const emptyFields = [];
+
+  if (!invoice.clientDataindividual.firstName) {
+    emptyFields.push("FirstName");
+  }
+  if (!invoice.clientDataindividual.lastName) {
+    emptyFields.push("LastName");
+  } if (!invoice.clientDataindividual.phone) {
+    emptyFields.push("Phone Number");
+  }
+  if (!invoice.clientDataindividual.email) {
+    emptyFields.push(" Email must contain '@'");
+  }if (!invoice.clientDataindividual.state) {
+    emptyFields.push(" State must be Alphabetic");
+  }if (!invoice.clientDataindividual.city) {
+    emptyFields.push(" City must be Alphabetic");
+  }
+  if (!invoice.clientDataindividual.address1) {
+    emptyFields.push(" Address1");
+  }
+  if (!invoice.clientDataindividual.country) {
+    emptyFields.push("Country");
+  }
+
+  if (emptyFields.length > 0) {
+    const alertMessage = `Please fill in the following required fields: ${emptyFields.join(", ")}`;
+    openNotificationWithIcon("error", alertMessage);
+    return false;
+  }
+
+  return true;
+};
 const selectedField = ref("individual");
 const selectField = (field) => {
   selectedField.value = field;
 };
-
+const openNotificationWithIcon = (type, message) => {
+  notification[type]({
+    message: type === "success" ? "Success" : "Error",
+    description: message,
+    duration: 5, 
+  });
+};
 const handleSaveDraftButtonClick = () => {
   if (selectedField.value === "individual") {
     submitclietDataindividual();
@@ -184,7 +271,7 @@ onMounted(() => {
               <hr class="mb-4" />
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <p class="justify-start flex">*First Name</p>
+                  <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>First Name</p>
                   <a-input
                     v-model:value="invoice.clientDataindividual.firstName"
                     type="text"
@@ -193,7 +280,7 @@ onMounted(() => {
                   />
                 </div>
                 <div>
-                  <p class="justify-start flex">Last Name</p>
+                  <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Last Name</p>
                   <a-input
                     v-model:value="invoice.clientDataindividual.lastName"
                     type="text"
@@ -239,17 +326,17 @@ onMounted(() => {
             </div>
             <hr class="mb-2 mt-8" />
             <div>
-              <p class="justify-start flex">Email Address</p>
+              <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Email Address</p>
               <a-input
                 v-model:value="invoice.clientDataindividual.email"
-                type="email"
+                type="text"
                 placeholder="Email"
                 class="w-full border p-2"
               />
             </div>
             <hr class="mb-2 mt-8" />
             <div>
-              <p class="justify-start flex">Phone Number</p>
+              <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Phone Number</p>
               <a-input
                 v-model:value="invoice.clientDataindividual.phone"
                 type="number"
@@ -259,7 +346,7 @@ onMounted(() => {
             </div>
             <hr class="mb-2 mt-8" />
             <div>
-              <p class="justify-start flex">Address(Line 1)</p>
+              <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Address(Line 1)</p>
               <a-input
                 v-model:value="invoice.clientDataindividual.address1"
                 type="text"
@@ -296,7 +383,7 @@ onMounted(() => {
                 />
               </div>
               <div class="">
-                <p class="text-left ml-4">Country</p>
+                <p class="text-left ml-4"> <span class="text-[#ff0000]">*</span>Country</p>
                 <a-select
                   v-model:value="invoice.clientDataindividual.country"
                   class="ml-2 w-full"
@@ -387,7 +474,7 @@ onMounted(() => {
 
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <p class="justify-start flex">*First Name</p>
+                    <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>First Name</p>
                     <a-input
                       v-model:value="invoice.clientDataOrganization.firstName"
                       type="text"
@@ -396,7 +483,7 @@ onMounted(() => {
                     />
                   </div>
                   <div>
-                    <p class="justify-start flex">Last Name</p>
+                    <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Last Name</p>
                     <a-input
                       v-model:value="invoice.clientDataOrganization.lastName"
                       type="text"
@@ -443,17 +530,17 @@ onMounted(() => {
                 </div>
               </div>
               <hr class="mb-2 mt-8" />
-              <p class="justify-start flex">Email Address</p>
+              <p class="justify-start flex"> <span class="text-[#ff0000]">*</span> Email Address</p>
               <a-input
                 v-model:value="invoice.clientDataOrganization.email"
-                type="email"
+                type="text"
                 placeholder="Email"
                 class="w-full border p-2"
               />
             </div>
             <hr class="mb-2 mt-8" />
             <div>
-              <p class="justify-start flex">Phone Number</p>
+              <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Phone Number</p>
               <a-input
                 v-model:value="invoice.clientDataOrganization.phone"
                 type="number"
@@ -463,7 +550,7 @@ onMounted(() => {
             </div>
             <hr class="mb-2 mt-8" />
             <div>
-              <p class="justify-start flex">Address(Line 1)</p>
+              <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Address(Line 1)</p>
               <a-input
                 v-model:value="invoice.clientDataOrganization.address1"
                 type="text"
@@ -500,7 +587,7 @@ onMounted(() => {
                 />
               </div>
               <div class="">
-                <p class="text-left ml-4">Country</p>
+                <p class="text-left ml-4"> <span class="text-[#ff0000]">*</span>Country</p>
                 <a-select
                   v-model:value="invoice.clientDataOrganization.country"
                   class="ml-2 w-full"

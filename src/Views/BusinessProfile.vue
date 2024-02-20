@@ -279,7 +279,7 @@ const displayImage = (input) => {
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <p class="justify-start flex">*First Name</p>
+                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>First Name</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.individualProfile.firstName
@@ -292,7 +292,7 @@ const displayImage = (input) => {
 
               </div>
               <div>
-                <p class="justify-start flex">Last Name</p>
+                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Last Name</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.individualProfile.lastName
@@ -305,7 +305,7 @@ const displayImage = (input) => {
 
               </div>
               <div>
-                <p class="justify-start flex">Email Address</p>
+                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Email Address</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.individualProfile.email
@@ -340,7 +340,7 @@ const displayImage = (input) => {
               <div class="col-span-2">
                 <div class="flex">
                   <div class="w-1/2 pr-4">
-                    <p class="justify-start flex">Address(Line 1)</p>
+                    <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Address(Line 1)</p>
                     <a-input
                       v-model:value="
                         invoice.userProfileData.individualProfile.address1
@@ -388,7 +388,7 @@ const displayImage = (input) => {
                 />
               </div>
               <div>
-                <p class="justify-start flex">City</p>
+                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>City</p>
                 <a-input
                   v-model:value="invoice.userProfileData.individualProfile.city"
                   type="text"
@@ -397,7 +397,7 @@ const displayImage = (input) => {
                   <p v-if="cityError" class="text-red-500">{{ cityError }}</p>
               </div>
               <div>
-                <p class="justify-start flex">Country</p>
+                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Country</p>
                 <a-select
                   v-model:value="
                     invoice.userProfileData.individualProfile.country
@@ -520,7 +520,7 @@ const displayImage = (input) => {
               </div>
 
               <div>
-                <p class="justify-start flex">First Name</p>
+                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>First Name</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.firstName
@@ -532,7 +532,7 @@ const displayImage = (input) => {
                 <p v-if="firstNameError" class="text-red-500">{{ firstNameError }}</p>
               </div>
               <div>
-                <p class="justify-start flex">Last Name</p>
+                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Last Name</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.lastName
@@ -545,7 +545,7 @@ const displayImage = (input) => {
 
               </div>
               <div>
-                <p class="justify-start flex">Email Address</p>
+                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Email Address</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.email
@@ -579,7 +579,7 @@ const displayImage = (input) => {
               <div class="col-span-2">
                 <div class="flex">
                   <div class="w-1/2 pr-4">
-                    <p class="justify-start flex">Address(Line 1)</p>
+                    <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Address(Line 1)</p>
                     <a-input
                       v-model:value="
                         invoice.userProfileData.organizationProfile.address1
@@ -625,7 +625,7 @@ const displayImage = (input) => {
                 />
               </div>
               <div>
-                <p class="justify-start flex">City</p>
+                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>City</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.city
@@ -636,7 +636,7 @@ const displayImage = (input) => {
                 <p v-if="cityError" class="text-red-500">{{ cityError }}</p>
               </div>
               <div>
-                <p class="justify-start flex">Country</p>
+                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Country</p>
                 <a-select
                   v-model:value="
                     invoice.userProfileData.organizationProfile.country

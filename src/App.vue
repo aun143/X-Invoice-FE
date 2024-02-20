@@ -1,6 +1,7 @@
 <script setup>
 import Swal from 'sweetalert2';
-import VueSidebarMenuAkahon from "vue-sidebar-menu-akahon";
+import VueSidebarMenuAkahon from 'vue-sidebar-menu-akahon';
+
 import { useRoute, useRouter } from "vue-router";
 import { computed } from "vue";
 // import { icon } from 'ant-design-vue';

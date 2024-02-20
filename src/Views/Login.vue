@@ -37,12 +37,26 @@ const loginButtonClicked = ref(false);
 
 const logInUser = async () => {
   try {
-    resetErrors();
+      resetErrors();
     loginButtonClicked.value = true;
-    
-    // Check if both email and password are provided
-    if (!loginData.value.email || !loginData.value.password) {
-      openNotificationWithIcon("error", "Both email and password are required.");
+    if (!loginData.value.email.trim()) {
+      errors.email = "Email is required.";
+      openNotificationWithIcon("error", "Email is required.");
+    } else if (!loginData.value.email.includes("@")) {
+      errors.email = "Email must contain '@'.";
+      openNotificationWithIcon("error", "Email must be Valid and contain '@' ");
+    }
+    if (!loginData.value.password.trim()) {
+      errors.password = "Password is required.";
+      openNotificationWithIcon("error", "Password is required.");
+    }
+    else if (loginData.value.password.length < 8 || !/\w/.test(loginData.value.password)) {
+        errors.password = "Password must be valid and contain at least 8 alphanumeric characters.";
+        openNotificationWithIcon("error", "Password must be valid and contain at least 8 alphanumeric characters.");
+        valid = false;
+    }
+    // Check if there are any errors
+    if (errors.email || errors.password) {
       return;
     }
 
@@ -50,25 +64,27 @@ const logInUser = async () => {
       email: loginData.value.email,
       password: loginData.value.password,
     });
-
-    //console.log(response); // Log the entire response
+    
+    console.log(response); // Log the entire response
 
     if (response.data && response.data.access_token && response.data._id) {
       localStorage.setItem("accessToken", response.data.access_token);
       localStorage.setItem("UserId", response.data._id);
-      // console.log(
-      //   "Access token and UserId set successfully:",
-      //   response.data.access_token
-      // );
+      console.log(
+        "Access token and UserId set successfully:",
+        response.data.access_token
+      );
       openNotificationWithIcon("success", "Login successful");
       router.push({ name: "Index" });
     } else {
       console.log("Access token not found in the response:", response.data);
-      openNotificationWithIcon("error", "Invalid email or password.");
+      openNotificationWithIcon("error", "Error during login");
     }
   } catch (error) {
     // Handle errors
     console.error("Error during login:", error);
+    openNotificationWithIcon("error");
+    // Determine specific error message based on the error
     let errorMessage = "";
     if (error.message.includes("email")) {
       errorMessage =
@@ -78,14 +94,12 @@ const logInUser = async () => {
     } else {
       errorMessage = error.message || "An error occurred during login";
     }
-    openNotificationWithIcon("error", errorMessage);
   }
 };
 
-
 const openNotificationWithIcon = (type, message) => {
   notification[type]({
-message: type === "success" ? "Success" : "Incorrect Email or Password",
+message: type === "success" ? "Success" : "Error",
     description: message,
     duration: 3, 
   });
@@ -108,7 +122,7 @@ const computedStyle = {
         <!-- <img src="../assets/3x.webp" class="w-full"> -->
         <div class="flex justify-center items-center">
           <svg
-            width="220"
+            width="200"
             height="200"
             viewBox="0 0 169 218"
             fill="none"
@@ -174,7 +188,7 @@ const computedStyle = {
         class="w-full shadow-lg col-span-7 items-center flex justify-center flex-col bg-white"
       >
  
-        <div class="text-3xl mb-8 w-full">
+        <div class="text-xl mb-8 w-full">
           <strong class="text-[#10C0CB]">Login</strong>
         </div>
         <form @submit.prevent class="w-full mb-2">
@@ -202,7 +216,7 @@ const computedStyle = {
                 >
               </div>
 
-              <div class="w-[50%] mt-[5%] mb-[]">
+              <div class="w-[50%] my-[5%]">
                 <p class="justify-start flex text-md font-medium">
                   <span class="text-[#ff0000]">*</span>Password:
                 </p>
@@ -214,7 +228,7 @@ const computedStyle = {
                     class="w-full border-b"
                   />
                   <span
-                    class="absolute top-1/2 right-1 transform -translate-y-1/2 cursor-pointer "
+                    class="absolute top-1/2 right-1 transform -translate-y-1/2 cursor-pointer bg-white"
                     @click="showPassword = !showPassword"
                   >
                     <i
@@ -239,10 +253,10 @@ const computedStyle = {
                 <router-link
                   to="/ForgetPass"
                   class="text-[12px] text-black font-medium mr-[30%]" 
-                  ><span class="text-blue-500">Forgot Password?</span></router-link
+                  ><span class="text-blue-500"> Forgot Password?</span></router-link
                 >
               </div>
-            <div class="text-center mx-[5%] mt-6 mb-4" style="line-height: 1.25rem !important">
+            <div class="text-center mx-10 my-4">
               <Button
                 :bgColor="Colors.orange"
                 :textColor="Colors.white"
