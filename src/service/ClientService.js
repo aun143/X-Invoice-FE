@@ -42,24 +42,7 @@ export const getAllClient = async () => {
   }
 };
 
-// export const getAllClient = async () => {
-//   try {
-//     const response = await fetch("http://localhost:3010/client/getAllClient", {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
 
-//     if (!response.ok) {
-//       throw new Error("Failed to fetch all Clients");
-//     }
-
-//     return response.json();
-//   } catch (error) {
-//     throw new Error("Error in getAllClientsService: " + error.message);
-//   }
-// };
 export const updateClient = async (clientId, updatedData) => {
   try {
     const token = localStorage.getItem("accessToken");

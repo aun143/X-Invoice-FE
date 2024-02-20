@@ -64,7 +64,7 @@ const handleSaveDraftButtonClick = async () => {
 window.confirm("Update Data")
   try {
     const response= await invoiceService.postInvoiceData(invoice.formData);
-    console.log('Invoice submitted successfully:', response);
+    //console.log('Invoice submitted successfully:', response);
     alert("Data Submitted")
 
     // Handle successful submission (e.g., clear form data, display success message)
@@ -99,7 +99,7 @@ const submitclietDataOrganization = async () => {
       customFieldName: clietDataOrganization.value.customFieldName,
       customFieldValue: clietDataOrganization.value.customFieldValue,
     });
-    console.log(response);
+    //console.log(response);
 
     // console.log("Submit>>>", submit);
 
@@ -142,7 +142,7 @@ const submitclietDataindividual = async () => {
       customFieldName: clietDataindividual.value.customFieldName,
       customFieldValue: clietDataindividual.value.customFieldValue,
     });
-    console.log(response);
+    //console.log(response);
 
     // console.log("Submit>>>", submit);
 
@@ -312,7 +312,7 @@ const handleDropdownClick = (index, val) => {
   dropdownOpen.value[index] = val;
 };
 const saveItem = (index) => {
-  console.log(`Saved item at index ${index}`);
+  //console.log(`Saved item at index ${index}`);
 };
 
 const addNewLine = () => {

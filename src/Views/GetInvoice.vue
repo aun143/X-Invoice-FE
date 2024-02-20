@@ -2,15 +2,18 @@
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import invoiceService from "../service/invoiceService";
-import Header from "../components/header.vue";
+import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
 import { useInvoiceStore } from "../stores/index";
+import { getSingleClient } from "../service/clientService";
 
+const logoPreview = ref(""); 
 const invoice = useInvoiceStore();
 const router = useRouter();
 const route = useRoute();
 const invoiceId = route.params._id;
 const dropdownTitle = "Actions";
+const clientDetails = ref({});
 const dropdownItems = [
   { title: "Edit" },
   { title: "Download as Pdf" },
@@ -27,7 +30,7 @@ const clientId = ref("");
 const changeStatus = async () => {
   try {
     isLoading.value = true;
-    console.log("Changing status for invoiceId:", invoiceId);
+    //console.log("Changing status for invoiceId:", invoiceId);
     const updateData = {
       paymentStatus: "Paid",
     };
@@ -36,7 +39,7 @@ const changeStatus = async () => {
       updateData
     );
     router.push("/");
-    console.log("Status updated successfully:", status);
+    //console.log("Status updated successfully:", status);
   } catch (error) {
     console.error("Error updating invoice status:", error);
   } finally {
@@ -47,7 +50,7 @@ const changeStatus = async () => {
 const changeUnpaidStatus = async () => {
   try {
     isLoading.value = true;
-    console.log("Changing status for invoiceId:", invoiceId);
+    //console.log("Changing status for invoiceId:", invoiceId);
     const updateData = {
       paymentStatus: "Unpaid",
     };
@@ -56,7 +59,7 @@ const changeUnpaidStatus = async () => {
       updateData
     );
     router.push("/");
-    console.log("Status updated successfully:", unpaidStatus);
+    //console.log("Status updated successfully:", unpaidStatus);
   } catch (error) {
     console.error("Error updating invoice status:", error);
   } finally {
@@ -66,9 +69,9 @@ const changeUnpaidStatus = async () => {
 
 const deleteInvoice = async () => {
   try {
-    console.log("Changing status for invoiceId:", invoiceId);
+    //console.log("Changing status for invoiceId:", invoiceId);
     const status = await invoiceService.deleteInvoice(invoiceId);
-    console.log("invoice deleted successfully:", status);
+    //console.log("invoice deleted successfully:", status);
   } catch (error) {
     console.error("Error deleting invoice:", error);
   }
@@ -81,10 +84,17 @@ onMounted(async () => {
     const invoiceDetails = response;
     businessId.value = invoiceDetails.sender._id;
     clientId.value = invoiceDetails.receiver;
-
+// Fetch client details by ID
+const clientResponse = await getSingleClient(clientId.value);
+    clientDetails.value = clientResponse; 
+  
+    
+    // Update the client name in the form data
+    invoice.formData.receiver = clientDetails.value;
+    //console.log("invoice.formData.receiver",clientDetails.value)
     invoice.updateFormData(invoiceDetails);
-
-    console.log("Invoice details fetched successfully:", invoiceDetails);
+    logoPreview.value = invoiceDetails.logoPreview;
+    //console.log("Invoice details fetched successfully:", invoiceDetails);
   } catch (error) {
     console.error("Error fetching invoice details:", error);
   } finally {
@@ -94,14 +104,14 @@ onMounted(async () => {
 
 const handleDropdownItemClickParent = (clickedItem) => {
   // Handle the dropdown item click event in the parent component
-  console.log("Clicked item in parent component:", clickedItem);
+  //console.log("Clicked item in parent component:", clickedItem);
 
   if (clickedItem.title === "Download as Pdf") {
     // alert("Download as Pdf");
     // router.push(`/pdf/generate/${clientId.value}/${businessId.value}/${invoiceId}`);
     const url = new URL(window.location.href);
     url.port = "3010";
-    url.pathname = "/pdf/X-Invoicely";
+    url.pathname = "/pdf/X-Invoice";
     url.searchParams.append("clientId", clientId.value);
     url.searchParams.append("businessId", businessId.value);
     url.searchParams.append("invoiceId", invoiceId);
@@ -137,7 +147,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
     <div class="bg-white">
       <Header
         headerTitle="View Invoice"
-        backButtonText=" &nbsp; Invoices"
+        backButtonText=" &nbsp &lt Invoices &nbsp  &nbsp"
         backRoute="Index"
         :dropdownTitle="dropdownTitle"
         saveDraftButtonText="Edit"
@@ -149,8 +159,8 @@ const handleDropdownItemClickParent = (clickedItem) => {
       />
     </div>
 
-    <section class="max-w-[95%] mt-4 ml-4 bg-white">
-      <form @submit.prevent class="p-4">
+    <section class="max-w-[60%]  mt-4 ml-4 ">
+      <form @submit.prevent class="p-4 bg-white">
         <div class="flex">
           <div class="flex w-full mt-8">
             <div
@@ -162,7 +172,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
                   'bg-[#10C0CB] text-white text-[12px] ':
                     invoice.formData.paymentStatus === 'Paid',
                   'bg-orange-300 text-white text-[12px]': invoice.formData.paymentStatus === 'Unpaid',
-                  'bg-[#878787] text-white text-[12px]': invoice.formData.paymentStatus === 'Draft',
+                  'bg-[#bababa] text-white text-[12px]': invoice.formData.paymentStatus === 'Draft',
                 }"
               >
                 {{ invoice.formData.paymentStatus }}
@@ -182,34 +192,47 @@ const handleDropdownItemClickParent = (clickedItem) => {
         </div>
         <div class="flex mb-8 mt-4">
           <div class="flex flex-col  mb-2">
-            <p class="">From:</p>
-            <div class="justify-left   rounded-2">
+            <p class="font-semibold">From:</p>
+            <div class="text-left">
               <!-- <span class="ml-2">{{ invoice.formData.sender._id }}</span> -->
-              <span class="2xl:mr-32 xl:mr-10"> {{ invoice.formData.sender.firstName }}</span><br>
-              <span class="mr-2 2xl:mr-[150px] xl:mr-[110px]"> {{ invoice.formData.sender.lastName }}</span><br>
-              <span class="mr-8 2xl:mr-[160px] xl:mr-[105px]">{{ invoice.formData.sender.state }}</span><br>
-              <span class="2xl:mr-[170px] xl:ml-1 ">{{ invoice.formData.sender.address1 }}</span><br>
-              <span class="">{{ invoice.formData.sender.address2 }}</span><br>
+             {{ invoice.formData.sender.firstName }}
+              {{ invoice.formData.sender.lastName }}<br>
+              {{ invoice.formData.sender.state }}<br>
+            {{ invoice.formData.sender.address1 }}<br>
+             {{ invoice.formData.sender.address2 }}<br>
             </div>
 <br>
-            <p class="">To:</p>
-            <div class="text-left">{{ invoice.formData.receiver }}</div>
+            <p class="font-semibold">To:</p>
+         
+            <div class="text-left">
+              {{ clientDetails.firstName}}
+              {{ clientDetails.lastName}}<br>
+              {{ clientDetails.address1}}<br>
+              {{ clientDetails.postalCode}}
+              {{ clientDetails.city}}<br>
+              {{ clientDetails.state}}<br>
+              {{ clientDetails.country}}
+            
+            
+            
+            
+            </div>
           </div>
           <div class="flex flex-col ml-[45%] mt-4">
             <div>
-              <p>Invoice No</p>
+              <p class="font-semibold">Invoice No</p>
               <div class="text-left">{{ invoice.formData.invoiceNumber }}</div>
             </div>
             <div class="mb-4 mt-4">
-              <p>Date</p>
+              <p class="font-semibold">Date</p>
               <div class="text-left">{{ invoice.formData.date }}</div>
             </div>
             <div class="mb-4 mt-4">
-              <p>Invoice Due</p>
+              <p class="font-semibold">Invoice Due</p>
               <div class="text-left">{{ invoice.formData.invoiceDueDate }}</div>
             </div>
             <div class="mb-4 mt-4">
-              <p>Purchase order Number</p>
+              <p class="font-semibold" >Purchase order Number</p>
               <div class="text-left">
                 {{ invoice.formData.purchaseOrderNumber }}
               </div>
@@ -217,9 +240,9 @@ const handleDropdownItemClickParent = (clickedItem) => {
           </div>
         </div>
 <br><hr><br>
-        <div class="flex lg:flex-row 2xl:flex-row xl:flex-row lg:flex-row flex-col">
-          <div class="w-full">
-            <div class="text-left w-full">Description</div>
+        <div class="flex max-w-[70%] lg:flex-row 2xl:flex-row xl:flex-row lg:flex-row flex-col">
+          <div class="w-full md:w-[50%]">
+            <div class="text-left w-full font-semibold">Description</div>
             <textarea
               v-for="(item, index) in invoice.formData.items"
               :key="index"
@@ -231,7 +254,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
             ></textarea>
           </div>
           <div class="w-full">
-            <div class="flex w-full">Quantity</div>
+            <div class="flex w-full font-semibold">Quantity</div>
             <input
               v-for="(item, index) in invoice.formData.items"
               :key="index"
@@ -243,7 +266,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
             />
           </div>
           <div class="w-full">
-            <div class="flex w-full">Rate</div>
+            <div class="flex w-full font-semibold">Rate</div>
             <input
               v-for="(item, index) in invoice.formData.items"
               :key="index"
@@ -260,7 +283,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
             </select> -->
           </div>
           <div class="w-full">
-            <div class="flex w-full text-left">Amount</div>
+            <div class="flex w-full font-semibold text-left">Amount</div>
              <input
               v-for="(item, index) in invoice.formData.items"
               :key="index"
@@ -295,7 +318,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
   <div class=" flex flex-col max-w-full items-end">
           <div class="flex justify-around w-[80%] 2xl:w-[100%] items-end">
             <div class="text-black flex flex">
-              <span class="px-[4px] py-[10px] border-black text-[12px] rounded"> SubTotal </span>
+              <span class="px-[4px] py-[10px] font-semibold border-black text-[12px] rounded"> SubTotal </span>
             </div>
             <div class="pb-2 pt-4">
               {{ invoice.formData.subtotal }} {{ invoice.formData.currency }}
@@ -310,12 +333,12 @@ const handleDropdownItemClickParent = (clickedItem) => {
           <div class="flex justify-around w-[80%] 2xl:w-[100%] items-end">
            <div class="">
               <span
-                class="px-[6px] py-[10px] border-black text-[12px] rounded"
+                class="px-[6px] font-semibold py-[10px] border-black text-[12px] rounded"
                 :class="{
                   'bg-[#10C0CB] text-white  ':
                     invoice.formData.paymentStatus === 'Paid',
                   'bg-orange-300 text-white': invoice.formData.paymentStatus === 'Unpaid',
-                  'bg-[#878787] text-white':
+                  'bg-[#bababa] text-white':
                     invoice.formData.paymentStatus === 'Draft',
                 }"
               >
@@ -335,7 +358,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
             <div class="text-left mt-8">
               <div>
                 <div class="flex w-full">
-                  <p>Invoice Note</p>
+                  <p class="font-semibold">Invoice Notes :</p>
                 </div>
                 <!-- v-model="invoice.formData.notes" -->
                 <div>{{ invoice.formData.notes }}</div>
@@ -344,9 +367,14 @@ const handleDropdownItemClickParent = (clickedItem) => {
           </div>
         </div>
         <hr class="mt-10" />
-        <div class="text-left mt-8 mb-8">
-          Email : {{ invoice.formData.sender.email }}
+        <div class="flex">
+        <div class="text-left mt-8 mb-8 font-semibold">
+          Email : 
         </div>
+        <div class="text-left mt-8 mb-8 ">
+           {{  invoice.formData.sender.email }}
+        </div>
+      </div>
       </form>
     </section>
   </div>

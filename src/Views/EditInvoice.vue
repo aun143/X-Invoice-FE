@@ -1,15 +1,19 @@
 <script setup>
-import {  ref ,computed} from "vue";
+import {  ref ,computed ,onMounted,watch} from "vue";
 import { useRoute, useRouter } from "vue-router";
-import Header from "../components/header.vue";
+import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import { RouterLink } from "vue-router";
 import Button from "../components/Button.vue";
 import Client from "./Client.vue";
+import { getAllClient } from "../service/clientService";
 import { Colors } from "../utils/color";
 import { useInvoiceService } from '../service/MainService';
 import Swal  from "sweetalert2";
+import { notification } from "ant-design-vue";
+import {  Input } from "ant-design-vue";
 const route = useRoute();
+const router = useRouter();
 const invoiceId = route.params._id;
 const invoiceService = useInvoiceService();
 const invoice = useInvoiceStore();
@@ -17,13 +21,22 @@ const isLoading=ref(false);
 const handleSaveDraftButtonClick = async (Id) => {
  
     try {
+     if (!validateForm()) return;
+
       isLoading.value=true;
       const response = await invoiceService.updateInvoiceData(invoiceId, invoice.formData);
-console.log("response",response);
+//console.log("response",response);
+router.push("/")
       if (response) {
-        alert('Invoice submitted successfully:');
+        // alert('Invoice submitted successfully:');
       } else {
-        alert('Error updating invoice. Please check the console for details.');
+        // alert('Error updating invoice. Please check the console for details.');
+        Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: ("Error updating invoice. Please check the console for details.", error),
+      footer: 'Please try again '
+    });
       }
     } catch (error) {
       console.error('Error updating invoice:', error);
@@ -40,6 +53,39 @@ console.log("response",response);
 const open =ref(false);
 const showModal = () => {
   open.value = true;
+};
+const validateForm = () => {
+  const emptyFields = [];
+  if (!invoice.formData.receiver) {
+    emptyFields.push("Receiver");
+  }
+  if (!invoice.formData.sender) {
+    emptyFields.push("Sender");
+  }
+  if (!invoice.formData.invoiceNumber) {
+    emptyFields.push("Invoice Number");
+  }
+  if (!invoice.formData.invoiceName) {
+    emptyFields.push("Invoice Name");
+  }
+  if (!invoice.formData.description) {
+    emptyFields.push("Description");
+  }
+
+  if (emptyFields.length > 0) {
+    const alertMessage = `Please fill in the following required fields: ${emptyFields.join(", ")}`;
+    openNotificationWithIcon("error", alertMessage);
+    return false;
+  }
+
+  return true;
+};
+const openNotificationWithIcon = (type, message) => {
+  notification[type]({
+    message: type === "success" ? "Success" : "Error",
+    description: message,
+    duration: 3, 
+  });
 };
 // const modalActive = ref(false);
 // const toggleModal = () => {
@@ -88,10 +134,19 @@ const displayImage = (input) => {
 
     reader.readAsDataURL(file);
     invoice.formData.logoPreview=file
-    console.log("file>>>",file)
+    //console.log("file>>>",file)
   }
   
 };
+const filterStatus = ref("All");
+
+const filteredClients = computed(() => {
+  if (filterStatus.value === "All") {
+    return clients.value;
+  } else {
+    return clients.value.filter((client) => client.paymentStatus === filterStatus.value);
+  }
+});
 const calculateAmount = (item) => {
     // Calculate the amount
     const amount = item.quantity * item.rate;
@@ -114,23 +169,29 @@ const deleteItem = (index) => {
 
   }
 };
-const dropdownOpen = ref(new Array(invoice.formData.items.length).fill(true).map(() => ref(true)));
-const handleDropdownClick = (index, val) => {
-  dropdownOpen.value[index] = val;
-};
-const saveItem = (index) => {
-  console.log(`Saved item at index ${index}`);
-};
-
-const dueDate = computed(() => {
-  if (invoice.formData.date && invoice.formData.invoiceDueDate) {
-    const date = new Date(invoice.formData.date);
-    const dueDate = new Date(date);
-    dueDate.setDate(date.getDate() + parseInt(invoice.formData.invoiceDueDate));
-    return dueDate.toDateString();
+const clients=ref();
+onMounted(async()=>{
+  try {
+    isLoading.value = true;
+  const result = await getAllClient(); 
+  if (result && result.data) {
+    clients.value = result.data;
+  } else {
+    throw new Error("No data received from server");
   }
-  return null;
-});
+} catch (error) {
+  console.error("Error fetching Clients:", error);
+  Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: "Error fetching Clients: " + error.message,
+    footer: 'Please try again'
+  });
+}finally {
+    isLoading.value = false; // Set isLoading back to false after fetching data
+  }
+})
+
 const addMoreItem = () => {
   invoice.addMoreItem();
 };
@@ -142,7 +203,21 @@ const getSubtotal = () => {
 const getTotal = () => {
   return invoice.getTotal();
 };
-const formData = invoice.formData;
+const calculateUpcomingDueDate = () => {
+  const selectedDueDate = invoice.formData.invoiceDueDate;
+  if (selectedDueDate) {
+    const currentDate = new Date(invoice.formData.date);
+    const upcomingDate = new Date(currentDate);
+    upcomingDate.setDate(currentDate.getDate() + parseInt(selectedDueDate));
+    invoice.formData.invoiceDueDate = upcomingDate;
+    //console.log("upcomingDate",upcomingDate);
+  } else {
+    invoice.formData.invoiceDueDate = null;
+  }
+};
+watch(invoice.formData, (newValue) => {
+ invoice.updateFormData(newValue);
+});
  </script>
 <template>
 
@@ -150,7 +225,7 @@ const formData = invoice.formData;
      <div class="bg-white">
     <Header
     headerTitle="New Invoice"
-    backButtonText=" &nbsp; Invoices"
+    backButtonText=" &nbsp &lt Invoices &nbsp  &nbsp"
     backRoute="Index"
     :dropdownItems="dropdownItems"
     :dropdownTitle="dropdownTitle"
@@ -162,25 +237,34 @@ const formData = invoice.formData;
 
   />
 </div>
-
-
  <form @submit.prevent class="container mt-6 ml-6 bg-white max-w-[1000px]  p-6">
     <div class="container">
       <div class="flex justify-between">
         <div class="flex flex-col space-y-5 w-1/2s sm:flex sm:space-x-4">
           <div class=" ">
             <div class="mt-2 text-2xl ml-2 text-left ">
-              <span class="mr-6 bg-[#a1a1a1] text-[12px] text-white p-2 rounded">Draft</span>
+              <span
+              
+                class="px-[15px] mr-6  text-[12px] text-white px-3 py-2  rounded mr-4"
+                :class="{
+                  'bg-[#10C0CB] text-white text-[12px] ':
+                    invoice.formData.paymentStatus === 'Paid',
+                  'bg-orange-300 text-white text-[12px]': invoice.formData.paymentStatus === 'Unpaid',
+                  'bg-[#bababa] text-white text-[12px]': invoice.formData.paymentStatus === 'Draft',
+                }"
+              >
+                {{ invoice.formData.paymentStatus }}
+              </span>
               <a-input
-   v-model:value="formData.invoiceName"
-    class="w-[250px] h-12 text-left text-[15px]"
+   v-model:value="invoice.formData.invoiceName"
+    class="w-[250px] h-8 text-left text-[13px]"
     type="text"
     placeholder="Invoice Name"
   />
             </div>
           </div>
           <a-textarea
-          v-model:value="formData.description"
+          v-model:value="invoice.formData.description"
             placeholder="Enter Description"
             name=""
             id=""
@@ -190,9 +274,9 @@ const formData = invoice.formData;
         </div>
         <div class="flex flex-col w-1/2 items-end">
           <label for="logoInput" class="" >
-             <div class="logo-placeholder border-none hover:border-dashed cursor-pointer rounded w-24 h-24 border-2 grid place-items-center text-slate-500 text-5xl ">
+             <div class="logo-placeholder border-none  cursor-pointer rounded w-24 h-24 border-2 grid place-items-center text-slate-500 text-5xl ">
               <img src="../assets/3x.webp"  ref="logoPreview"  class="logo rounded"   alt="Logo" /> </div>
-               <input
+               <!-- <input
                  id="logoInput"
                   type="file"
                   accept="image/*"
@@ -200,24 +284,26 @@ const formData = invoice.formData;
                   style="display: none"
                   @change="handleFileInputChange"
                   ref="logoInputRef"   
-    />
+    /> 
+  hover:border-dashed
+-->
          </label>
         </div>
       </div>
       <div class="mt-10 flex w-full">
         <div class="">
-          <p class="ml-auto  mr-8">Invoice No.</p>
+          <p class="ml-auto  mr-4">Invoice No.</p>
           <a-input-number
           required
             type="number"
-            v-model:value="formData.invoiceNumber"
+            v-model:value="invoice.formData.invoiceNumber"
             class="ml-2 w-[100px]"
           />
         </div>
         <div class="flex items-end justify-end w-full">
           <div class="">
-            <p class="text-left ml-4">Language</p>
-            <a-select  v-model:value="formData.language" class="ml-2 w-[150px]">
+            <p class="text-left ml-4 ">Language</p>
+            <a-select  v-model:value="invoice.formData.language" class="ml-2 w-[150px]">
               <a-select-option
                 v-for="language in invoice.languageOptions"
                 :key="language.value"
@@ -227,8 +313,8 @@ const formData = invoice.formData;
             </a-select>
           </div>
           <div>
-            <p class="text-left ml-4">Currency</p>
-            <a-select  v-model:value="formData.currency" class="ml-2 w-[200px]">
+            <p class="text-left ml-3">Currency</p>
+            <a-select  v-model:value="invoice.formData.currency" class="ml-2 w-[200px]">
               <a-select-option
                 v-for="currency in invoice.currencyOptions"
                 :key="currency.value"
@@ -254,7 +340,7 @@ const formData = invoice.formData;
     </div>
           <div v-else>
             <div class="flex w-full">
-              <p>From</p><span class="ml-2">{{ invoice.selectedProfileType}}</span>
+              <p>From</p>
               <p class="justify-end flex w-full text-left">
                 <router-link to="/businessProfile">Edit Business Profile</router-link>
               </p>
@@ -291,8 +377,8 @@ const formData = invoice.formData;
            </div>
           </div>
           <div class="flex mt-2">
-            <p class="text-right ml-2">To</p>
-            <p class="justify-end flex w-full text-left">
+            <p class="text-right ml-3">To</p>
+            <div class="justify-end flex w-full text-left">
               <!-- <div  @click="toggleModal" class="">New Client</div> -->
               <div type="primary" class="text-[#10C0CB]" @click="showModal">New Client</div>
               <div class="home">
@@ -302,10 +388,10 @@ const formData = invoice.formData;
                   <Client/> 
     </a-modal>
   </div>
-            </p>
+</div>
           </div>
           
-          <a-select  v-model:value="formData.receiver" class="ml-2 w-[100%]"   :loading="isLoading">
+          <a-select  v-model:value="invoice.formData.receiver" class="ml-2 w-[100%]"   :loading="isLoading">
               <a-select-option
               v-for="client in filteredClients" :key="client._id" >  {{ client.firstName }}
               </a-select-option>
@@ -317,18 +403,18 @@ const formData = invoice.formData;
       <div class="flex flex-col items-end mt-4 ml-auto ">
         <div class="flex items-end mb-2">
           <div>
-            <p class="w-4/5 mb-0 ml-2 text-start">Date</p>
+            <p class="w-4/5 mb-0 ml-3 text-start">Date</p>
             <a-input
               type="Date"
-              v-model:value="formData.date"
+              v-model:value="invoice.formData.date"
               class="ml-2 w-[200px]"
             />
           </div>
         </div>
         <div class="flex items-end mb-2">
           <div>
-            <p class="w-4/5 ml-2 text-start" ml-2 text-start>Invoice Due</p>
-            <a-select v-model:value="formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate">
+            <p class="w-4/5 ml-3 text-start" ml-2 text-start>Invoice Due</p>
+            <a-select v-model:value="invoice.formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate">
         
               <a-select-option value="07">After 07 days</a-select-option>
               <a-select-option value="15">After 15 days</a-select-option>
@@ -341,9 +427,9 @@ const formData = invoice.formData;
        
         <div class="flex items-end">
           <div>
-            <p class="w-3/3 mb-0 ml-2 text-start">Purchase Order Number</p>
+            <p class="w-3/3 mb-0 ml-3 text-start">Purchase Order Number</p>
             <a-input-number
-            v-model:value="formData.purchaseOrderNumber"
+            v-model:value="invoice.formData.purchaseOrderNumber"
               class="ml-2 w-[200px]"
               type="number"
             />
@@ -458,13 +544,13 @@ const formData = invoice.formData;
         <div class="mt-10 text-left space-y-3">
           <div>
             <div class="flex w-full">
-              <p>Invoice Notes<a href="#">(Default Note)</a></p>
+              <p class="ml-1">Invoice Notes<a href="#">(Default Note)</a></p>
             </div>
             <a-textarea
               class="border-none"
               cols="60"
               rows="2"
-              v-model:value="formData.notes"
+              v-model:value="invoice.formData.notes"
             ></a-textarea>
           </div>
           </div>

@@ -36,7 +36,7 @@ const invoiceService = {
       // console.log("Access token Bhai is This For Now ><><>", accessToken);
 
       const response = await fetch(
-        `http://localhost:3010/invoices/updateInvoiceStatus/${invoiceId}`,
+        `http://localhost:3010/invoices/updatePaidInvoiceStatus/${invoiceId}`,
         {
           method: "PUT",
           headers: {
@@ -46,7 +46,7 @@ const invoiceService = {
           body: JSON.stringify(updateData),
         }
       );
-      console.log("invoiveId", invoiceId);
+      // console.log("invoiveId", invoiceId);
 
       if (!response.ok) {
         const errorData = await response.json(); // Parse error response

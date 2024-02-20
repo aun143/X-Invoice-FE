@@ -4,7 +4,7 @@ import { useRoute,useRouter,RouterLink } from 'vue-router';
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import Button from "../components/Button.vue";
-import Client from "./client.vue";
+import Client from "./Client.vue";
 import { Colors } from "../utils/color";
 import { useInvoiceService } from '../service/MainService';
 // import Modal from "../components/Modal.vue";
@@ -21,12 +21,16 @@ const invoice = useInvoiceStore();
 
 const invoiceSubmit = async () => {
   try {
-     if (!validateForm()) return;
-    const response = await invoiceSer.postInvoiceData(invoice.formData);
-    
-    console.log('Invoice submitted successfully:', response);
+    isLoading.value=true;
 
-    router.push("/")
+
+// invoice.formData.items="";
+if (!validateForm()) return;
+const response = await invoiceSer.postInvoiceData(invoice.formData);
+
+//console.log('Invoice submitted successfully:', response);
+router.push("/")
+invoice.resetFormData();
 
   } catch (error) {
     Swal.fire({
@@ -36,7 +40,9 @@ const invoiceSubmit = async () => {
       footer: 'Please try again '
     });
     console.error("Error During Account:", error);
-  }
+  }finally{
+      isLoading.value=false;
+    }
 
 };
 const open =ref(false);
@@ -83,7 +89,7 @@ const calculateAmount = (item) => {
 //   modalActive.value = !modalActive.value;
 // };
 const invoiceSer = useInvoiceService();
-console.log("invoice",invoice)
+//console.log("invoice",invoice)
 const dropdownTitle = "Save"
 const dropdownItems = [
   { title: "Save", link: "/" },
@@ -154,7 +160,7 @@ const displayImage = (input) => {
 
     reader.readAsDataURL(file);
     invoice.formData.logoPreview = file
-    console.log("file>>>",file)
+    //console.log("file>>>",file)
   }
 };
 const deleteItem = (index) => {
@@ -227,32 +233,30 @@ const filterStatus = ref("All");
 const client = ref([]);
 const clients = ref([]);
 const profile=ref({});
+
+
+
 onMounted(async () => { 
+
   try {
-    const invoice = useInvoiceStore();
-invoice.updateFormData({
-      receiver: "",
-      invoiceNumber: "",
-      purchaseOrderNumber: "",
-      description: "",
-      date: "",
-      invoiceDueDate: "",
-    });
+    invoice.resetFormData();
+
+    // const invoice=useInvoiceStore();
     isLoading.value = true;
     const UserId = localStorage.getItem("UserId");
     if (UserId) {
       const userProfileData = await getUserDetailsApi(UserId);
-      console.log("userProfileType >>>", invoice.selectedProfileType);
+      //console.log("userProfileType >>>", invoice.selectedProfileType);
       if (invoice.selectedProfileType === "individual") {
         const individualData = userProfileData.individualProfile;
         // Update specific fields of sender without overwriting it
         Object.assign(invoice.formData.sender, individualData);
-        console.log("individualData<", individualData);
+        //console.log("individualData<", individualData);
       } else if (invoice.selectedProfileType === "organization") {
         const organizationData = userProfileData.organizationProfile;
         // Update specific fields of sender without overwriting it
         Object.assign(invoice.formData.sender, organizationData);
-        console.log("invoice sender<><><", organizationData);
+        //console.log("invoice sender<><><", organizationData);
       }
       
     } else {
@@ -265,14 +269,16 @@ invoice.updateFormData({
       text: ("Error Submitting Invoice:", error),
       footer: 'Please try again '
     });
-    console.error("Error Submitting Invoice", error);
+    console.error("Error getting account in Invoice", error);
   } finally {
-    isLoading.value = false; // Set isLoading back to false after fetching data
+    isLoading.value = false; 
   }
-
-
-
+  
+  
+  
   try {
+    invoice.resetFormData();
+
     isLoading.value = true;
   const result = await getAllClient(); 
   if (result && result.data) {
@@ -293,6 +299,7 @@ invoice.updateFormData({
   }
 
 });
+
 const invoiceName = ref('');
 const upcomingDueDate = ref(null);
 const formattedDueDate = computed(() => {
@@ -310,7 +317,7 @@ const calculateUpcomingDueDate = () => {
     const upcomingDate = new Date(currentDate);
     upcomingDate.setDate(currentDate.getDate() + parseInt(selectedDueDate));
     invoice.formData.invoiceDueDate = upcomingDate;
-    console.log("upcomingDate",upcomingDate);
+    //console.log("upcomingDate",upcomingDate);
   } else {
     invoice.formData.invoiceDueDate = null;
   }
@@ -318,24 +325,22 @@ const calculateUpcomingDueDate = () => {
 watch(invoice.formData, (newValue) => {
  invoice.updateFormData(newValue);
 });
-// const individual=invoice.userProfileData.individualProfile;
-// // console.log("{{ individual.firstName }}",individual)
-// const organization=invoice.userProfileData.organizationProfile;
-// // console.log("{{ individual.firstName }}",organization)
+
 const formData = invoice.formData;
 </script>
+
 <template>
 
   <div class="bg-gray-100 ">
      <div class="bg-white">
     <Header
     headerTitle="New Invoice"
-    backButtonText=" &nbsp; Invoices"
+    backButtonText=" &nbsp &lt  Invoices &nbsp  &nbsp "
     backRoute="Index"
     :dropdownItems="dropdownItems"
     :dropdownTitle="dropdownTitle"
-    saveButtonText="&nbsp;&nbsp; Save &nbsp;&nbsp;"
-    saveDraftButtonText="&nbsp; Save Draft"
+    saveButtonText="Save"
+    saveDraftButtonText=" Save Draft"
     :saveDraftButtonColor="Colors.saveDraft"
     :onSaveDraftButtonClick="handleSaveDraftButtonClick"
     :showDropdown="true"
@@ -351,7 +356,7 @@ const formData = invoice.formData;
         <div class="flex flex-col space-y-5 w-1/2s sm:flex sm:space-x-4">
           <div class=" ">
             <div class="mt-2 text-2xl ml-2 text-left ">
-              <span class="mr-6 bg-[#a1a1a1] text-[12px] text-white p-2 rounded">Draft</span>
+              <span class="mr-6 bg-[#bababa] text-[12px] text-white px-3 py-2  rounded">Draft</span>
               <a-input
    v-model:value="formData.invoiceName"
     class="w-[250px] h-12 text-left text-[15px]"
@@ -371,9 +376,9 @@ const formData = invoice.formData;
         </div>
         <div class="flex flex-col w-1/2 items-end">
           <label for="logoInput" class="" >
-             <div class="logo-placeholder border-none hover:border-dashed cursor-pointer rounded w-24 h-24 border-2 grid place-items-center text-slate-500 text-5xl ">
+             <div class="logo-placeholder border-none  cursor-pointer rounded w-24 h-24 border-2 grid place-items-center text-slate-500 text-5xl ">
               <img src="../assets/3x.webp"  ref="logoPreview"  class="logo rounded"   alt="Logo" /> </div>
-               <input
+               <!-- <input
                  id="logoInput"
                   type="file"
                   accept="image/*"
@@ -381,7 +386,7 @@ const formData = invoice.formData;
                   style="display: none"
                   @change="handleFileInputChange"
                   ref="logoInputRef"   
-    />
+    /> -->
          </label>
         </div>
       </div>
@@ -435,9 +440,10 @@ const formData = invoice.formData;
     </div>
           <div v-else>
             <div class="flex w-full">
-              <p>From</p><span class="ml-2">{{ invoice.selectedProfileType}}</span>
+              <p>From:</p>
+              
               <p class="justify-end flex w-full text-left">
-                <router-link to="/businessProfile">Edit Business Profile</router-link>
+                <router-link to="/businessProfile" class="text-[#10C0CB]" >Edit Business Profile</router-link>
               </p>
             </div>
                                   <div class="">
@@ -452,18 +458,18 @@ const formData = invoice.formData;
                         <span class="ml-2">{{ invoice.formData.sender.city }}</span><br>
                         </div> 
                         <div v-if="invoice.selectedProfileType === 'organization'" class=" border-2 border-gray-300  rounded-2" >
+                          <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br>
                         <span class="ml-2"> 
                           {{ invoice.formData.sender.organizationName }}</span><br>
-                          <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br>
-                          <span class="ml-2">{{ invoice.formData.sender.firstName }}</span>
+                        <span class="ml-2">{{ invoice.formData.sender.firstName }}</span>
                         <span class="ml-2">{{invoice.formData.sender.lastName }}</span><br>
-                        <!-- <span class="ml-2">{{ invoice.formData.sender.address1 }}</span>
-                        <span class="ml-2">{{ invoice.formData.sender.address2 }}</span><br> -->
-                        <!-- <span class="ml-2">{{ invoice.formData.sender.postalCode }}</span> -->
+                        <span class="ml-2">{{ invoice.formData.sender.address1 }}</span>
+                        <span class="ml-2">{{ invoice.formData.sender.address2 }}</span><br> 
+                        <span class="ml-2">{{ invoice.formData.sender.postalCode }}</span>
                         <span class="ml-2">{{ invoice.formData.sender.city }}</span><br>
-                        <!-- <span class="ml-2">{{ invoice.formData.sender.state }}</span><br> -->
-                        <!-- <span class="ml-2">{{ invoice.formData.sender.email }}</span><br> -->
-                        <!-- <span class="ml-2">{{ invoice.formData.sender.city }}</span><br> -->
+                        <span class="ml-2">{{ invoice.formData.sender.state }}</span><br>
+                        <span class="ml-2">{{ invoice.formData.sender.email }}</span><br>
+                        <span class="ml-2">{{ invoice.formData.sender.city }}</span><br>
                         </div>
 
 
@@ -472,18 +478,18 @@ const formData = invoice.formData;
            </div>
           </div>
           <div class="flex mt-2">
-            <p class="text-right ml-2">To</p>
-            <p class="justify-end flex w-full text-left">
+            <p class="text-right ml-2">To:</p>
+            <div class="justify-end flex w-full text-left">
               <!-- <div  @click="toggleModal" class="">New Client</div> -->
-              <div type="primary" class="text-[#10C0CB]" @click="showModal">New Client</div>
+              <div type="primary" class="text-[#10C0CB] cursor-pointer" @click="showModal">New Client</div>
               <div class="home">
                 <!-- <Modal @close="toggleModal" :modalActive="modalActive">
                 </Modal> -->
-                <a-modal v-model:open="open" @ok="handleOk"  >
+                 <a-modal v-model:open="open" @ok="handleOk"  >
                   <Client/> 
     </a-modal>
   </div>
-            </p>
+            </div>
           </div>
           
           <a-select  v-model:value="formData.receiver" class="ml-2 w-[100%]"   :loading="isLoading">

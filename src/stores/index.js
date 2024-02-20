@@ -10,11 +10,11 @@ export const useInvoiceStore = defineStore("invoice", {
       invoiceNumber: "",
       invoiceName: "INV",
       date: new Date(),
-      invoiceDueDate: "",
+      invoiceDueDate: new Date(),
       logoPreview: "",
       invoiceDue: "",
       sender: {},
-      receiver:"",
+      receiver:{},
       items: [
         {
           description: "",
@@ -251,9 +251,7 @@ export const useInvoiceStore = defineStore("invoice", {
     updateFormData(newData) {
       this.formData = { ...this.formData, ...newData };
     },
-    resetFormData() {
-      this.formData = { ...this.resetFormData };
-    },
+   
     updateClientProfileIndividual(userData) {
       this.clientDataIndividual = {
         ...this.clientDataIndividual,
@@ -311,7 +309,31 @@ export const useInvoiceStore = defineStore("invoice", {
       }
     }, resetFormData() {
       this.$state.formData = {
-
+      
+          description: "",
+          language: "English (US)",
+          currency: "PKR",
+          purchaseOrderNumber: "",
+          invoiceNumber: "",
+          invoiceName: "INV",
+          date: new Date(),
+          invoiceDueDate: "",
+          logoPreview: "",
+          invoiceDue: "",
+          sender: this.$state.formData.sender,
+          receiver:"",
+          items: [
+            {
+              description: "",
+              quantity: 0,
+              rate: 0,
+              unit: "d",
+              amount: 0,
+            },
+          ],
+          notes: "",
+          subtotal: 0,
+          total: 0,
       }
     },
     resetState() {

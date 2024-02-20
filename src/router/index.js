@@ -115,18 +115,18 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("accessToken");
 
-  console.log("Current route:", to);
-  console.log("Token:", token);
+  // console.log("Current route:", to);
+  // console.log("Token:", token);
 
   if (!to.meta.public) {
     // Page requires authentication - if there is none, redirect to /login
     if (!token) {
       // User does not have token, redirect to login
-      console.log("User does not have token, redirect to login");
+      // console.log("User does not have token, redirect to login");
       next({ name: "Login" });
     } else {
       // User has token, allow access to authenticated routes
-      console.log("User has token, allow access");
+      // console.log("User has token, allow access");
       next();
     }
   } else {
@@ -139,18 +139,18 @@ router.beforeEach((to, from, next) => {
         to.path === "/ForgetPass" ||
         to.path === "/Accounts"
       ) {
-        console.log(
-          "User with token trying to access login, signup, or ForgetPass, redirecting to main"
-        );
+        // console.log(
+        //   "User with token trying to access login, signup, or ForgetPass, redirecting to main"
+        // );
         next({ name: "Index" });
       } else {
         // Allow access to other authenticated routes
-        console.log("Allow access to other authenticated routes");
+        // console.log("Allow access to other authenticated routes");
         next();
       }
     } else {
       // Allow access to public routes
-      console.log("Allow access to public routes");
+      // console.log("Allow access to public routes");
       next();
     }
   }

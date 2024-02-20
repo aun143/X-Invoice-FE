@@ -101,28 +101,7 @@ export const UpdateBusinessProfileApi = async (id, updatedData) => {
   return response.json();
 };
 
-// export const UpdateBusinessProfileApi = async (id, updatedData) => {
-//   const token = localStorage.getItem("accessToken");
 
-//   const response = await fetch(
-//     `http://localhost:3010/individual/updatebusinessProfile/${id}`,
-//     {
-//       method: "PUT",
-//       headers: {
-//         "Content-Type": "application/json",
-//         "Authorization": `Bearer ${token}`,
-
-//       },
-//       body: JSON.stringify(updatedData),
-//     }
-//   );
-
-//   if (!response.ok) {
-//     throw new Error("Failed to update Business Profile");
-//   }
-
-//   return response.json();
-// };
 
 export const getBusinessProfileApi = async (id) => {
   const response = await fetch(
@@ -185,36 +164,3 @@ async function uploadImage(file) {
 }
 
 export { uploadImage };
-// export const uploadImage = async (imageFile, additionalData) => {
-//   try {
-//     // Create a form data object
-//     const formData = new FormData();
-//     formData.append("image", imageFile); // Assuming 'image' is the key for the image file
-
-//     // Append additional data if needed
-//     for (const key in additionalData) {
-//       if (additionalData.hasOwnProperty(key)) {
-//         formData.append(key, additionalData[key]);
-//       }
-//     }
-
-//     // Make a POST request to your server
-//     const response = await axios.post(
-//       "http://localhost:3010/upload/file",
-//       formData,
-//       {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//           // Include any additional headers, e.g., authorization token
-//         },
-//       }
-//     );
-
-//     // Handle the response
-//     console.log("Image uploaded successfully:", response.data);
-//     return response.data; // You can return any relevant information from the response
-//   } catch (error) {
-//     console.error("Error uploading image:", error);
-//     throw error; // Propagate the error for further handling
-//   }
-// };

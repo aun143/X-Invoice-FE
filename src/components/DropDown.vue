@@ -13,31 +13,26 @@ const handleItemClick = (item) => {
   // Emit a custom event with the clicked item data
   emits("item-click", item);
   // You can also perform additional actions specific to the dropdown component here
-  console.log(`Clicked on item: ${item.title}`);
+  // console.log(`Clicked on item: ${item.title}`);
 };
 </script>
 
 <template>
-  <div class="menu-item mr-2" @click="toggleMenu">
+  <div class="menu-item " @click="toggleMenu">
     <div
-      class="ml-2 w-full items-center justify-center text-lg text-white mt-1 cursor-pointer "
+      class=" w-full items-center justify-center h-8 text-[12px] text-white  cursor-pointer flex"
     >
-      {{ title }}<span class="ml-2 fa fa-caret-down"></span>
+      {{ title }}<span class="ml-1 fa fa-caret-down"></span>
     </div>
-    <!-- <svg viewBox="0 0 1030 638" width="10" class="">
-      <path
-        d="M1017 68L541 626q-11 12-26 12t-26-12L13 68Q-3 49 6 24.5T39 0h952q24 0 33 24.5t-7 43.5z"
-        fill="#FFF"
-      ></path>
-    </svg> -->
+  
     <transition name="fade" appear>
-      <div class="sub-menu" v-if="isOpen">
+      <div class="sub-menu ml-2 " v-if="isOpen">
         <div
           v-for="(item, i) in items"
           :key="i"
-          class="menu-item  bg-white w-full p-2"
+          class="menu-item  bg-white w-full pb-[4x] "
         >
-          <div @click="() => handleItemClick(item)" class="cursor-pointer  hover:text-blue-700 ">
+          <div @click="() => handleItemClick(item)" class="cursor-pointer mx-1 rounded text-[12px] text-[#10C0CB] hover:text-black ">
             {{ item.title }}
           </div>
         </div>
@@ -49,13 +44,13 @@ const handleItemClick = (item) => {
 <style>
 .menu-item svg {
   width: 10px;
-  margin-left: 06px;
+  margin-left: 6px;
   margin-top: 7px;
 }
 
 .menu-item .sub-menu {
   position: absolute;
-  top: calc(100% + 18px);
+  top: calc(100% + 4px);
   left: 50%;
   transform: translateX(-50%);
   width: max-content;

@@ -43,40 +43,46 @@ const resetErrors = () => {
 const validateFields = () => {
   let valid = true;
   resetErrors();
+  signUpClicked.value = true;
 
-  // Check if any required field is empty only if Sign Up button is clicked
+
   if (signUpClicked.value) {
     if (!invoice.signupData.username) {
-      errors.username = "Username is required.";
-      openNotificationWithIcon("error", "Username is required.");
-      valid = false;
+        errors.username = "Username is required.";
+        openNotificationWithIcon("error", "Username is required.");
+        valid = false;
+    } else if (!/^[a-zA-Z]+$/.test(invoice.signupData.username)) {
+        errors.username = "Username must contain only alphabetic characters.";
+        openNotificationWithIcon("error", "Username must be valid and contain only alphabetic characters.");
+        valid = false;
     }
+
     if (!invoice.signupData.email) {
-      errors.email = "Email is required.";
-      openNotificationWithIcon("error", "Email is required.");
-      valid = false;
-    }else if (!invoice.signupData.email.includes("@")) {
-      errors.email = "Email must be valid and Contain '@'";
-    openNotificationWithIcon("error", "Email must be valid and Contain '@'");
-    valid = false;
-  }
+        errors.email = "Email is required.";
+        openNotificationWithIcon("error", "Email is required.");
+        valid = false;
+    } else if (!invoice.signupData.email.includes("@")) {
+        errors.email = "Email must be valid and contain '@'.";
+        openNotificationWithIcon("error", "Email must be valid and contain '@'.");
+        valid = false;
+    }
+
     if (!invoice.signupData.password) {
-      errors.password = "Password is required.";
-      openNotificationWithIcon("error", "Password is required.");
-      valid = false;
+        errors.password = "Password is required.";
+        openNotificationWithIcon("error", "Password is required.");
+        valid = false;
+    } else if (invoice.signupData.password.length < 8 || !/\w/.test(invoice.signupData.password)) {
+        errors.password = "Password must be valid and contain at least 8 alphanumeric characters.";
+        openNotificationWithIcon("error", "Password must be valid and contain at least 8 alphanumeric characters.");
+        valid = false;
     }
-    
-    // Show notification alerts for each field that is required
-    if (!valid) {
-      openNotificationWithIcon("error", "Please check the form for errors.");
-    }
-  }
+}
 
   return valid;
 };
 
 const signUpUser = async () => {
-  signUpClicked.value = true; 
+  // signUpClicked.value = true; 
   resetErrors();
 
   // Validate fields before proceeding
@@ -91,17 +97,17 @@ const signUpUser = async () => {
     if (response.data && response.data.access_token && response.data.data._id) {
       localStorage.setItem("accessToken", response.data.access_token);
       localStorage.setItem("UserId", response.data.data._id);
-      console.log(
-        "Access token and UserId set successfully:",
-        response.data.access_token
-      );
+      // console.log(
+      //   "Access token and UserId set successfully:",
+      //   response.data.access_token
+      // );
 
       router.push({ name: "Index" });
     } else {
       console.log("Access token not found in the response:", response.data.access_token);
     }
     router.push("/accounts");
-    console.log("SignUp successful. User data:", response.data);
+    //console.log("SignUp successful. User data:", response.data);
 
     // Show success notification
     openNotificationWithIcon("success", "Sign up successful");
@@ -236,7 +242,7 @@ const openNotificationWithIcon = (type, message) => {
               </p>
               <a-input
                 v-model:value="invoice.signupData.email"
-                type="email"
+                type="text"
                 placeholder="email@gmail.com"
                 class="w-full border-b border-gray-300 p-2"
               />

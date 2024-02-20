@@ -12,30 +12,66 @@ import {
 } from "../service/BusinessProfileService";
 import { getUserDetailsApi } from "../service/LoginService";
 import Modal from "../components/Modal.vue";
-const isLoading = ref(false);
 
+const isLoading = ref(false);
 const route = useRoute();
 const router = useRouter();
 const invoice = useInvoiceStore();
-// const UserResponse = useInvoiceStore();
-// const individualId =  UserResponse.userProfileData.individualProfile;
-// const organizationId =  UserResponse.userProfileData.organizationProfile;
-// console.log("organizationId>>>",organizationId);
-// console.log("individualId>>>",individualId);
 
-// console.log("userResponse 9:45",UserResponse)
+const firstNameError = ref('');
+const lastNameError = ref('');
+const emailError = ref('');
+const address1Error = ref('');
+const address2Error = ref('');
+const cityError = ref('');
 
-// console.log("userProfileData",userProfileData);
+const validateForm = (profileType) => {
+  // Reset errors
+  firstNameError.value = '';
+  lastNameError.value = '';
+  emailError.value = '';
+  address1Error.value = '';
+  address2Error.value = '';
+  cityError.value = '';
+
+  const profileData = profileType === 'individual' ? invoice.userProfileData.individualProfile : invoice.userProfileData.organizationProfile;
+
+  // Validate First Name
+  if (!/^[a-z A-Z]+$/.test(profileData.firstName)) {
+    firstNameError.value = "First name must contain only letters from A-Z and a-z";
+  }
+  if (!/^[a-z A-Z]+$/.test(profileData.lastName)) {
+    lastNameError.value = "Last name must contain only letters from A-Z and a-z";
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email)) {
+    emailError.value = "Email must be Valid and contain '@' ";
+  }
+  if (!/^[a-z A-Z 0-9]+$/.test(profileData.address1)) {
+    address1Error.value = "Address1 must contain only Alphanumeric characters";
+  } 
+  if (!/^[a-z A-Z 0-9]+$/.test(profileData.address2)) {
+    address2Error.value = "Address2 must contain only Alphanumeric characters";
+  } 
+  if (!/^[a-z A-Z ]+$/.test(profileData.city)) {
+    cityError.value = "City must contain only Alphabetic A-Z characters";
+  }
+
+  // Check if any errors
+  if (firstNameError.value || lastNameError.value || emailError.value || address1Error.value || address2Error.value || cityError.value) {
+    return false;
+  }
+
+  return true;
+};
 
 const submitbusinessProfileDataOrganization = async (id) => {
   try {
     router.push("/");
-    // alert("Submit Changed Data?")
     const response = await PatchBusinessProfilerOrganizationApi(
       invoice.userProfileData.organizationProfile._id,
       invoice.userProfileData.organizationProfile
     );
-    console.log(response);
+    //console.log(response);
     invoice.updateUserProfileAndBusinessProfile(response.data);
   } catch (error) {
     Swal.fire({
@@ -51,23 +87,17 @@ const submitbusinessProfileDataOrganization = async (id) => {
 const submitbusinessProfileDataindividual = async (Id) => {
   try {
     router.push("/");
-    // alert("Data Submit?");n
     const response = await PatchBusinessProfilerIndiviualApi(
       invoice.userProfileData.individualProfile._id,
       invoice.userProfileData.individualProfile
     );
-    console.log(response);
+    //console.log(response);
     invoice.updateUserProfileAndBusinessProfile(response.data);
   } catch (error) {
     console.error("Error during data submit organization:", error);
-    // Provide feedback to the user or handle the error appropriately
   }
 };
 
-const individualId = invoice.userProfileData.individualProfile;
-const organizationId = invoice.userProfileData.organizationProfile;
-console.log("organizationId>>>", organizationId);
-console.log("individualId>>>", individualId);
 onMounted(async () => {
   try {
     isLoading.value = true;
@@ -78,18 +108,6 @@ onMounted(async () => {
       const UserResponse = await getUserDetailsApi(UserId);
       invoice.updateUser(UserResponse);
 
-      console.log("organizationProfile<><><", UserResponse.organizationProfile);
-      console.log(
-        "organizationProfile<><><firstName:",
-        UserResponse.organizationProfile.firstName
-      );
-      console.log(
-        "organizationProfile<><><Id:",
-        UserResponse.organizationProfile._id
-      );
-
-      console.log("userId >>>", UserId);
-      console.log("UserResponse >>>", UserResponse);
       const { userProfileData } = invoice;
       if (userProfileData.selectedProfileType === "individual") {
         invoice.updateUserProfileIndividual(userProfileData);
@@ -116,17 +134,18 @@ const profileType = ref(invoice.selectedProfileType);
 const switchProfileType = (type) => {
   invoice.selectProfileType(type);
   profileType.value = type;
-  const selectedType = invoice.selectedProfileType;
-  console.log(`Selected profile type: ${selectedType}`);
+  //console.log(`Selected profile type: ${type}`);
 };
 
 const handleSaveDraftButtonClick = () => {
   if (profileType.value === "individual") {
-    submitbusinessProfileDataindividual();
+    if (validateForm('individual')) {
+      submitbusinessProfileDataindividual();
+    }
   } else if (profileType.value === "organization") {
-    submitbusinessProfileDataOrganization();
-  } else {
-    console.log("Error>>>", error);
+    if (validateForm('organization')) {
+      submitbusinessProfileDataOrganization();
+    }
   }
 };
 
@@ -137,7 +156,6 @@ const logoInputRef = ref(null);
 const logoPreview = ref(null);
 const handleFileInputChange = () => {
   displayImage(logoInputRef.value);
-  console.log("1st image");
 };
 const displayImage = (input) => {
   const file = input.files[0];
@@ -156,7 +174,7 @@ const displayImage = (input) => {
     <div class="bg-white">
       <Header
         headerTitle="Business Profile"
-        backButtonText=" Back"
+        backButtonText="&nbsp &lt Back &nbsp  &nbsp"
         backRoute="Main"
         saveDraftButtonText=" Save Changes"
         :saveDraftButtonColor="Colors.orange"
@@ -176,24 +194,24 @@ const displayImage = (input) => {
         <div class="flex ml-4">
           <label for="logoInput" class="">
             <div
-              class="logo-placeholder border-none cursor-pointer hover:border-solid w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
+              class="logo-placeholder border-none cursor-pointer  w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
             >
               <img
                 v-if="profileType === 'individual'"
-                src="../assets/singleperson.jpg"
+                src="../assets/3x.webp"
                 ref="logoPreview"
                 alt="Logo for Individual"
                 class="w-20 mb-4 h-20 cursor-pointer"
               />
               <img
                 v-if="profileType === 'organization'"
-                src="../assets/multipleperson.png"
+                src="../assets/3x.webp"
                 alt="Logo for Organization"
                 ref="logoPreview"
                 class="w-20 mb-4 h-20 cursor-pointer"
               />
             </div>
-            <a-input
+            <!-- <a-input
               id="logoInput"
               type="file"
               accept="image/*"
@@ -201,7 +219,7 @@ const displayImage = (input) => {
               style="display: none"
               @change="handleFileInputChange"
               ref="logoInputRef"
-            />
+            /> -->
           </label>
 
           <div class="flex-right w-48 ml-6">
@@ -245,10 +263,10 @@ const displayImage = (input) => {
             </table>
           </div>
         </div>
-        <div class="flex">
+        <!-- <div class="flex">
           Looking to Change your account Logo and Branding?
           <a @click="logo" class="cursor-pointer"> Account Customization</a>
-        </div>
+        </div> -->
         <hr class="mb-4 mt-4" />
         <br />
         <!-- <transition name="fade" mode="out-in"> -->
@@ -270,6 +288,8 @@ const displayImage = (input) => {
                   placeholder="First Name"
                   class="w-full p-2"
                 />
+                <p v-if="firstNameError" class="text-red-500">{{ firstNameError }}</p>
+
               </div>
               <div>
                 <p class="justify-start flex">Last Name</p>
@@ -281,6 +301,8 @@ const displayImage = (input) => {
                   placeholder="Last Name"
                   class="w-full p-2"
                 />
+                <p v-if="lastNameError" class="text-red-500">{{ lastNameError }}</p>
+
               </div>
               <div>
                 <p class="justify-start flex">Email Address</p>
@@ -292,6 +314,8 @@ const displayImage = (input) => {
                   placeholder="Email"
                   class="w-full p-2"
                 />
+                <p v-if="emailError" class="text-red-500">{{ emailError }}</p>
+
               </div>
               <div>
                 <p class="justify-start flex">Website URL</p>
@@ -325,6 +349,8 @@ const displayImage = (input) => {
                       placeholder="Address"
                       class="w-full border p-2"
                     />
+                <p v-if="address1Error" class="text-red-500">{{ address1Error }}</p>
+
                   </div>
                   <div class="w-1/2">
                     <p class="justify-start flex">Address (Line 2)</p>
@@ -335,8 +361,9 @@ const displayImage = (input) => {
                       type="text"
                       placeholder="Address 2"
                       class="w-full border p-2"
-                    />
-                  </div>
+                      />
+                <p v-if="address2Error" class="text-red-500">{{ address2Error }}</p>
+              </div>
                 </div>
               </div>
               <div>
@@ -348,6 +375,7 @@ const displayImage = (input) => {
                   type="number"
                   class="w-full border p-2"
                 />
+                
               </div>
               <div>
                 <p class="justify-start flex">State</p>
@@ -365,7 +393,8 @@ const displayImage = (input) => {
                   v-model:value="invoice.userProfileData.individualProfile.city"
                   type="text"
                   class="w-full border p-2"
-                />
+                  />
+                  <p v-if="cityError" class="text-red-500">{{ cityError }}</p>
               </div>
               <div>
                 <p class="justify-start flex">Country</p>
@@ -499,7 +528,8 @@ const displayImage = (input) => {
                   type="text"
                   placeholder="First Name"
                   class="w-full p-2"
-                />
+                  />
+                <p v-if="firstNameError" class="text-red-500">{{ firstNameError }}</p>
               </div>
               <div>
                 <p class="justify-start flex">Last Name</p>
@@ -511,6 +541,8 @@ const displayImage = (input) => {
                   placeholder="Last Name"
                   class="w-full p-2"
                 />
+                <p v-if="lastNameError" class="text-red-500">{{ lastNameError }}</p>
+
               </div>
               <div>
                 <p class="justify-start flex">Email Address</p>
@@ -522,6 +554,8 @@ const displayImage = (input) => {
                   placeholder="Email"
                   class="w-full p-2"
                 />
+                <p v-if="emailError" class="text-red-500">{{ emailError }}</p>
+
               </div>
               <div>
                 <p class="justify-start flex">Website URL</p>
@@ -554,6 +588,7 @@ const displayImage = (input) => {
                       placeholder="Address"
                       class="w-full p-2"
                     />
+                    <p v-if="address1Error" class="text-red-500">{{ address1Error }}</p>
                   </div>
                   <div class="w-1/2">
                     <p class="justify-start flex">Address (Line 2)</p>
@@ -565,6 +600,7 @@ const displayImage = (input) => {
                       placeholder="Address 2"
                       class="w-full p-2"
                     />
+                    <p v-if="address2Error" class="text-red-500">{{ address2Error }}</p>
                   </div>
                 </div>
               </div>
@@ -597,6 +633,7 @@ const displayImage = (input) => {
                   type="text"
                   class="w-full p-2"
                 />
+                <p v-if="cityError" class="text-red-500">{{ cityError }}</p>
               </div>
               <div>
                 <p class="justify-start flex">Country</p>
@@ -626,7 +663,7 @@ const displayImage = (input) => {
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <p class="justify-start flex">Number</p>
+                <p class="justify-start flex">Phone Number</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.phone

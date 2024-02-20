@@ -5,7 +5,7 @@ import { useRouter } from "vue-router";
 import { clientApi } from "../service/clientService";
 import Button from "../components/Button.vue";
 import { Colors } from "../utils/color";
-import Header from "../components/header.vue";
+import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 const router = useRouter();
 
@@ -16,7 +16,7 @@ const submitclientDataOrganization = async () => {
       clientType: "organization",
     };
     const response = await clientApi(clientData);
-    console.log(response);
+    //console.log(response);
     router.push("/clients");
   } catch (error) {
     Swal.fire({
@@ -38,7 +38,7 @@ const submitclietDataindividual = async () => {
     const response = await clientApi(clientData);
     router.push("/clients");
 
-    console.log(response);
+    //console.log(response);
   } catch (error) {
     Swal.fire({
       icon: "error",
@@ -71,7 +71,7 @@ const logoInputRef = ref(null);
 const logoPreview = ref(null);
 const handleFileInputChange = () => {
   displayImage(logoInputRef.value);
-  console.log("1st image");
+  //console.log("1st image");
 };
 const displayImage = (input) => {
   const file = input.files[0];
@@ -93,7 +93,7 @@ onMounted(() => {
     <div class="bg-white">
       <Header
         headerTitle="Client Profile"
-        backButtonText="&lt; &nbsp; Back"
+        backButtonText="&nbsp &lt Back &nbsp  &nbsp "
         backRoute="Main"
         saveDraftButtonText="Create "
         :saveDraftButtonColor="Colors.orange"
@@ -108,24 +108,24 @@ onMounted(() => {
           <div class="mb-4 flex ml-4">
             <label for="logoInput" class="">
               <div
-                class="logo-placeholder border-none cursor-pointer hover:border-solid w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
+                class="logo-placeholder border-none cursor-pointer  w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
               >
                 <img
                   v-if="selectedField === 'individual'"
-                  src="../assets/singleperson.jpg"
+                  src="../assets/3x.webp"
                   ref="logoPreview"
                   alt="Logo for Individual"
                   class="w-20 mb-4 h-20 cursor-pointer"
                 />
                 <img
                   v-if="selectedField === 'organization'"
-                  src="../assets/multipleperson.png"
+                  src="../assets/3x.webp"
                   alt="Logo for Organization"
                   ref="logoPreview"
                   class="w-20 mb-4 h-20 cursor-pointer"
                 />
               </div>
-              <a-input
+              <!-- <a-input
                 id="logoInput"
                 type="file"
                 accept="image/*"
@@ -133,7 +133,9 @@ onMounted(() => {
                 style="display: none"
                 @change="handleFileInputChange"
                 ref="logoInputRef"
-              />
+              /> 
+            hover:border-solid
+            -->
             </label>
 
             <div class="flex-right w-48 ml-6">

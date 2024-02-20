@@ -3,12 +3,12 @@ import Swal from 'sweetalert2';
 import VueSidebarMenuAkahon from "vue-sidebar-menu-akahon";
 import { useRoute, useRouter } from "vue-router";
 import { computed } from "vue";
-import { icon } from 'ant-design-vue';
+// import { icon } from 'ant-design-vue';
 
 const menuItems = [
-  { link: "/Index", name: "Invoices", icon: "inbox"  },
-  { link: "/clients", name: "Clients" , icon: "user" },
-  { link: "/businessProfile", name: "Business", icon: "shop"  },
+  { link: "/Index", name: "Invoices",  icon: "bxs-inbox" },
+  { link: "/clients", name: "Clients",  icon: "bxs-user-detail"  },
+  { link: "/businessProfile", name: "Business", icon: "bxs-user-account"   },
  
 ];
 const getIconType = (item) => {
@@ -18,13 +18,7 @@ const getIconType = (item) => {
 };
 const router = useRouter();
 
-// const handleExitButtonClick = () => {
-//   const userConfirmed = window.confirm("Are you sure you want to Logout?");
-//   if (userConfirmed) {
-//     localStorage.removeItem("accessToken");
-//     router.push({ name: "Login" });
-//   }
-// };
+
 const handleExitButtonClick = async () => {
   const result = await Swal.fire({
     title: 'Logout Confirmation',
@@ -75,8 +69,8 @@ const enableSidebar = computed(() => {
           menuLogo="../src/assets/3x.webp"
           profileImg="../src/assets/3x.webp"
           bgColor="#4AA7AD"
-          profileRole="Developed By  X-Invoicely "
-          profileName="Invoicely"
+          profileRole="Developed By AccellionX"
+          profileName="X-Invoice"
           :menuItems="menuItems"
           :isSearch="disableSearch"
           :isExitButton="enableExitButton"

@@ -1,13 +1,12 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { Colors } from "../utils/color";
 import Button from "../components/Button.vue";
-import { useRouter, RouterLink } from "vue-router";
+import { useRouter } from "vue-router";
 import { PostBusinessProfilerIndiviualApi } from "../service/BusinessProfileService";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
 
-import Swal from "sweetalert2";
 const invoice = useInvoiceStore();
 const proceedClicked = ref(false);
 const router = useRouter();
@@ -27,41 +26,70 @@ const validateFields = () => {
   let valid = true;
   resetErrors();
 
-  // Check if any required field is empty only if Sign Up button is clicked
   if (proceedClicked.value) {
     if (!invoice.userProfileData.firstName) {
       errors.firstName = "First Name is required";
       openNotificationWithIcon("error", "First Name is required");
       valid = false;
-    } if (!invoice.userProfileData.lastName) {
+    } else if (!/^[a-z A-Z]+$/.test(invoice.userProfileData.firstName)) {
+      errors.firstName = "First Name must contain only alphabetic characters.";
+      openNotificationWithIcon("error", "First Name must be valid and contain only alphabetic characters.");
+      valid = false;
+    }
+
+    if (!invoice.userProfileData.lastName) {
       errors.lastName = "Last Name is required";
       openNotificationWithIcon("error", "Last Name is required");
       valid = false;
+    } else if (!/^[a-z A-Z]+$/.test(invoice.userProfileData.lastName)) {
+      errors.lastName = "Last Name must contain only alphabetic characters.";
+      openNotificationWithIcon("error", "Last Name must be valid and contain only alphabetic characters.");
+      valid = false;
     }
+
     if (!invoice.userProfileData.email) {
       errors.email = "Email is required";
       openNotificationWithIcon("error", "Email is required");
       valid = false;
-    }else if (!invoice.userProfileData.email.includes("@")) {
-      errors.email = "Email must be valid and Contain '@'";
-    openNotificationWithIcon("error", "Email must be valid and Contain '@'");
-    valid = false;
-  }
+    } else if (!invoice.userProfileData.email.includes("@") || !/.+\@.+\..+/.test(invoice.userProfileData.email)) {
+      errors.email = "Email must be valid and contain '@'.";
+      openNotificationWithIcon("error", "Email must be valid.");
+      valid = false;
+    }
+
     if (!invoice.userProfileData.country) {
       errors.country = "Country is required";
       openNotificationWithIcon("error", "Country is required");
       valid = false;
-    }if (!invoice.userProfileData.city) {
+    }
+
+    if (!invoice.userProfileData.city) {
       errors.city = "City is required";
       openNotificationWithIcon("error", "City is required");
       valid = false;
-    }if (!invoice.userProfileData.address1) {
+    } else if (!/^[a-z A-Z]+$/.test(invoice.userProfileData.city)) {
+      errors.city = "City must contain only alphabetic characters.";
+      openNotificationWithIcon("error", "City must be valid and contain only alphabetic characters.");
+      valid = false;
+    }
+
+    if (!invoice.userProfileData.address1) {
       errors.address1 = "Address is required";
       openNotificationWithIcon("error", "Address is required");
       valid = false;
+    } else if (!/^[a-z A-Z 0-9\s]+$/.test(invoice.userProfileData.address1)) {
+      errors.address1 = "Address must contain only alphanumeric characters and spaces.";
+      openNotificationWithIcon("error", "Address must be valid and contain only alphanumeric characters and spaces.");
+      valid = false;
     }
-    
-    // Show notification alerts for each field that is required
+
+    if (invoice.userProfileData.companyName && !/^[a-zA-Z0-9\s]+$/.test(invoice.userProfileData.companyName)) {
+        errors.companyName = "Company Name must contain only alphanumeric characters and spaces.";
+        openNotificationWithIcon("error", "Company Name must be valid and contain only alphanumeric characters and spaces.");
+        valid = false;
+    }
+   
+
     if (!valid) {
       openNotificationWithIcon("error", "Please check the form for errors");
     }
@@ -69,23 +97,23 @@ const validateFields = () => {
 
   return valid;
 };
+
 const submit = async () => {
    proceedClicked.value = true; 
   resetErrors();
 
-  // Validate fields before proceeding
   if (!validateFields()) {
     return; 
   }
   try {
-    console.log("Stored id:", invoice.signupData.data._id);
+    //console.log("Stored id:", invoice.signupData.data._id);
     const userid = invoice.signupData.data._id;
-       // Check for required fields
+
     
     const body = { userId: userid, profileBody: invoice.userProfileData };
     const response = await PostBusinessProfilerIndiviualApi(body);
     invoice.updateUser(response);
-    console.log("account response >>>>>", response);
+    //console.log("account response >>>>>", response);
     openNotificationWithIcon("success", "Profiles Created Successfully");
     router.push("/");
   } catch (error) {
@@ -95,7 +123,7 @@ const submit = async () => {
       errorMessage = error.response.data.message;
     }
     openNotificationWithIcon("error");
-    console.error("Error During Account:", error);
+    //console.error("Error During Account:", error);
   }
 }; 
 const openNotificationWithIcon = (type, message) => {
@@ -299,15 +327,7 @@ const computedClasses = {
                 class="w-full border"
               />
             </div>
-            <!-- <div>
-              <p class="justify-start flex text-md font-medium">Postal Code</p>
-              <a-input
-                v-model:value="invoice.userProfileData.postalCode"
-                type="Number"
-                placeholder="Enter  postal code"
-                class="w-full border"
-              />
-            </div> -->
+           
     <div>
               <p class="justify-start flex text-md font-medium">Company Name:</p>
               <a-input

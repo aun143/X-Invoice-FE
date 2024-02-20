@@ -1,6 +1,6 @@
 <script setup>
   
-const props = defineProps(["bgColor", "textColor", "fontSize", "buttonText"]);
+  const props = defineProps(["bgColor", "textColor", "fontSize", "buttonText", "lineHeight", "fontWeight"]);
 const emit = defineEmits('click');
 
 const handleClick = () => {
@@ -18,17 +18,23 @@ const computedClasses = {
 
 const computedStyles = {
   fontSize: props.fontSize,
+  lineHeight: props.lineHeight,
+  fontWeight: props.fontWeight,
+  
 };
 </script>
 
 <template>
   <button
-  class="text-lg "
+  class="text-black"
     :class="computedClasses"
     :style="{ backgroundColor: props.bgColor, color: props.textColor, fontSize: computedStyles.fontSize }"
     @click="handleClick"
   >
-    <span >{{ props.buttonText }}</span>
+  <span
+  class="text-[12px]"
+      :style="{ lineHeight: computedStyles.lineHeight, fontWeight: computedStyles.fontWeight }"
+    >{{ props.buttonText }}</span>
   </button>
 </template>
 

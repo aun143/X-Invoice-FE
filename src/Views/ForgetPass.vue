@@ -29,7 +29,7 @@ const forgetPassUser = async () => {
     }
 
     // Handle the response as needed
-    console.log(response);
+    //console.log(response);
 
     // Clear form fields
     ForgetPass.value.email = "";

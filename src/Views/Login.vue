@@ -1,49 +1,4 @@
-<!-- <script setup>
-import { ref, defineEmits } from "vue";
-import { useRouter } from "vue-router";
-import Button from "../components/Button.vue";
-import { Colors } from "../utils/color";
-import { loginUserApi } from "../service/LoginService";
-import { useInvoiceStore } from "../stores/index";
-const invoice = useInvoiceStore();
 
-const router = useRouter();
-const loginData = ref({
-  email: "",
-  password: "",
-});
-const emit = defineEmits(["updateSignUpStatus"]);
-const logInUser = async () => {
-  try {
-    const response = await loginUserApi({
-      email: loginData.value.email,
-      password: loginData.value.password,
-    });
-
-    console.log(response); // Log the entire response
-
-    if (response.data && response.data.access_token && response.data._id) {
-      localStorage.setItem("accessToken", response.data.access_token);
-      localStorage.setItem("UserId", response.data._id);
-      console.log(
-        "Access token and UserId set successfully:",
-        response.data.access_token
-      );
-
-      router.push({ name: "Index" });
-    } else {
-      console.log("Access token not found in the response:", response.data);
-    }
-  } catch (error) {
-    // Handle errors
-    console.error("Error during login:", error);
-  }
-};
-
-const computedStyle = {
-  fontSize: "16px",
-};
-</script> -->
 <script setup>
 import { ref, defineEmits } from "vue";
 import { useRouter } from "vue-router";
@@ -82,22 +37,12 @@ const loginButtonClicked = ref(false);
 
 const logInUser = async () => {
   try {
-      resetErrors();
+    resetErrors();
     loginButtonClicked.value = true;
-    if (!loginData.value.email.trim()) {
-      errors.email = "Email is required.";
-      openNotificationWithIcon("error", "Email is required.");
-    } else if (!loginData.value.email.includes("@")) {
-      errors.email = "Email must contain '@'.";
-      openNotificationWithIcon("error", "Email must be Valid and contain '@' ");
-    }
-    if (!loginData.value.password.trim()) {
-      errors.password = "Password is required.";
-      openNotificationWithIcon("error", "Password is required.");
-    }
-
-    // Check if there are any errors
-    if (errors.email || errors.password) {
+    
+    // Check if both email and password are provided
+    if (!loginData.value.email || !loginData.value.password) {
+      openNotificationWithIcon("error", "Both email and password are required.");
       return;
     }
 
@@ -105,27 +50,25 @@ const logInUser = async () => {
       email: loginData.value.email,
       password: loginData.value.password,
     });
-    
-    console.log(response); // Log the entire response
+
+    //console.log(response); // Log the entire response
 
     if (response.data && response.data.access_token && response.data._id) {
       localStorage.setItem("accessToken", response.data.access_token);
       localStorage.setItem("UserId", response.data._id);
-      console.log(
-        "Access token and UserId set successfully:",
-        response.data.access_token
-      );
+      // console.log(
+      //   "Access token and UserId set successfully:",
+      //   response.data.access_token
+      // );
       openNotificationWithIcon("success", "Login successful");
       router.push({ name: "Index" });
     } else {
       console.log("Access token not found in the response:", response.data);
-      openNotificationWithIcon("error", "Error during login");
+      openNotificationWithIcon("error", "Invalid email or password.");
     }
   } catch (error) {
     // Handle errors
     console.error("Error during login:", error);
-    openNotificationWithIcon("error");
-    // Determine specific error message based on the error
     let errorMessage = "";
     if (error.message.includes("email")) {
       errorMessage =
@@ -135,12 +78,14 @@ const logInUser = async () => {
     } else {
       errorMessage = error.message || "An error occurred during login";
     }
+    openNotificationWithIcon("error", errorMessage);
   }
 };
 
+
 const openNotificationWithIcon = (type, message) => {
   notification[type]({
-message: type === "success" ? "Success" : "Error",
+message: type === "success" ? "Success" : "Incorrect Email or Password",
     description: message,
     duration: 3, 
   });
@@ -163,7 +108,7 @@ const computedStyle = {
         <!-- <img src="../assets/3x.webp" class="w-full"> -->
         <div class="flex justify-center items-center">
           <svg
-            width="200"
+            width="220"
             height="200"
             viewBox="0 0 169 218"
             fill="none"
@@ -229,7 +174,7 @@ const computedStyle = {
         class="w-full shadow-lg col-span-7 items-center flex justify-center flex-col bg-white"
       >
  
-        <div class="text-xl mb-8 w-full">
+        <div class="text-3xl mb-8 w-full">
           <strong class="text-[#10C0CB]">Login</strong>
         </div>
         <form @submit.prevent class="w-full mb-2">
@@ -245,7 +190,7 @@ const computedStyle = {
                 </p>
                 <a-input
                   id="username"
-                  type="email"
+                  type="text"
                   v-model:value="loginData.email"
                   placeholder="email@gmail.com"
                   class="w-full border-b"
@@ -257,7 +202,7 @@ const computedStyle = {
                 >
               </div>
 
-              <div class="w-[50%] my-[5%]">
+              <div class="w-[50%] mt-[5%] mb-[]">
                 <p class="justify-start flex text-md font-medium">
                   <span class="text-[#ff0000]">*</span>Password:
                 </p>
@@ -269,7 +214,7 @@ const computedStyle = {
                     class="w-full border-b"
                   />
                   <span
-                    class="absolute top-1/2 right-1 transform -translate-y-1/2 cursor-pointer bg-white"
+                    class="absolute top-1/2 right-1 transform -translate-y-1/2 cursor-pointer "
                     @click="showPassword = !showPassword"
                   >
                     <i
@@ -294,10 +239,10 @@ const computedStyle = {
                 <router-link
                   to="/ForgetPass"
                   class="text-[12px] text-black font-medium mr-[30%]" 
-                  ><span class="text-blue-500"> Forgot Password?</span></router-link
+                  ><span class="text-blue-500">Forgot Password?</span></router-link
                 >
               </div>
-            <div class="text-center mx-10 my-4">
+            <div class="text-center mx-[5%] mt-6 mb-4" style="line-height: 1.25rem !important">
               <Button
                 :bgColor="Colors.orange"
                 :textColor="Colors.white"

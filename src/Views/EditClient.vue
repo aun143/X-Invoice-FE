@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { getSingleClient, updateClient,deleteClient } from "../service/clientService";
 import Button from "../components/Button.vue";
 import { Colors } from "../utils/color";
-import Header from "../components/header.vue";
+import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 
 const invoice = useInvoiceStore();
@@ -27,7 +27,7 @@ const dropdownTitle = "Actions";
 const dropdownItems = [{ title: "Save Changes" }, { title: "Delete" }];
 const handleDropdownItemClickParent = (clickedItem) => {
   // Handle the dropdown item click event in the parent component
-  console.log("Clicked item in parent component:", clickedItem);
+  //console.log("Clicked item in parent component:", clickedItem);
   if (clickedItem.title === "Save Changes") {
     handleSaveDraftButtonClick();
   } else if (clickedItem.title === "Delete") {
@@ -47,7 +47,7 @@ const handleSaveDraftButtonClick = async () => {
 
     }
     const response = await updateClient(clientId, dataToUpdate);
-    console.log(response);
+    //console.log(response);
     router.push("/clients")
     
 
@@ -58,9 +58,9 @@ const handleSaveDraftButtonClick = async () => {
 };
 const deletClient = async () => {
   try {
-    console.log("deletind clientId:", clientId);
+    //console.log("deletind clientId:", clientId);
     const status = await deleteClient(clientId);
-    console.log("delete client successfully:", status);
+    //console.log("delete client successfully:", status);
   } catch (error) {
     console.error("Error delete client:", error);
   }
@@ -81,9 +81,9 @@ const fetchclientDetails = async () => {
         ...clientDetails,
       };
     }
-    console.log("clientDetails>>>", clientDetails.firstName);
+    //console.log("clientDetails>>>", clientDetails.firstName);
 
-    console.log("Client details fetched successfully:", clientDetails);
+    //console.log("Client details fetched successfully:", clientDetails);
   } catch (error) {
     console.error("Error fetching client details:", error);
   } finally {
@@ -99,7 +99,7 @@ const logoInputRef = ref(null);
 const logoPreview = ref(null);
 const handleFileInputChange = () => {
   displayImage(logoInputRef.value);
-  console.log("1st image");
+  //console.log("1st image");
 };
 const displayImage = (input) => {
   const file = input.files[0];
@@ -122,7 +122,7 @@ const fontSize = "12px";
     :dropdownTitle="dropdownTitle"
     :showDraftButton="true"
     :showBackButton="false"
-    backButtonText="Back"
+    backButtonText=" &nbsp &lt Back &nbsp  &nbsp "
     :dropdownItems="dropdownItems"
     :saveDraftButtonColor="Colors.orange"
     :showDropdown="true"
@@ -135,24 +135,24 @@ const fontSize = "12px";
           <div class="mb-4 flex ml-4">
             <label for="logoInput" class="">
               <div
-                class="logo-placeholder border-none cursor-pointer  hover:border-solid w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
+                class="logo-placeholder border-none cursor-pointer   w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
               >
                 <img
                   v-if="selectedField === 'individual'"
-                  src="../assets/singleperson.jpg"
+                  src="../assets/3x.webp"
                   ref="logoPreview"
                   alt="Logo for Individual"
                   class="w-20 mb-4 h-20 cursor-pointer"
                 />
                 <img
                   v-if="selectedField === 'organization'"
-                  src="../assets/multipleperson.png"
+                  src="../assets/3x.webp"
                   alt="Logo for Organization"
                   ref="logoPreview"
                   class="w-20 mb-4 h-20 cursor-pointer"
                 />
               </div>
-              <a-input
+              <!-- <a-input
                 id="logoInput"
                 type="file"
                 accept="image/*"
@@ -160,7 +160,7 @@ const fontSize = "12px";
                 style="display: none"
                 @change="handleFileInputChange"
                 ref="logoInputRef"
-              />
+              /> -->
             </label>
 
             <div class="flex-right w-48 ml-6">

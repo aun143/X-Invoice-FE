@@ -11,7 +11,6 @@ const props = defineProps([
   "backRoute",
   "saveButtonText",
   "saveDraftButtonText",
-  
   "onSaveButtonClick",
   "saveDraftButtonColor",
   "onSaveDraftButtonClick",
@@ -38,40 +37,45 @@ const dropdownOpen = ref(false);
 
 const computedStyles = {
   fontSize: "10px",
-  
+  lineHeight:"1.25rem",
+  fontWeight: "500"
 };
 
 </script>
 
 <template>
-  <nav class="mt-2 p-4 flex justify-between items-center shadow-md">
-    <div class="flex items-center ">
+  <nav class=" p-4 flex justify-between items-center shadow-md">
+    <div class="flex items-center">
       <div v-if="!showBackButton">
       <!-- <RouterLink :to="{ name: backRoute }"> -->
         <Button 
           :bgColor="Colors.orange"
           :textColor="Colors.white"
           :fontSize="computedStyles.fontSize"
+          :lineHeight= "computedStyles.lineHeight"
+          :fontWeight="computedStyles.fontWeight"
           :buttonText="backButtonText"
           @click="onBackButtonClick"
         />
       <!-- </RouterLink> -->
     </div>
-      <p class="font-bold ml-6 text-black text-[23px]">{{ headerTitle }}</p>
+      <p class="font-bold ml-6 text-black text-[24px]">{{ headerTitle }}</p>
     </div>
     <div class="inline-flex items-center justify-center" >
-     <div v-if="!showDraftButton">
+     <div v-if="!showDraftButton" class="mr-4">
       <Button
       :bgColor="Colors.orange"
         :textColor="Colors.white"
         :fontSize="computedStyles.fontSize"
+        :lineHeight= "computedStyles.lineHeight"
+          :fontWeight="computedStyles.fontWeight"
         :buttonText="saveDraftButtonText"
         @click="onSaveDraftButtonClick"
         :style="{ backgroundColor: saveDraftButtonColor }"
       />
     </div>
       <div
-        class="bg-[#10C0CB] text-sm w-32 mr-4 rounded h-10 ml-8"
+        class="bg-[#10C0CB] text-[12px] w-24 rounded "
         v-if="showDropdown"
       >
         <DropDown

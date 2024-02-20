@@ -11,7 +11,7 @@ const handleSaveDraftButtonClick = async () => {
   try {
     isLoading.value = true;
     const response = await invoiceService.postInvoiceData(invoice.formData);
-    console.log("Invoice submitted successfully:", response);
+    //console.log("Invoice submitted successfully:", response);
     alert("Data Submitted");
 
     // Handle successful submission (e.g., clear form data, display success message)

@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useInvoiceStore } from "../stores/index";
 import Header from "../components/header.vue";
 import { Colors } from "../utils/color";
+import Swal from "sweetalert2";
 
 const route = useRoute();
 const router = useRouter();
@@ -39,7 +40,7 @@ const getSingleInvoice = async (invoiceId) => {
 onMounted(async () => {
   try {
     await getSingleInvoice(invoiceId.value);
-    console.log("Invoice details fetched successfully:", invoiceData.value);
+    //console.log("Invoice details fetched successfully:", invoiceData.value);
   } catch (error) {
     console.error("Error fetching invoice details:", error);
   }
@@ -58,13 +59,19 @@ const handleSendEmailButtonClick = async () => {
       invoiceId: route.params._id,
     });
 
-    console.log(response.data.message);
+    //console.log(response.data.message);
     router.push("/");
+    Swal.fire({
+      icon: "success",
+      title: "Email Sent",
+      text: "Email has been sent successfully.",
+    });
   } catch (error) {
     console.error("Error sending email:", error);
   }
 };
 </script>
+
 <template>
   <div>
     <Header
@@ -84,27 +91,26 @@ const handleSendEmailButtonClick = async () => {
         </div>
         <div class="text-left mt-4 ml-4">
           <p>To</p>
-          <input v-model="toEmail" class="w-full bg-gray-300 text-black" />
+          <a-input v-model:value="toEmail" class="w-full bg-gray-300 text-black" />
         </div>
         <hr class="mt-4" />
         <div class="text-left mt-4 ml-4">
           <p>Subject</p>
-          <input
+          <a-input
             class="w-full bg-gray-300 text-black"
-            v-model="subject"
+            v-model:value="subject"
             readonly
           />
         </div>
         <hr class="mt-4" />
-        <div class="text-left ml-4">
+        <div class="text-left ml-4 mb-4">
           <p>Message</p>
           <textarea
             class="w-full bg-gray-300 text-black"
             cols="30"
             rows="15"
             readonly
-          >
-Invoice Number: {{ invoiceData?.invoiceNumber }}
+          >Invoice Number: {{ invoiceData?.invoiceNumber }}
 Invoice Name: {{ invoiceData?.invoiceName }}
 Sender: {{ invoiceData?.sender.firstName }}
 Purchase Order Number: {{ invoiceData?.purchaseOrderNumber }}
@@ -117,7 +123,7 @@ Invoice Due Date: {{ invoiceData?.invoiceDueDate }}
           </textarea>
         </div>
 
-        <hr class="mt-4 mb-4" />
+
         <!-- <div class="text-left ml-4 mb-4">
           <input type="checkbox" id="check" />
           <span
