@@ -54,13 +54,13 @@ const displayImage = (input) => {
     <label for="logoInput" class="">
       <div
         class="logo-placeholder border-none hover:border-dashed cursor-pointer rounded w-48 h-24 border-2 grid place-items-center text-slate-500 text-6xl"
-      >
-        <img
+      ><div>     Logo     </div>
+        <!-- <img
           src="../assets/vue.svg"
           ref="logoPreview"
           class="logo rounded"
           alt="Logo"
-        />
+        /> -->
       </div>
       <input
         id="logoInput"
