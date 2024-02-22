@@ -1,13 +1,13 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getSingleClient, updateClient,deleteClient } from "../service/ClientService";
-import Button from "../components/Button.vue";
+import { getSingleClient,deleteClient } from "../service/ClientService";
+// import Button from "../components/Button.vue";
 import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
@@ -65,9 +65,12 @@ const fetchclientDetails = async () => {
         ...clientDetails,
     };
 }
+openNotificationWithIcon("success", " Fetched Client's Details Successfully");
 
     //console.log("Client details fetched successfully:", clientDetails);
   } catch (error) {
+    openNotificationWithIcon("error", "Error fetching Client details");
+
     console.error("Error fetching client details:", error);
   } finally {
     isLoading.value = false;
@@ -78,6 +81,13 @@ const fetchclientDetails = async () => {
 onMounted(() => {
   fetchclientDetails();
 });
+const openNotificationWithIcon = (type, message) => {
+  notification[type]({
+    message: type === "success" ? "Success" : "Error",
+    description: message,
+    duration: 3, 
+  });
+};
 /////
 const logoInputRef = ref(null);
 const logoPreview = ref(null);
