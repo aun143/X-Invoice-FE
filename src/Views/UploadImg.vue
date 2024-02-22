@@ -10,7 +10,7 @@ const handleSaveDraftButtonClick = async () => {
   window.confirm("Post Data");
   try {
     isLoading.value = true;
-    const response = await invoiceService.postInvoiceData(invoice.formData);
+    const response = await InvoiceService.postInvoiceData(invoice.formData);
     //console.log("Invoice submitted successfully:", response);
     alert("Data Submitted");
 
@@ -25,7 +25,7 @@ const handleSaveDraftButtonClick = async () => {
   }
 };
 
-const invoiceService = useInvoiceService();
+const InvoiceService = useInvoiceService();
 const invoice = useInvoiceStore();
 
 const logoInputRef = ref(null);

@@ -2,7 +2,7 @@
 import Swal from "sweetalert2";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { clientApi } from "../service/clientService";
+import { clientApi } from "../service/ClientService";
 import Button from "../components/Button.vue";
 import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";

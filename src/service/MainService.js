@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export const useInvoiceService = defineStore("invoiceService", {
+export const useInvoiceService = defineStore("InvoiceService", {
   state: () => ({}),
 
   actions: {

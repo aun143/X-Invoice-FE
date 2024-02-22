@@ -3,7 +3,7 @@ import { ref, onMounted, reactive, computed, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
-import { getSingleClient } from "../service/clientService";
+import { getSingleClient } from "../service/ClientService";
 import { getAllInvoice } from "../service/IndexService";
 import { useInvoiceStore } from "../stores/index.js";
 const invoice=useInvoiceStore();

@@ -6,7 +6,7 @@ import { useInvoiceStore } from "../stores/index";
 import { RouterLink } from "vue-router";
 import Button from "../components/Button.vue";
 import Client from "./Client.vue";
-import { getAllClient } from "../service/clientService";
+import { getAllClient } from "../service/ClientService";
 import { Colors } from "../utils/color";
 import { useInvoiceService } from '../service/MainService';
 import Swal  from "sweetalert2";
@@ -15,7 +15,7 @@ import {  Input } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
 const invoiceId = route.params._id;
-const invoiceService = useInvoiceService();
+const InvoiceService = useInvoiceService();
 const invoice = useInvoiceStore();
 const isLoading=ref(false);
 const handleSaveDraftButtonClick = async (Id) => {
@@ -24,7 +24,7 @@ const handleSaveDraftButtonClick = async (Id) => {
      if (!validateForm()) return;
 
       isLoading.value=true;
-      const response = await invoiceService.updateInvoiceData(invoiceId, invoice.formData);
+      const response = await InvoiceService.updateInvoiceData(invoiceId, invoice.formData);
 //console.log("response",response);
 router.push("/")
       if (response) {
