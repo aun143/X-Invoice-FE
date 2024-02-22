@@ -77,7 +77,7 @@ const changeUnpaidStatus = async () => {
   }
 };
 
-const deleteInvoice = async () => {
+const deleteInvoicee = async () => {
   try {
     //console.log("Changing status for invoiceId:", invoiceId);
     const status = await deleteInvoice(invoiceId);
@@ -139,7 +139,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
     changeStatus(invoiceId);
     router.push("/");
   } else if (clickedItem.title === "Delete") {
-    deleteInvoice(invoiceId);
+    deleteInvoicee(invoiceId);
     router.push("/")
   } else if (clickedItem.title === "Send Invoice") {
     router.push(`/GetInvoice/${invoiceId}/send`);
