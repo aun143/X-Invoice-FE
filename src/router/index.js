@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Main from "../Views/Main.vue";
+import Invoice from "../Views/Invoice.vue";
 import Index from "../Views/Index.vue";
 import Client from "../Views/client.vue";
-import Clients from "../Views/Clients.vue";
+import AllClients from "../Views/AllClients.vue";
 import BusinessProfile from "../Views/BusinessProfile.vue";
 import Login from "../Views/Login.vue";
 import NotFound from "../Views/NotFound.vue";
 import ForgetPass from "../Views/ForgetPass.vue";
 import SignUp from "../Views/SignUp.vue";
 import Accounts from "../Views/Accounts.vue";
-import ViewInvoice from "../Views/ViewInvoice.vue";
+import ViewClient from "../Views/ViewClient.vue";
 import GetInvoice from "../Views/GetInvoice.vue";
 import EditClient from "../Views/EditClient.vue";
 import EditInvoice from "../Views/EditInvoice.vue";
@@ -18,7 +18,7 @@ import UploadImg from "../Views/UploadImg.vue";
 
 const routes = [
   { path: "/", redirect: "/Index" },
-  { name: "Main", path: "/new", component: Main, meta: { public: false } },
+  { name: "Invoice", path: "/new", component: Invoice, meta: { public: false } },
   { name: "Index", path: "/Index", component: Index, meta: { public: false } },
   {
     name: "Client",
@@ -27,9 +27,9 @@ const routes = [
     meta: { public: false },
   },
   {
-    name: "Clients",
-    path: "/Clients",
-    component: Clients,
+    name: "AllClients",
+    path: "/AllClients",
+    component: AllClients,
     meta: { public: false },
   },
   {
@@ -39,9 +39,9 @@ const routes = [
     meta: { public: false },
   },
   {
-    name: "ViewInvoice",
-    path: "/ViewInvoice",
-    component: ViewInvoice,
+    name: "ViewClient",
+    path: "/ViewClient/:clientId/",
+    component: ViewClient,
     meta: { public: false },
   },
   {
@@ -52,7 +52,7 @@ const routes = [
   },
   {
     name: "GetInvoice",
-    path: "/GetInvoice/:_id/",
+    path: "/GetInvoice/:_id",
     component: GetInvoice,
     meta: { public: false },
   },
@@ -64,7 +64,7 @@ const routes = [
   // },
   {
     name: "EditClient",
-    path: "/Clients/:clientId/edit",
+    path: "/ViewClient/:clientId/edit",
     component: EditClient,
     meta: { public: false },
   },

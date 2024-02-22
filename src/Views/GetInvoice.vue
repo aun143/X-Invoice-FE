@@ -133,7 +133,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
     window.open(url.toString(), "_blank");
 
   } else if (clickedItem.title === "Edit") {
-    router.push(`/getinvoice/${invoiceId}/edit`);
+    router.push(`/GetInvoice/${invoiceId}/edit`);
   } else if (clickedItem.title === "Mark as Paid") {
     // alert("Mark as Paid");
     changeStatus(invoiceId);
@@ -142,7 +142,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
     deleteInvoice(invoiceId);
     router.push("/")
   } else if (clickedItem.title === "Send Invoice") {
-    router.push(`/getinvoice/${invoiceId}/send`);
+    router.push(`/GetInvoice/${invoiceId}/send`);
   } else if (clickedItem.title === "Mark as Unpaid") {
     // alert("Mark as Unpaid");
     changeUnpaidStatus(invoiceId);
@@ -174,7 +174,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
       />
     </div>
 
-    <section class="max-w-[60%]  mt-4 ml-4 ">
+    <section class="max-w-[96%]  mt-4 ml-4 ">
       <form @submit.prevent class="p-4 bg-white">
         <div class="flex">
           <div class="flex w-full mt-8">
@@ -277,7 +277,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
               cols="60"
               rows="6"
               class="flex mb-8"
-              v-model.number="item.quantity"
+              v-model="item.quantity"
             />
           </div>
           <div class="w-full">
@@ -289,7 +289,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
               cols="60"
               rows="6"
               class="flex mb-8"
-              v-model.number="item.rate"
+              v-model="item.rate"
             />
             <!-- <select disabled class="w-16 mt-2">
               <option v-for="unit in item.unit" :key="unit" :value="unit">
@@ -306,7 +306,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
               cols="60"
               rows="6"
               class="flex mb-8"
-              v-model.number="item.amount"
+              v-model="item.amount"
             />
             <!-- <div class="flex">{{8100}}</div> -->
           </div>

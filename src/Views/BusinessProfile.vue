@@ -66,12 +66,12 @@ const validateForm = (profileType) => {
 
 const submitbusinessProfileDataOrganization = async (id) => {
   try {
-    router.push("/");
     const response = await PatchBusinessProfilerOrganizationApi(
       invoice.userProfileData.organizationProfile._id,
       invoice.userProfileData.organizationProfile
-    );
-    //console.log(response);
+      );
+      router.push("/");
+      //console.log(response);
     invoice.updateUserProfileAndBusinessProfile(response.data);
     Swal.fire({
       icon: "success",
@@ -90,12 +90,13 @@ const submitbusinessProfileDataOrganization = async (id) => {
 };
 
 const submitbusinessProfileDataindividual = async (Id) => {
+  
   try {
-    router.push("/");
     const response = await PatchBusinessProfilerIndiviualApi(
       invoice.userProfileData.individualProfile._id,
       invoice.userProfileData.individualProfile
-    );
+      );
+      router.push("/");
     //console.log(response);
     invoice.updateUserProfileAndBusinessProfile(response.data);
     Swal.fire({
@@ -105,6 +106,12 @@ const submitbusinessProfileDataindividual = async (Id) => {
     });
   } catch (error) {
     console.error("Error during data submit organization:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: ("Error During Data Submit:", error),
+      footer: "Please try again ",
+    });
   }
 };
 
@@ -119,10 +126,11 @@ onMounted(async () => {
       invoice.updateUser(UserResponse);
 
       const { userProfileData } = invoice;
+      
       if (userProfileData.selectedProfileType === "individual") {
-        invoice.updateUserProfileIndividual(userProfileData);
+        invoice.updateUserProfileIndividual(userProfileData.individualProfile);
       } else if (userProfileData.selectedProfileType === "organization") {
-        invoice.updateUserProfileOrganization(userProfileData);
+        invoice.updateUserProfileOrganization(userProfileData.organizationProfile);
       }
     } else {
       router.push("/login");
@@ -185,7 +193,7 @@ const displayImage = (input) => {
       <Header
         headerTitle="Business Profile"
         backButtonText="&nbsp &lt Back &nbsp  &nbsp"
-        backRoute="Main"
+        backRoute="Invoice"
         saveDraftButtonText=" Save Changes"
         :saveDraftButtonColor="Colors.orange"
         :onSaveDraftButtonClick="handleSaveDraftButtonClick"

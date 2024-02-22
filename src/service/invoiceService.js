@@ -1,6 +1,6 @@
 // invoiceService.js
 
-const BASE_URL = "http://localhost:3010/invoices/getInvoice";
+const BASE_URL = "http://localhost:3010/invoices/GetInvoice";
 
 const invoiceService = {
   getSingleInvoice: async (invoiceId) => {

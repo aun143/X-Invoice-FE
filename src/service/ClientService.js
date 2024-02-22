@@ -33,7 +33,7 @@ export const getAllClient = async () => {
     // console.log("token: is This Of This User" , accessToken);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch all Clients");
+      throw new Error("Failed to fetch all AllClients");
     }
 
     return response.json();

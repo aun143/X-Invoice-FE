@@ -11,7 +11,7 @@ const route = useRoute();
 const router = useRouter();
 const invoice = useInvoiceStore();
 const invoiceId = ref(route.params._id);
-const subject = ref("X-Invoicely Email");
+const subject = ref("X-Invoice Email");
 const toEmail = ref(""); // Define reactive variable to store email address
 const invoiceData = ref(null); // Define reactive variable to store invoice data
 
@@ -19,7 +19,7 @@ const getSingleInvoice = async (invoiceId) => {
   try {
     const token = localStorage.getItem("accessToken");
     const response = await axios.get(
-      `http://localhost:3010/invoices/getInvoice/${invoiceId}`,
+      `http://localhost:3010/invoices/GetInvoice/${invoiceId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

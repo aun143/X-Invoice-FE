@@ -1,4 +1,4 @@
-
+<!-- 
 <script setup>
 import {  defineProps, defineEmits } from "vue";
 
@@ -101,4 +101,6 @@ const close = () => {
         cursor: pointer;
       }
    
-</style>
+</style> -->
+<script></script>
+<template></template>

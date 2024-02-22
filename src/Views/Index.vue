@@ -198,7 +198,7 @@ const getStatusClass = (status) => {
 };
 
 const goToInvoice = (invoiceId) => {
-  router.push(`/getInvoice/${invoiceId}`);
+  router.push(`/GetInvoice/${invoiceId}`);
 };
 // const goToInvoice = (invoiceId,businessId) => {
 //   const userId =localstorage.getItems("UserId");
