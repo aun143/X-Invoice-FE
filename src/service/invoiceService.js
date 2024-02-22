@@ -1,12 +1,9 @@
-// invoiceService.js
+// const BASE_URL = "http://localhost:3010/invoices/GetInvoice";
 
-const BASE_URL = "http://localhost:3010/invoices/GetInvoice";
-
-const invoiceService = {
-  getSingleInvoice: async (invoiceId) => {
+export const getSingleInvoice= async (invoiceId) => {
     const token = localStorage.getItem("accessToken");
     try {
-      const response = await fetch(`${BASE_URL}/${invoiceId}`, {
+      const response = await fetch(`http://localhost:3010/invoices/GetInvoice/${invoiceId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -24,9 +21,9 @@ const invoiceService = {
     } catch (error) {
       throw new Error(`Error in getSingleInvoice service: ${error.message}`);
     }
-  },
+  };
 
-  updateInvoiceStatus: async (invoiceId, updateData) => {
+  export const updateInvoiceStatus = async (invoiceId, updateData) => {
     try {
       // const token = localStorage.getItem("accessToken");
 
@@ -59,8 +56,9 @@ const invoiceService = {
       console.error("Error in updateInvoiceStatus service:", error);
       throw new Error(`Error in updateInvoiceStatus service: ${error.message}`);
     }
-  },
-  updateUnpaidInvoiceStatus: async (invoiceId, updateData) => {
+  };
+
+export const updateUnpaidInvoiceStatus= async (invoiceId, updateData) => {
     try {
       // const token = localStorage.getItem("accessToken");
 
@@ -91,8 +89,8 @@ const invoiceService = {
         `Error in updateUnpaidInvoiceStatus service: ${error.message}`
       );
     }
-  },
-  deleteInvoice: async (invoiceId, updateData) => {
+  };
+  export const deleteInvoice= async (invoiceId, updateData) => {
     try {
       const token = localStorage.getItem("accessToken");
 
@@ -119,7 +117,7 @@ const invoiceService = {
       console.error("Error in deleteInvoice service:", error);
       throw new Error(`Error in deleteInvoice service: ${error.message}`);
     }
-  },
-};
+  };
 
-export default invoiceService;
+
+// export default invoiceService;

@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 import { useInvoiceStore } from "../stores/index";
-import Header from "../components/header.vue";
+import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
 import Swal from "sweetalert2";
 

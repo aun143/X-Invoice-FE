@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-import InvoiceService from "../service/InvoiceService";
+import {updateInvoiceStatus,updateUnpaidInvoiceStatus,deleteInvoice,getSingleInvoice} from "../service/InvoiceService";
 import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
 import { useInvoiceStore } from "../stores/index";
@@ -34,7 +34,7 @@ const changeStatus = async () => {
     const updateData = {
       paymentStatus: "Paid",
     };
-    const status = await InvoiceService.updateInvoiceStatus(
+    const status = await updateInvoiceStatus(
       invoiceId,
       updateData
     );
@@ -59,7 +59,7 @@ const changeUnpaidStatus = async () => {
     const updateData = {
       paymentStatus: "Unpaid",
     };
-    const unpaidStatus = await InvoiceService.updateUnpaidInvoiceStatus(
+    const unpaidStatus = await updateUnpaidInvoiceStatus(
       invoiceId,
       updateData
     );
@@ -80,7 +80,7 @@ const changeUnpaidStatus = async () => {
 const deleteInvoice = async () => {
   try {
     //console.log("Changing status for invoiceId:", invoiceId);
-    const status = await InvoiceService.deleteInvoice(invoiceId);
+    const status = await deleteInvoice(invoiceId);
     Swal.fire({
       icon: "success",
       title: " Invoice Deleted  ",
@@ -95,7 +95,7 @@ const deleteInvoice = async () => {
 onMounted(async () => {
   try {
     isLoading.value = true;
-    const response = await InvoiceService.getSingleInvoice(invoiceId);
+    const response = await getSingleInvoice(invoiceId);
     const invoiceDetails = response;
     businessId.value = invoiceDetails.sender._id;
     clientId.value = invoiceDetails.receiver;
