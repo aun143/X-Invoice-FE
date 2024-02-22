@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-import {updateInvoiceStatus,updateUnpaidInvoiceStatus,deleteInvoice,getSingleInvoice} from "../service/InvoiceService";
+import {updateInvoiceStatus,updateUnpaidInvoiceStatus,deleteInvoice,getSingleInvoice} from "../service/invoiceService";
 import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
 import { useInvoiceStore } from "../stores/index";
