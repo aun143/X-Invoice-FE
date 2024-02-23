@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import { notification } from "ant-design-vue";
 import Button from "../components/Button.vue";
 import { Colors } from "../utils/color";
-import { signUpUserApi } from "../service/signUpService";
+import { signUpUserApi } from "../service/SignUpService";
 import Swal from "sweetalert2";
 import { useInvoiceStore } from "../stores/index";
 

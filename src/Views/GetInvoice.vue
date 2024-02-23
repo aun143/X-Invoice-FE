@@ -1,11 +1,11 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-import invoiceService from "../service/invoiceService";
+import invoiceService from "../service/InvoiceService";
 import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
 import { useInvoiceStore } from "../stores/index";
-import { getSingleClient } from "../service/clientService";
+import { getSingleClient } from "../service/ClientService";
 import Swal from "sweetalert2";
 
 const logoPreview = ref(""); 

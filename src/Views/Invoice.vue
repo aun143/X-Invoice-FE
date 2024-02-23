@@ -12,9 +12,9 @@ import { Colors } from "../utils/color";
 
 import Swal from "sweetalert2";
 import { notification } from "ant-design-vue";
-import { useInvoiceService } from "../service/mainService";
-import { getAllClient } from "../service/clientService";
-import { getUserDetailsApi } from "../service/loginService";
+import { useInvoiceService } from "../service/MainService";
+import { getAllClient } from "../service/ClientService";
+import { getUserDetailsApi } from "../service/LoginService";
 // import {  Input } from "ant-design-vue";
 const route=useRoute();
 const router=useRouter();

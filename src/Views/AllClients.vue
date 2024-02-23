@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { getAllClient } from '../service/clientService';
+import { getAllClient } from '../service/ClientService';
 import { useRoute, useRouter } from 'vue-router';
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
