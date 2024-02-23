@@ -1,7 +1,8 @@
+import {BASE_URL} from "../utils/config";
 export const clientApi = async (data) => {
   const token = localStorage.getItem("accessToken");
 
-  const response = await fetch("http://localhost:3010/client/createClient", {
+  const response = await fetch(`${BASE_URL}/client/createClient`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -22,7 +23,7 @@ export const getAllClient = async () => {
     // Retrieve the token from local storage using the key
     const token = localStorage.getItem("accessToken");
 
-    const response = await fetch("http://localhost:3010/client/getAllClient", {
+    const response = await fetch(`${BASE_URL}/client/getAllClient`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +34,7 @@ export const getAllClient = async () => {
     // console.log("token: is This Of This User" , accessToken);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch all Clients");
+      throw new Error("Failed to fetch all AllClients");
     }
 
     return response.json();
@@ -47,7 +48,7 @@ export const updateClient = async (clientId, updatedData) => {
   try {
     const token = localStorage.getItem("accessToken");
 
-    const response = await fetch(`http://localhost:3010/client/updateClient/${clientId}`, {
+    const response = await fetch(`${BASE_URL}/client/updateClient/${clientId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +70,7 @@ export const updateClient = async (clientId, updatedData) => {
 export const getSingleClient = async (clientId) => {
   try {
     const token = localStorage.getItem("accessToken");
-    const response = await fetch(`http://localhost:3010/client/getClient/${clientId}`, {
+    const response = await fetch(`${BASE_URL}/client/getClient/${clientId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -92,7 +93,7 @@ export const getSingleClient = async (clientId) => {
   try {
     const token = localStorage.getItem("accessToken");
 
-    const response = await fetch(`http://localhost:3010/client/deleteClient/${clientId}`, {
+    const response = await fetch(`${BASE_URL}/client/deleteClient/${clientId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

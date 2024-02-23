@@ -227,7 +227,7 @@ const handleDropdownItemClick = (clickedItem) => {
     // changeUnpaidStatus(invoiceId);
   } else if (clickedItem.title === "Save & Send") {
     invoiceSubmit();
-    router.push(`/getinvoice/${invoiceId}/send`);
+    router.push(`/GetInvoice/${invoiceId}/send`);
   } else if (clickedItem.title === "Save & Mark Send") {
     invoiceSubmit();
   }

@@ -1,7 +1,8 @@
+import {BASE_URL} from "../utils/config";
 export const ForgetUserApi = async (data) => {
   const token = localStorage.getItem("accessToken");
 
-  const response = await fetch('http://localhost:3010/login/userforgotpassword', {
+  const response = await fetch(`${BASE_URL}/user/userforgotpassword`, {
 
     method: 'POST',
     headers: {

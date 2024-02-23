@@ -1,7 +1,8 @@
+ import {BASE_URL} from "../utils/config";
 export const PostBusinessProfilerIndiviualApi = async (data) => {
   const token = localStorage.getItem("accessToken");
 
-    const response = await fetch('http://localhost:3010/business/postbusinessProfile', {
+    const response = await fetch(`${BASE_URL}/business/postbusinessProfile`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -18,7 +19,7 @@ export const PostBusinessProfilerIndiviualApi = async (data) => {
     return response.json();
   };
   export const getBusinessProfileIndividualApi = async (data) => {
-    const response = await fetch(`http://localhost:3010/business/singleprofile/${individualId}`, {
+    const response = await fetch(`${BASE_URL}/business/getBusinessProfile/${individualId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +33,7 @@ export const PostBusinessProfilerIndiviualApi = async (data) => {
     return response.json();
   };  
   export const GetBusinessProfileOrganizationApi = async (data) => {
-    const response = await fetch(`http://localhost:3010/business/singleprofile/${organizationId}`, {
+    const response = await fetch(`${BASE_URL}/business/getBusinessProfile/${organizationId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +48,7 @@ export const PostBusinessProfilerIndiviualApi = async (data) => {
   };
   
   export const PostBusinessProfilerOrganizationApi = async (data) => {
-    const response = await fetch('http://localhost:3010/business/postbusinessProfile', {
+    const response = await fetch('${BASE_URL}/business/postbusinessProfile', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -65,7 +66,7 @@ export const PostBusinessProfilerIndiviualApi = async (data) => {
     const token = localStorage.getItem("accessToken");
 
 
-    const response = await fetch(`http://localhost:3010/business/updatebusinessProfile/${individualId}`, {
+    const response = await fetch(`${BASE_URL}/business/updatebusinessProfile/${individualId}`, {
       method: 'PUT',  // Change method to PUT
       headers: {
         'Content-Type': 'application/json',
@@ -85,7 +86,7 @@ export const PostBusinessProfilerIndiviualApi = async (data) => {
   export const PatchBusinessProfilerOrganizationApi = async (organizationId,data) => {
     const token = localStorage.getItem("accessToken");
 
-    const response = await fetch(`http://localhost:3010/business/updatebusinessProfile/${organizationId}`, {
+    const response = await fetch(`${BASE_URL}/business/updatebusinessProfile/${organizationId}`, {
       method: 'PUT',  // Change method to PUT
       headers: {
         'Content-Type': 'application/json',

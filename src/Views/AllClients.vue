@@ -3,6 +3,9 @@ import { ref, computed, onMounted } from 'vue';
 import { getAllClient } from '../service/clientService';
 import { useRoute, useRouter } from 'vue-router';
 import Header from "../components/Header.vue";
+import { useInvoiceStore } from "../stores/index";
+const invoice = useInvoiceStore();
+import Swal from "sweetalert2";
 
 const isLoading = ref(false);
 const router = useRouter();
@@ -21,6 +24,7 @@ const searchQuery = ref('');
 
 const handleDropdownItemClickParent = (clickedItem) => {
   if (clickedItem.title === "Create Client") {
+    invoice.resetState();
     router.push("/Client");
   } else if (clickedItem.title === "Create Invoice") {
     router.push("/new");
@@ -63,7 +67,7 @@ const customRow = (record) => {
 };
 
 const handleCellClick = (clientId) => {
-  router.push(`/clients/${clientId}/edit`);
+  router.push(`/ViewClient/${clientId}`);
 };
 
 const columns = [
@@ -90,6 +94,11 @@ const columns = [
   {
     title: 'Phone No',
     dataIndex: 'phone',
+    key: 'phone'
+  },
+  {
+    title: 'Client Type',
+    dataIndex: 'clientType',
     key: 'phone'
   }
 ];

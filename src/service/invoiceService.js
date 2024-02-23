@@ -1,12 +1,13 @@
 // invoiceService.js
+import {BASE_URL} from "../utils/config";
 
-const BASE_URL = "http://localhost:3010/invoices/getInvoice";
+// const BASE_URL = `${BASE_URL}/invoices/GetInvoice`;
 
 const invoiceService = {
   getSingleInvoice: async (invoiceId) => {
     const token = localStorage.getItem("accessToken");
     try {
-      const response = await fetch(`${BASE_URL}/${invoiceId}`, {
+      const response = await fetch(`${BASE_URL}/invoice/getInvoice/${invoiceId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -36,7 +37,7 @@ const invoiceService = {
       // console.log("Access token Bhai is This For Now ><><>", accessToken);
 
       const response = await fetch(
-        `http://localhost:3010/invoices/updatePaidInvoiceStatus/${invoiceId}`,
+        `${BASE_URL}/invoice/updatePaidInvoiceStatus/${invoiceId}`,
         {
           method: "PUT",
           headers: {
@@ -65,7 +66,7 @@ const invoiceService = {
       // const token = localStorage.getItem("accessToken");
 
       const response = await fetch(
-        `http://localhost:3010/invoices/updateUnpaidInvoiceStatus/${invoiceId}`,
+        `${BASE_URL}/invoice/updateUnpaidInvoiceStatus/${invoiceId}`,
         {
           method: "PUT",
           headers: {
@@ -97,7 +98,7 @@ const invoiceService = {
       const token = localStorage.getItem("accessToken");
 
       const response = await fetch(
-        `http://localhost:3010/invoices/deleteInvoice/${invoiceId}`,
+        `${BASE_URL}/invoice/deleteInvoice/${invoiceId}`,
         {
           method: "DELETE",
           headers: {

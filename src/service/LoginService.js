@@ -1,5 +1,7 @@
+import {BASE_URL} from "../utils/config";
+
 export const loginUserApi = async (data) => {
-  const response = await fetch("http://localhost:3010/login/loginUser", {
+  const response = await fetch(`${BASE_URL}/user/loginUser`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -19,7 +21,7 @@ export const getUserDetailsApi = async () => {
     const accessToken = localStorage.getItem("accessToken");
 
     // console.log("accessToken:IS THIS bHAI>>> " + accessToken);
-    const response = await fetch(`http://localhost:3010/login/me`, {
+    const response = await fetch(`${BASE_URL}/user/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

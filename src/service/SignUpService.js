@@ -1,5 +1,6 @@
+import {BASE_URL} from "../utils/config";
 export const signUpUserApi = async (data) => {
-  const response = await fetch('http://localhost:3010/login/createUser', {
+  const response = await fetch(`${BASE_URL}/user/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

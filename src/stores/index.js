@@ -80,10 +80,9 @@ export const useInvoiceStore = defineStore("invoice", {
       email: "",
       password: "",
     },
-
+userClientProfile :{
     clientDataOrganization: {
       firstName: "",
-      clientType: "",
       lastName: "",
       email: "",
       websiteURL: "",
@@ -105,7 +104,7 @@ export const useInvoiceStore = defineStore("invoice", {
     },
     clientDataindividual: {
       firstName: "",
-      clientType: "",
+      // clientType: "",
       lastName: "",
       email: "",
       websiteURL: "",
@@ -124,6 +123,7 @@ export const useInvoiceStore = defineStore("invoice", {
       customFieldName: "",
       customFieldValue: "",
     },
+  },
     currencyOptions: [
       { label: "United States Dollar (USD)", value: "USD" },
       { label: "Pakistani Ruppee", value: "PKR" },
@@ -251,22 +251,33 @@ export const useInvoiceStore = defineStore("invoice", {
     updateFormData(newData) {
       this.formData = { ...this.formData, ...newData };
     },
-   
-    updateClientProfileIndividual(userData) {
-      this.clientDataIndividual = {
-        ...this.clientDataIndividual,
-        ...userData,
-      };
-      this.clientDataIndividual.clientType = this.clientType;
+    updateOrganizationProfile(clientData) {
+      this.userClientProfile.clientType = "organization";
+      clientData.clientType = "organization";
+      this.userClientProfile.clientDataOrganization = clientData;
     },
-    updateClientProfileorganization(userData) {
-      this.clientDataOrganization = {
-        ...this.clientDataOrganization,
-        ...userData,
-      };
-      this.clientDataOrganization.clientType = this.clientType;
-      this.signupData = { ...this.signupData, ...userData };
+    
+    updateIndividualProfile(clientData) {
+      this.userClientProfile.clientType = "individual";
+      clientData.clientType = "individual";
+      this.userClientProfile.clientDataindividual = clientData;
     },
+    
+    // updateClientProfileIndividual(userData) {
+    //   this.clientDataIndividual = {
+    //     ...this.clientDataIndividual,
+    //     ...userData,
+    //   };
+    //   this.clientDataIndividual.clientType = this.clientType;
+    // },
+    // updateClientProfileorganization(userData) {
+    //   this.clientDataOrganization = {
+    //     ...this.clientDataOrganization,
+    //     ...userData,
+    //   };
+    //   this.clientDataOrganization.clientType = this.clientType;
+    //   this.signupData = { ...this.signupData, ...userData };
+    // },
     updateUser(userData) {
       this.userProfileData = { ...this.userProfileData, ...userData };
     },
@@ -337,7 +348,8 @@ export const useInvoiceStore = defineStore("invoice", {
       }
     },
     resetState() {
-      this.$state.clientDataOrganization = {
+      this.$state.userClientProfile = {
+     clientDataOrganization :{
         firstName: "",
         clientType: "",
         lastName: "",
@@ -358,8 +370,8 @@ export const useInvoiceStore = defineStore("invoice", {
         organizationName: "",
         customFieldName: "",
         customFieldValue: "",
-      };
-      this.$state.clientDataindividual = {
+      },
+      clientDataindividual : {
         firstName: "",
         clientType: "",
         lastName: "",
@@ -379,8 +391,10 @@ export const useInvoiceStore = defineStore("invoice", {
         notes: "",
         customFieldName: "",
         customFieldValue: "",
-      };
-    },
+      },
+    }
+  },
+  
     // onSelectProfileTypeChange(newProfileType) {
     //  console.log(`Selected profile type changed to: ${newProfileType}`);
     // },
@@ -392,7 +406,7 @@ export const useInvoiceStore = defineStore("invoice", {
         amount: 0,
       });
     },
-
+  
     getSubtotal() {
       let subtotal = 0;
       this.formData.items.forEach((item) => {

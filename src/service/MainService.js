@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import {BASE_URL} from "../utils/config";
 
 export const useInvoiceService = defineStore("invoiceService", {
   state: () => ({}),
@@ -8,7 +9,7 @@ export const useInvoiceService = defineStore("invoiceService", {
       const token = localStorage.getItem("accessToken");
       try {
         const response = await fetch(
-          "http://localhost:3010/invoices/createInvoice",
+          `${BASE_URL}/invoice/createInvoice`,
           {
             method: "POST",
             headers: {
@@ -45,7 +46,7 @@ export const useInvoiceService = defineStore("invoiceService", {
         // console.log("accessTokeniS tHIS><><", accessToken);
         // console.log("Id is This", Id);
         const response = await fetch(
-          `http://localhost:3010/invoices/updateInvoice/${Id}`,
+          `${BASE_URL}/invoice/updateInvoice/${Id}`,
           {
             method: "PUT",
             headers: {
@@ -83,7 +84,7 @@ export const UpdateBusinessProfileApi = async (id, updatedData) => {
   const token = localStorage.getItem("accessToken");
 
   const response = await fetch(
-    `http://localhost:3010/individual/updatebusinessProfile/${id}`,
+    `${BASE_URL}/business/updatebusinessProfile/${id}`,
     {
       method: "PUT",
       headers: {
@@ -105,7 +106,7 @@ export const UpdateBusinessProfileApi = async (id, updatedData) => {
 
 export const getBusinessProfileApi = async (id) => {
   const response = await fetch(
-    `http://localhost:3010/individual/getbusinessProfile/${id}`,
+    `${BASE_URL}/business/getbusinessProfile/${id}`,
     {
       method: "GET",
       headers: {
@@ -123,7 +124,7 @@ export const getBusinessProfileApi = async (id) => {
 
 export const getClientApiData = async (id) => {
   const response = await fetch(
-    `http://localhost:3010/client/getAllClient${id}`,
+    `${BASE_URL}/client/getAllClient${id}`,
     {
       method: "GET",
       headers: {
@@ -138,7 +139,7 @@ export const getClientApiData = async (id) => {
 
   return response.json();
 };
-const API_URL = "http://localhost:3010/upload/file";
+const API_URL = `${BASE_URL}http://localhost:3010/upload/file`;
 
 async function uploadImage(file) {
   try {

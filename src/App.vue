@@ -1,14 +1,13 @@
 <script setup>
 import Swal from 'sweetalert2';
-import VueSidebarMenuAkahon from 'vue-sidebar-menu-akahon';
-
+import VueSidebarMenuAkahon from "vue-sidebar-menu-akahon";
 import { useRoute, useRouter } from "vue-router";
 import { computed } from "vue";
 // import { icon } from 'ant-design-vue';
 
 const menuItems = [
   { link: "/Index", name: "Invoices",  icon: "bxs-inbox" },
-  { link: "/clients", name: "Clients",  icon: "bxs-user-detail"  },
+  { link: "/AllClients", name: "AllClients",  icon: "bxs-user-detail"  },
   { link: "/businessProfile", name: "Business", icon: "bxs-user-account"   },
  
 ];
@@ -43,10 +42,10 @@ const disableSearch = false;
 const componentsWithSidebar = [
   "Index",
   "Client",
-  "Clients",
-  "Main",
+  "AllClients",
+  "Invoice",
   "BusinessProfile",
-  "ViewInvoice",
+  "ViewClient",
   "GetInvoice",
   "EditInvoice",
   "EditClient",
