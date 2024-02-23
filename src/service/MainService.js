@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import {BASE_URL} from "../utils/config";
 
-export const useInvoiceService = defineStore("invoiceService", {
+export const useInvoiceService = defineStore("InvoiceService", {
   state: () => ({}),
 
   actions: {

@@ -40,7 +40,7 @@ const routes = [
   },
   {
     name: "ViewClient",
-    path: "/ViewClient/:ClientId/",
+    path: "/ViewClient/:clientId/",
     component: ViewClient,
     meta: { public: false },
   },
@@ -64,7 +64,7 @@ const routes = [
   // },
   {
     name: "EditClient",
-    path: "/ViewClient/:ClientId/edit",
+    path: "/ViewClient/:clientId/edit",
     component: EditClient,
     meta: { public: false },
   },
@@ -101,7 +101,7 @@ const routes = [
   },
   {
     name: "Accounts",
-    path: "/accounts",
+    path: "/Accounts",
     component: Accounts,
     meta: { public: true },
   },

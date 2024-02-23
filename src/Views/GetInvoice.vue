@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-import invoiceService from "../service/InvoiceService";
+import {updateInvoiceStatus,updateUnpaidInvoiceStatus,deleteInvoice,getSingleInvoice} from "../service/invoiceService";
 import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
 import { useInvoiceStore } from "../stores/index";
@@ -36,7 +36,7 @@ const changeStatus = async () => {
     const updateData = {
       paymentStatus: "Paid",
     };
-    const status = await invoiceService.updateInvoiceStatus(
+    const status = await updateInvoiceStatus(
       invoiceId,
       updateData
     );
@@ -61,7 +61,7 @@ const changeUnpaidStatus = async () => {
     const updateData = {
       paymentStatus: "Unpaid",
     };
-    const unpaidStatus = await invoiceService.updateUnpaidInvoiceStatus(
+    const unpaidStatus = await updateUnpaidInvoiceStatus(
       invoiceId,
       updateData
     );
@@ -79,7 +79,7 @@ const changeUnpaidStatus = async () => {
   }
 };
 
-const deleteInvoice = async () => {
+const deleteInvoicee = async () => {
   try {
     //console.log("Changing status for invoiceId:", invoiceId);
     const status = await invoiceService.deleteInvoice(invoiceId);
@@ -98,7 +98,7 @@ const deleteInvoice = async () => {
 onMounted(async () => {
   try {
     isLoading.value = true;
-    const response = await invoiceService.getSingleInvoice(invoiceId);
+    const response = await getSingleInvoice(invoiceId);
     const invoiceDetails = response;
     businessId.value = invoiceDetails.sender._id;
     clientId.value = invoiceDetails.receiver;
@@ -291,6 +291,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
               cols="60"
               rows="6"
               class="flex mb-8"
+              v-model="item.rate"
               v-model="item.rate"
             />
             <!-- <select disabled class="w-16 mt-2">

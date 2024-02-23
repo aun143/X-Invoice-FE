@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 
 import { useInvoiceStore } from "../stores/index";
 
@@ -10,7 +10,7 @@ const handleSaveDraftButtonClick = async () => {
   window.confirm("Post Data");
   try {
     isLoading.value = true;
-    const response = await invoiceService.postInvoiceData(invoice.formData);
+    const response = await InvoiceService.postInvoiceData(invoice.formData);
     //console.log("Invoice submitted successfully:", response);
     alert("Data Submitted");
 
@@ -25,7 +25,7 @@ const handleSaveDraftButtonClick = async () => {
   }
 };
 
-const invoiceService = useInvoiceService();
+const InvoiceService = useInvoiceService();
 const invoice = useInvoiceStore();
 
 const logoInputRef = ref(null);
@@ -54,13 +54,13 @@ const displayImage = (input) => {
     <label for="logoInput" class="">
       <div
         class="logo-placeholder border-none hover:border-dashed cursor-pointer rounded w-48 h-24 border-2 grid place-items-center text-slate-500 text-6xl"
-      >
-      <!-- src="../assets/vue.svg" -->
-        <img
+      ><div>     Logo     </div>
+        <!-- <img
+          src="../assets/vue.svg"
           ref="logoPreview"
           class="logo rounded"
           alt="Logo"
-        />
+        /> -->
       </div>
       <input
         id="logoInput"

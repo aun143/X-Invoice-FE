@@ -30,7 +30,6 @@ export const useInvoiceStore = defineStore("invoice", {
     },
 
     userProfileData: {
-      country: "Pakistan",
       individualProfile: {
         firstName: "",
         lastName: "",
