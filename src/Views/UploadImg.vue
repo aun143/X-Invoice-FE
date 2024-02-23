@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 
 import { useInvoiceStore } from "../stores/index";
 
-import { useInvoiceService } from "../service/MainService";
+import { useInvoiceService } from "../service/mainService";
 
 const isLoading = ref(false);
 const handleSaveDraftButtonClick = async () => {
@@ -55,8 +55,8 @@ const displayImage = (input) => {
       <div
         class="logo-placeholder border-none hover:border-dashed cursor-pointer rounded w-48 h-24 border-2 grid place-items-center text-slate-500 text-6xl"
       >
+      <!-- src="../assets/vue.svg" -->
         <img
-          src="../assets/vue.svg"
           ref="logoPreview"
           class="logo rounded"
           alt="Logo"

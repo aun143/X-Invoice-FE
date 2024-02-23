@@ -6,7 +6,7 @@ import { useInvoiceStore } from "../stores/index";
 import Button from "../components/Button.vue";
 import Client from "./Client.vue";
 import { Colors } from "../utils/color";
-import { useInvoiceService } from '../service/MainService';
+import { useInvoiceService } from '../service/mainService';
 
 // import Modal from "../components/Modal.vue";
 import { getAllClient } from "../service/clientService";
