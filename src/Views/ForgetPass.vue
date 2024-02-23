@@ -5,7 +5,7 @@ import Button from "../components/Button.vue";
 import Swal from "sweetalert2";
 
 import { Colors } from "../utils/color";
-import { ForgetUserApi } from "../service/ForgetPassService";
+import { ForgetUserApi } from "../service/forgetPassService";
 const router = useRouter();
 const showPassword = ref(false);
 const ForgetPass = ref({

@@ -4,7 +4,7 @@ import { useRouter, useRoute } from "vue-router";
 import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { getSingleClient } from "../service/clientService";
-import { getAllInvoice } from "../service/IndexService";
+import { getAllInvoice } from "../service/indexService";
 import { useInvoiceStore } from "../stores/index.js";
 const invoice=useInvoiceStore();
 const filterStatus = ref("All");

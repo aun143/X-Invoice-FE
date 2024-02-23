@@ -8,7 +8,7 @@ import Button from "../components/Button.vue";
 import Client from "./Client.vue";
 import { getAllClient } from "../service/clientService";
 import { Colors } from "../utils/color";
-import { useInvoiceService } from '../service/MainService';
+import { useInvoiceService } from '../service/mainService';
 import Swal  from "sweetalert2";
 import { notification } from "ant-design-vue";
 import {  Input } from "ant-design-vue";

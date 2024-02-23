@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { Colors } from "../utils/color";
 import Button from "../components/Button.vue";
 import { useRouter } from "vue-router";
-import { PostBusinessProfilerIndiviualApi } from "../service/BusinessProfileService";
+import { PostBusinessProfilerIndiviualApi } from "../service/businessProfileService";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
 import Swal from "sweetalert2";

@@ -9,8 +9,8 @@ import { useInvoiceStore } from "../stores/index";
 import {
   PatchBusinessProfilerIndiviualApi,
   PatchBusinessProfilerOrganizationApi,
-} from "../service/BusinessProfileService";
-import { getUserDetailsApi } from "../service/LoginService";
+} from "../service/businessProfileService";
+import { getUserDetailsApi } from "../service/loginService";
 import Modal from "../components/Modal.vue";
 
 const isLoading = ref(false);

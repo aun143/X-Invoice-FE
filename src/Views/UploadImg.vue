@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 
 import { useInvoiceStore } from "../stores/index";
 
-import { useInvoiceService } from "../service/MainService";
+import { useInvoiceService } from "../service/mainService";
 
 const isLoading = ref(false);
 const handleSaveDraftButtonClick = async () => {
