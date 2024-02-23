@@ -21,7 +21,8 @@ const dropdownItems = [
   { title: "Mark as Paid" },
   { title: "Mark as Unpaid" },
   { title: "Send Invoice" },
-  { title: "Delete" },
+  
+  { title: "Delete " },
 ];
 
 const isLoading = ref(false);
