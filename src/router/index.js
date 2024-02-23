@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Invoice from "../Views/Invoice.vue";
 import Index from "../Views/Index.vue";
-import Client from "../Views/client.vue";
+import Client from "../Views/Client.vue";
 import AllClients from "../Views/AllClients.vue";
 import BusinessProfile from "../Views/BusinessProfile.vue";
 import Login from "../Views/Login.vue";
