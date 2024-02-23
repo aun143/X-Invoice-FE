@@ -1,10 +1,10 @@
 // invoiceService.js
 import {BASE_URL} from "../utils/config";
 
-const BASE_URL = "http://localhost:3010/invoices/getInvoice";
+// const BASE_URL = "http://localhost:3010/invoices/getInvoice";
 
-const invoiceService = {
-  getSingleInvoice: async (invoiceId) => {
+export const
+  getSingleInvoice= async (invoiceId) => {
     const token = localStorage.getItem("accessToken");
     try {
       const response = await fetch(`${BASE_URL}/invoice/getInvoice/${invoiceId}`, {
@@ -124,4 +124,4 @@ export const updateUnpaidInvoiceStatus= async (invoiceId, updateData) => {
   };
 
 
-// export default invoiceService;
+// 

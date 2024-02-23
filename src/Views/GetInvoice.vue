@@ -7,6 +7,7 @@ import { Colors } from "../utils/color";
 import { useInvoiceStore } from "../stores/index";
 import { getSingleClient } from "../service/ClientService";
 import Swal from "sweetalert2";
+import { BASE_URL } from "../utils/config";
 
 const logoPreview = ref(""); 
 const invoice = useInvoiceStore();
@@ -21,7 +22,6 @@ const dropdownItems = [
   { title: "Mark as Paid" },
   { title: "Mark as Unpaid" },
   { title: "Send Invoice" },
-  
   { title: "Delete " },
 ];
 
@@ -127,8 +127,8 @@ const handleDropdownItemClickParent = (clickedItem) => {
   if (clickedItem.title === "Download as Pdf") {
     // alert("Download as Pdf");
     // router.push(`/pdf/generate/${clientId.value}/${businessId.value}/${invoiceId}`);
-    const url = new URL(window.location.href);
-    url.port = "3010";
+    const url = new URL(BASE_URL);
+    // url.port = "3010";
     url.pathname = "/api/pdf/X-Invoice";
     url.searchParams.append("clientId", clientId.value);
     url.searchParams.append("businessId", businessId.value);
@@ -142,7 +142,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
     changeStatus(invoiceId);
     router.push("/");
   } else if (clickedItem.title === "Delete") {
-    deleteInvoice(invoiceId);
+    deleteInvoicee(invoiceId);
   } else if (clickedItem.title === "Send Invoice") {
     router.push(`/GetInvoice/${invoiceId}/send`);
   } else if (clickedItem.title === "Mark as Unpaid") {
@@ -291,7 +291,6 @@ const handleDropdownItemClickParent = (clickedItem) => {
               cols="60"
               rows="6"
               class="flex mb-8"
-              v-model="item.rate"
               v-model="item.rate"
             />
             <!-- <select disabled class="w-16 mt-2">
