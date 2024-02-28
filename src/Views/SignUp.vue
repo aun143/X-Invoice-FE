@@ -51,7 +51,7 @@ const validateFields = () => {
         errors.username = "Username is required.";
         openNotificationWithIcon("error", "Username is required.");
         valid = false;
-    } else if (!/^[a-zA-Z]+$/.test(invoice.signupData.username)) {
+    } else if (!/^[a-z A-Z]+$/.test(invoice.signupData.username)) {
         errors.username = "Username must contain only alphabetic characters.";
         openNotificationWithIcon("error", "Username must be valid and contain only alphabetic characters.");
         valid = false;
