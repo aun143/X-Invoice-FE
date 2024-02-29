@@ -46,10 +46,10 @@ const validateForm = (profileType) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email)) {
     emailError.value = "Email must be Valid and contain '@' ";
   }
-  if (!/^[a-z A-Z 0-9]+$/.test(profileData.address1)) {
+  if (!/^[a-z A-Z 0-9 ,]+$/.test(profileData.address1)) {
     address1Error.value = "Address1 must contain only Alphanumeric characters";
   } 
-  if (!/^[a-z A-Z 0-9]+$/.test(profileData.address2)) {
+  if (!/^[a-z A-Z 0-9 ,]+$/.test(profileData.address2)) {
     address2Error.value = "Address2 must contain only Alphanumeric characters";
   } 
   if (!/^[a-z A-Z ]+$/.test(profileData.city)) {
@@ -290,8 +290,9 @@ const displayImage = (input) => {
         <!-- <transition name="fade" mode="out-in"> -->
         <div v-if="profileType === 'individual'" :key="1">
           <div class="mb-4">
+ 
             <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-4"
+              <label class="flex font-bold mb-2 ml-4 mt-2 c"
                 >Personal Information
               </label>
             </div>
@@ -351,7 +352,8 @@ const displayImage = (input) => {
 
           <div class="mb-12 mt-10 flex flex-col">
             <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-4">Address</label>
+              <label class="flex font-bold mb-2 ml-4 mt-2 c">
+                Address</label>
             </div>
             <br /><br />
             <div class="grid grid-cols-2 gap-4">
@@ -436,8 +438,8 @@ const displayImage = (input) => {
 
           <div class="mb-">
             <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-4"
-                >Additional Information
+              <label class="flex font-bold mb-2 ml-4 mt-2 c">
+                Additional Information
               </label>
             </div>
             <div class="grid grid-cols-2 gap-4">
@@ -520,8 +522,8 @@ const displayImage = (input) => {
         <div v-else-if="profileType === 'organization'" :key="2">
           <div class="mb-4">
             <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-4"
-                >Personal Information
+              <label class="flex font-bold mb-2 ml-4 mt-2 c">
+                Personal Information
               </label>
             </div>
             <div class="grid grid-cols-2 gap-4">
@@ -590,8 +592,9 @@ const displayImage = (input) => {
           </div>
 
           <div class="mb-12 mt-10 flex flex-col">
-            <div class="bg-[lightgray] pt-1 pb-1">
-              <label class="flex font-bold mb-6 ml-4 mt-4">Address</label>
+            <div class="bg-[lightgray] pt-2 pb-2">
+              <label class="flex font-bold mb-2 ml-4 mt-2 c">
+                Address</label>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div class="col-span-2">
@@ -675,8 +678,8 @@ const displayImage = (input) => {
 
           <div class="mb-">
             <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-4"
-                >Additional Information
+              <label class="flex font-bold mb-2 ml-4 mt-2 c">
+                Additional Information
               </label>
             </div>
             <div class="grid grid-cols-2 gap-4">

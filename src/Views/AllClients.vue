@@ -127,7 +127,7 @@ const filteredClients = computed(() => {
 </script>
 
 <template>
-  <div>
+  <div class="ml-60">
     <Header
       :showBackButton="true"
       headerTitle="Clients"
@@ -142,7 +142,7 @@ const filteredClients = computed(() => {
   </div>
 
   <div class="content-center">
-    <div class="flex-col m-auto flex p-4 max-w-full">
+    <div class="flex-col m-auto flex p-4 max-w-full ml-60">
       <div class="flex flex-col ">
         <span class="meta" style="display: inline"></span>
         <div class="">

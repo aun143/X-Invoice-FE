@@ -232,7 +232,7 @@ const customRow = (record) => {
       <div class="flex-col m-auto flex max-w-full p-2">
         <div class="flex flex-col max-w-[100%]">
           <span class="meta" style="display: inline"></span>
-          <div class="">
+          <div class="mt-2">
             <div class="flex justify-end">
               <div class="flex space-x-2 ">
                 <a

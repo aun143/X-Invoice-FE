@@ -296,43 +296,48 @@ const fontSize = "12px";
                 class="w-full mt-2 border p-2"
               />
             </div>
-            <div class="">
-              <div class="mt-2 ">
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataindividual.city"
-                  placeholder="City"
-                  type="text"
-                  class="mr-2 w-[30%]"
-                />
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataindividual.state"
-                  type="text"
-                  class="mr-2 w-[30%]"
-                  placeholder="State"
-                />
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataindividual.postalCode"
-                  type="number"
-                  class="mr-2 w-[30%]"
-                  placeholder="Postal Code"
-                />
-              </div>
+            <div class="flex justify-between items-center mt-3">
               <div class="">
-                <p class="text-left ml-4"><span class="text-[#ff0000]">*</span>Country</p>
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataindividual.country"
-                  class="ml-2 w-full"
-                >
-                  <!-- <a-select-option  disabled
-                    v-for="country in invoice.countryOptions"
-                    :key="country.value"
-                    :value="country.label"
-                  >
-                    {{ country.label }} 
-                  </a-select-option>-->
-                </a-input>
-              </div>
-            </div>
+    <p class="text-left"> <span class="text-[#ff0000]">*</span>Country</p>
+    <a-select
+      v-model:value="invoice.userClientProfile.clientDataindividual.country"
+      class="mr-2 "
+    >
+      <a-select-option
+        v-for="country in invoice.countryOptions"
+        :key="country.value"
+        :value="country.label"
+      >
+        {{ country.label }}
+      </a-select-option>
+    </a-select>
+  </div>
+  <div class="mt-2 flex">
+    <a-input 
+      v-model:value="invoice.userClientProfile.clientDataindividual.postalCode"
+      type="number"
+      class="mr-2 mt-3"
+      placeholder="Postal Code"
+    />
+    <a-input
+      v-model:value="invoice.userClientProfile.clientDataindividual.state"
+      type="text"
+      class="mr-2 mt-3 "
+      placeholder="State"
+    />
+
+
+  <a-input
+      v-model:value="invoice.userClientProfile.clientDataindividual.city"
+      placeholder="City"
+      type="text"
+      class="mr-2 mt-3"
+    />
+
+  </div>
+
+</div>
+
             <hr class="mb-4 mt-4" />
 
             <div>
@@ -496,7 +501,49 @@ const fontSize = "12px";
                 class="w-full mt-2 border p-2"
               />
             </div>
-            <div class="">
+            <div class="flex justify-between items-center mt-3">
+              <div class="">
+    <p class="text-left"> <span class="text-[#ff0000]">*</span>Country</p>
+    <a-select
+      v-model:value="invoice.userClientProfile.clientDataOrganization.country"
+      class="mr-2 "
+    >
+      <a-select-option
+        v-for="country in invoice.countryOptions"
+        :key="country.value"
+        :value="country.label"
+      >
+        {{ country.label }}
+      </a-select-option>
+    </a-select>
+  </div>
+  <div class="mt-2 flex">
+    <a-input 
+      v-model:value="invoice.userClientProfile.clientDataOrganization.postalCode"
+      type="number"
+      class="mr-2 mt-3"
+      placeholder="Postal Code"
+    />
+    <a-input
+      v-model:value="invoice.userClientProfile.clientDataOrganization.state"
+      type="text"
+      class="mr-2 mt-3 "
+      placeholder="State"
+    />
+
+
+  <a-input
+      v-model:value="invoice.userClientProfile.clientDataOrganization.city"
+      placeholder="City"
+      type="text"
+      class="mr-2 mt-3"
+    />
+
+  </div>
+
+</div>
+
+            <!-- <div class="">
               <div class="mt-2 mr-2">
                 <a-input readonly
                   v-model:value="invoice.userClientProfile.clientDataOrganization.city"
@@ -532,7 +579,7 @@ const fontSize = "12px";
                   </a-select-option>
                 </a-input>
               </div>
-            </div>
+            </div> -->
             <hr class="mb-4 mt-4" />
 
             <div>

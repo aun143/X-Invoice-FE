@@ -32,7 +32,7 @@ const handleItemClick = (item) => {
           :key="i"
           class="menu-item  bg-white w-full pb-[4x] "
         >
-          <div @click="() => handleItemClick(item)" class="cursor-pointer mx-1 rounded text-[12px] text-[#10C0CB] hover:text-black ">
+          <div @click="() => handleItemClick(item)" class="cursor-pointer mx-1 rounded text-[12px] text-[#10C0CB] hover:text-black mt-1">
             {{ item.title }}
           </div>
         </div>
