@@ -257,7 +257,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
           </div>
         </div>
 <br><hr><br>
-        <div class="flex max-w-[70%] lg:flex-row 2xl:flex-row xl:flex-row lg:flex-row flex-col">
+        <div class="flex max-w-[70%] lg:flex-row 2xl:flex-row xl:flex-row flex-col">
           <div class="w-full md:w-[50%]">
             <div class="text-left w-full font-semibold">Description</div>
             <textarea
@@ -334,7 +334,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
               <hr /> -->
   <div class=" flex flex-col max-w-full items-end">
           <div class="flex justify-around w-[80%] 2xl:w-[100%] items-end">
-            <div class="text-black flex flex">
+            <div class="text-black flex">
               <span class="px-[4px] py-[10px] font-semibold border-black text-[12px] rounded"> SubTotal </span>
             </div>
             <div class="pb-2 pt-4">
