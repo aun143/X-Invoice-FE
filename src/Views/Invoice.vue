@@ -315,19 +315,30 @@ const formattedDueDate = computed(() => {
   }
   return null;
 });
-
 const calculateUpcomingDueDate = () => {
-  const selectedDueDate = invoice.formData.invoiceDueDate;
-  if (selectedDueDate) {
+  const selectedDueDate = parseInt(invoice.formData.invoiceDueDate);
+  if (!isNaN(selectedDueDate)) {
     const currentDate = new Date(invoice.formData.date);
     const upcomingDate = new Date(currentDate);
-    upcomingDate.setDate(currentDate.getDate() + parseInt(selectedDueDate));
+    upcomingDate.setDate(currentDate.getDate() + selectedDueDate);
     invoice.formData.invoiceDueDate = upcomingDate;
-    //console.log("upcomingDate",upcomingDate);
+        console.log("upcomingDate",upcomingDate);
   } else {
     invoice.formData.invoiceDueDate = null;
   }
 };
+
+// const calculateUpcomingDueDate = () => {
+//   const selectedDueDate = invoice.formData.invoiceDueDate;
+//   if (selectedDueDate) {
+//     const currentDate = new Date(invoice.formData.date);
+//     const upcomingDate = new Date(currentDate);
+//     upcomingDate.setDate(currentDate.getDate() + parseInt(selectedDueDate));
+//     invoice.formData.invoiceDueDate = upcomingDate;
+//   } else {
+//     invoice.formData.invoiceDueDate = null;
+//   }
+// };
 watch(invoice.formData, (newValue) => {
  invoice.updateFormData(newValue);
 });
