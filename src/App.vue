@@ -25,6 +25,7 @@ const handleExitButtonClick = async () => {
 
   if (result.isConfirmed) {
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('UserId');
     router.push({ name: 'Login' });
   }
 };

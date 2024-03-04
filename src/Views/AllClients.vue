@@ -50,6 +50,8 @@ const handlePageChange = async (page) => {
   currentPage.value = page;
   await fetchClients();
 };
+console.log("handlePageChange ",currentPage)
+console.log("handlePageChange ",currentPage.value)
 
 const handlePageSizeChange = async (current, size) => {
   pageSize.value = size;

@@ -272,7 +272,7 @@ const openNotificationWithIcon = (type, message) => {
                   class="w-full border-b border-gray-300 p-2"
                 />
                 <span
-                  class="absolute top-1/2 right-1 transform -translate-y-1/2 cursor-pointer bg-white"
+                  class="absolute top-1/2 right-1 transform -translate-y-1/2 cursor-pointer"
                   @click="showPassword = !showPassword"
                 >
                   <i

@@ -137,8 +137,8 @@ const columns = computed(() => {
     },
     {
       title: "Receiver",
-      dataIndex: "receiverName", // Use receiverName instead of receiver
-      key: "receiverName", // Use receiverName instead of receiver
+      dataIndex: "receiverName", 
+      key: "receiverName", 
       sorter: true,
       onHeaderCell: (column) => ({
         onClick: () => handleHeaderClick(column),
