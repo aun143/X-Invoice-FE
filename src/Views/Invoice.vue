@@ -78,6 +78,7 @@ const validateForm = () => {
   }if (!invoice.formData.date) {
     emptyFields.push("Date");
   }if (!invoice.formData.invoiceDueDate) {
+    
     emptyFields.push("Invoice Due Date");
   }
 
@@ -546,7 +547,7 @@ const formData = invoice.formData;
               <div class="home">
                 <!-- <Modal @close="toggleModal" :modalActive="modalActive">
                 </Modal> -->
-                 <a-modal v-model:open="open" @ok="handleOk"  >
+                 <a-modal v-model:open="open"  >
                   <Client/> 
     </a-modal>
   </div>
@@ -578,7 +579,7 @@ const formData = invoice.formData;
             <p class="w-4/5 ml-2 text-start" ml-2 text-start><span class="text-[#ff0000]">*</span>Invoice Due</p>
             <a-input
               type="Date"
-              v-model="formData.invoiceDueDate"
+              v-model:value="formData.invoiceDueDate"
               class="ml-2 w-[200px]"
             />
             
@@ -729,3 +730,10 @@ const formData = invoice.formData;
     </form>
   </div>
 </template>
+<style >
+.ant-modal-footer{
+  display:none !important;
+
+}
+
+</style>
