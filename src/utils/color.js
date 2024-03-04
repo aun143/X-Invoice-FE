@@ -1,5 +1,5 @@
 // export const Colors = {
-//   orange: "#ff6633",
+//   orange: "#FFB74D",
 //   selectField: "#d8d8da",
 //   draft: "#878787",
 //   saveDraft: "#bababa",
@@ -17,6 +17,7 @@ export const Colors = {
   saveDraft: "#bababa",
   addMore: "#747d9d",
   anchor: "#5e8bb7",
+  secondry:"#4AA7AD",
   white: "#fff",
   black: "#000",
   green: "#008000",

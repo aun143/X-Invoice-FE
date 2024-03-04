@@ -63,7 +63,6 @@ const sortedInvoices = computed(() => {
 
   if (sortedInfo.columnKey) {
     const { columnKey, order } = sortedInfo;
-    //console.log("Sorting:", columnKey, order);
 
     sorted = sorted.sort((a, b) => {
       const aValue = a[columnKey];
@@ -82,10 +81,8 @@ const sortedInvoices = computed(() => {
     });
   }
 
-  //console.log("Sorted:", sorted);
   return sorted;
 });
-
 watch(
   () => sortedInfo,
   (newSortedInfo, oldSortedInfo) => {
@@ -117,7 +114,7 @@ const columns = computed(() => {
       title: "Invoice No",
       dataIndex: "invoiceNumber",
       key: "invoiceNumber",
-      sorter: true,
+      // sorter: true,
       slots: { customRender: "invoiceNumber" },
       onCell: (record) => ({
         onClick: () => handleInvoiceNumberClick(record.id),
@@ -130,7 +127,7 @@ const columns = computed(() => {
       title: "Sender",
       dataIndex: ["sender", "firstName" ],
       key: "sender",
-      sorter: true,
+      // sorter: true,
       onHeaderCell: (column) => ({
         onClick: () => handleHeaderClick(column),
       }),
@@ -139,7 +136,7 @@ const columns = computed(() => {
       title: "Receiver",
       dataIndex: "receiverName", 
       key: "receiverName", 
-      sorter: true,
+      // sorter: true,
       onHeaderCell: (column) => ({
         onClick: () => handleHeaderClick(column),
       }),
@@ -157,7 +154,7 @@ const columns = computed(() => {
       title: "Total",
       dataIndex: "total",
       key: "total",
-      sorter: true,
+      // sorter: true,
       onHeaderCell: (column) => ({
         onClick: () => handleHeaderClick(column),
       }),
@@ -177,7 +174,6 @@ const handleFilter = () => {
 };
 
 const handleHeaderClick = (column) => {
-
   if (column.sorter) {
     const isAscend = sortedInfo.order === "ascend";
     sortedInfo.columnKey = column.dataIndex;
@@ -188,11 +184,10 @@ const handleHeaderClick = (column) => {
     sortedInfo.order = null;
   }
 };
-
 const getStatusClass = (status) => {
   return {
     "bg-[#10C0CB] px-2 text-black items-center flex w-[50%] sm:w-[100%] lg:w-[55%] 2xl:w-[35%] rounded m-[1px]  px-4 py-1": status === "Paid",
-    "bg-orange-300 text-black  flex w-[50%] sm:w-[100%] lg:w-[55%] 2xl:w-[35%] rounded m-[1px] px-2 py-1": status === "Unpaid",
+    "bg-[#FFB74D] text-black  flex w-[50%] sm:w-[100%] lg:w-[55%] 2xl:w-[35%] rounded m-[1px] px-2 py-1": status === "Unpaid",
     "bg-[#bababa] px-2 text-black items-center flex w-[50%] sm:w-[100%] lg:w-[55%] 2xl:w-[35%] rounded m-[1px] px-4 py-1": status === "Draft",
   };
 };
@@ -212,6 +207,10 @@ const customRow = (record) => {
     },
   };
 };
+const currentFilterStatus = ref("All");
+watch(filterStatus, (newFilterStatus) => {
+  currentFilterStatus.value = newFilterStatus;
+});
 </script>
 
 <template>
@@ -234,33 +233,37 @@ const customRow = (record) => {
           <span class="meta" style="display: inline"></span>
           <div class="mt-2">
             <div class="flex justify-end">
-              <div class="flex space-x-2 ">
-                <a
-                
-                  class="bg-[#e2e2e3] p-1 rounded visited:bg-[#10C0CB]"
-                  @click="setFilterStatus('All') "
-                  ><span class="mx-4 cursor-pointer"> All</span></a
-                >
-                <a
-                  
-                  class="bg-[#e2e2e3] rounded p-1 visited:bg-[#10C0CB]"
-                  @click="setFilterStatus('Draft')"
-                  ><span class="mx-2 cursor-pointer"> Draft</span></a
-                >
-                <a
-                 
-                  class="bg-[#e2e2e3] rounded p-1 visited:bg-[#10C0CB]"
-                  @click="setFilterStatus('Paid')"
-                  ><span class="mx-3 cursor-pointer"> Paid</span></a
-                >
-                <a
-               
-                  class="bg-[#e2e2e3] rounded p-1 visited:bg-[#10C0CB]"
-                  @click="setFilterStatus('Unpaid')"
-                  ><span class="mx-1 cursor-pointer"> Unpaid</span></a
-                >
-              </div>
-            </div>
+      <div class="flex space-x-2">
+        <a
+          :class="{'bg-[#4AA7AD]': currentFilterStatus === 'All', 'bg-[#e2e2e3]': currentFilterStatus !== 'All'}"
+          @click="setFilterStatus('All')"
+          class="p-1 rounded visited:bg-[#10C0CB]"
+        >
+          <span class="mx-4 cursor-pointer"> All</span>
+        </a>
+        <a
+          :class="{'bg-[#bababa]': currentFilterStatus === 'Draft', 'bg-[#e2e2e3]': currentFilterStatus !== 'Draft'}"
+          @click="setFilterStatus('Draft')"
+          class="rounded p-1 visited:bg-[#10C0CB]"
+        >
+          <span class="mx-2 cursor-pointer"> Draft</span>
+        </a>
+        <a
+          :class="{'bg-[#10C0CB]': currentFilterStatus === 'Paid', 'bg-[#e2e2e3]': currentFilterStatus !== 'Paid'}"
+          @click="setFilterStatus('Paid')"
+          class="rounded p-1 visited:bg-[#10C0CB]"
+        >
+          <span class="mx-3 cursor-pointer"> Paid</span>
+        </a>
+        <a
+          :class="{'bg-[#FFB74D]': currentFilterStatus === 'Unpaid', 'bg-[#e2e2e3]': currentFilterStatus !== 'Unpaid'}"
+          @click="setFilterStatus('Unpaid')"
+          class="rounded p-1 visited:bg-[#10C0CB]"
+        >
+          <span class="mx-1 cursor-pointer"> Unpaid</span>
+        </a>
+      </div>
+    </div>
           </div>
           <div class="flex justify-end my-4">
             <!-- Filter by Invoice No -->
@@ -284,6 +287,11 @@ const customRow = (record) => {
             :dataSource="filteredInfo || filteredData || sortedInvoices "
             :columns="columns"
             :customRow="customRow"
+            :pagination="{
+            pageSize: 8, 
+            showSizeChanger: false, 
+            total: filteredInfo.length || filteredData.length || sortedInvoices.length 
+  }"
           >
             <template #status="{ text, record }" >
               <div ><span class="justify-center items-center flex" :class="getStatusClass(record.paymentStatus)">

@@ -26,8 +26,11 @@ const invoiceSubmit = async () => {
     isLoading.value=true;
 
 
-// invoice.formData.items="";
+
 if (!validateForm()) return;
+if (!validateDueDate()) {
+      return;
+    }
 const response = await invoiceSer.postInvoiceData(invoice.formData);
 
 //console.log('Invoice submitted successfully:', response);
@@ -58,20 +61,24 @@ const showModal = () => {
 
 const validateForm = () => {
   const emptyFields = [];
-  if (!invoice.formData.receiver) {
-    emptyFields.push("Receiver");
-  }
+  
   if (!invoice.formData.sender) {
     emptyFields.push("Sender");
   }
   if (!invoice.formData.invoiceNumber) {
     emptyFields.push("Invoice Number");
+  }if (!invoice.formData.receiver) {
+    emptyFields.push("Receiver");
   }
   if (!invoice.formData.invoiceName) {
     emptyFields.push("Invoice Name");
   }
   if (!invoice.formData.description) {
     emptyFields.push("Description");
+  }if (!invoice.formData.date) {
+    emptyFields.push("Date");
+  }if (!invoice.formData.invoiceDueDate) {
+    emptyFields.push("Invoice Due Date");
   }
 
   if (emptyFields.length > 0) {
@@ -307,7 +314,7 @@ onMounted(async () => {
 });
 
 const invoiceName = ref('');
-const upcomingDueDate = ref(null);
+const upcomingDueDate = ref(new Date());
 const formattedDueDate = computed(() => {
   if (invoice.formData.invoiceDue instanceof Date) {
     const upcomingDueDate = invoice.formData.invoiceDue;
@@ -315,18 +322,6 @@ const formattedDueDate = computed(() => {
   }
   return null;
 });
-const calculateUpcomingDueDate = () => {
-  const selectedDueDate = parseInt(invoice.formData.invoiceDueDate);
-  if (!isNaN(selectedDueDate)) {
-    const currentDate = new Date(invoice.formData.date);
-    const upcomingDate = new Date(currentDate);
-    upcomingDate.setDate(currentDate.getDate() + selectedDueDate);
-    invoice.formData.invoiceDueDate = upcomingDate;
-        console.log("upcomingDate",upcomingDate);
-  } else {
-    invoice.formData.invoiceDueDate = null;
-  }
-};
 
 // const calculateUpcomingDueDate = () => {
 //   const selectedDueDate = invoice.formData.invoiceDueDate;
@@ -334,11 +329,57 @@ const calculateUpcomingDueDate = () => {
 //     const currentDate = new Date(invoice.formData.date);
 //     const upcomingDate = new Date(currentDate);
 //     upcomingDate.setDate(currentDate.getDate() + parseInt(selectedDueDate));
-//     invoice.formData.invoiceDueDate = upcomingDate;
+//     // Check if upcomingDate is a valid date object
+//     if (!isNaN(upcomingDate.getTime())) {
+//  const formattedDate = upcomingDate.toLocaleDateString('en-GB', {  year: 'numeric' , month: '2-digit',day: '2-digit'});
+// invoice.formData.invoiceDueDate=formattedDate;
+// console.log("upcomingDate", formattedDate);
+//     } else {
+//       alert("Invalid upcoming date:", invoice.formData.invoiceDueDate);
+//     }
 //   } else {
-//     invoice.formData.invoiceDueDate = null;
+//     upcomingDueDate.value = null;
 //   }
 // };
+const validateDueDate = () => {
+  const invoiceDate = new Date(formData.date); // Get formData.date
+
+  // Check if formData.date is provided
+  if (!invoiceDate || isNaN(invoiceDate.getTime())) {
+    openNotificationWithIcon("error", "Please select an invoice date first");
+    return false;
+  }
+
+  const dueDate = new Date(formData.invoiceDueDate);
+
+  // Check if due date is before the invoice date or is more than 60 days ahead
+  if (dueDate < invoiceDate) {
+    openNotificationWithIcon("error", "Invoice due date cannot be before the invoice date");
+    return false;
+  }
+
+  const maxDueDate = new Date(invoiceDate); // Set maxDueDate as a copy of invoiceDate
+  maxDueDate.setDate(maxDueDate.getDate() + 60); // Add 60 days to invoiceDate
+
+  // Check if due date is more than 60 days in the future relative to invoice date
+  if (dueDate > maxDueDate) {
+    openNotificationWithIcon("error", "Invoice due date cannot be more than 60 days in the future");
+    return false;
+  }
+
+  return true; // Due date is valid
+};
+
+
+// const formatDate = (date) => {
+//   const day = date.getDate().toString().padStart(2, '0');
+//   const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+//   const year = date.getFullYear();
+//   return `${year}/${month}/${day}`;
+// };
+
+
+
 watch(invoice.formData, (newValue) => {
  invoice.updateFormData(newValue);
 });
@@ -358,9 +399,9 @@ const formData = invoice.formData;
     :dropdownTitle="dropdownTitle"
     saveButtonText="Save"
     saveDraftButtonText=" Save Draft"
-    :saveDraftButtonColor="Colors.saveDraft"
+    :saveDraftButtonColor="Colors.orange"
     :onSaveDraftButtonClick="handleSaveDraftButtonClick"
-    :showDropdown="true"
+    :showDropdown="false"
     :onDropdownItemClick="handleDropdownItemClick"
     :showBackButton="false"
 
@@ -467,27 +508,29 @@ const formData = invoice.formData;
                                   <div class="">
                         <div v-if="invoice.selectedProfileType === 'individual'" class=" border-2 border-gray-100 rounded-2" >
                           <!-- <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br> -->
-                        <span class="ml-2">{{ invoice.formData.sender.firstName }}</span>
-                        <span class="ml-2">{{invoice.formData.sender.lastName }}</span><br>
-                     <span class="ml-2">{{ invoice.formData.sender.address1 }}</span>
-                        <span class="ml-2">{{ invoice.formData.sender.address2 }}</span><br> 
-                        <span class="ml-2">{{ invoice.formData.sender.email }}</span><br>
-                        <span class="ml-2">{{ invoice.formData.sender.state }}</span><br>
-                        <span class="ml-2">{{ invoice.formData.sender.city }}</span><br>
+                          <p class="pl-2">
+                        <span class="">{{ invoice.formData.sender.firstName }}</span>
+                        <span class="">{{invoice.formData.sender.lastName }}</span><br>
+                        <span class="">{{ invoice.formData.sender.address1 }}</span>
+                        <span class="">{{ invoice.formData.sender.address2 }}</span><br> 
+                        <span class="">{{ invoice.formData.sender.email }}</span><br>
+                        <span class="">{{ invoice.formData.sender.state }}</span><br>
+                        <span class="">{{ invoice.formData.sender.city }}</span><br></p>
                         </div> 
                         <div v-if="invoice.selectedProfileType === 'organization'" class=" border-2 border-gray-300  rounded-2" >
-                          <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br>
-                        <span class="ml-2"> 
-                          {{ invoice.formData.sender.organizationName }}</span><br>
-                        <span class="ml-2">{{ invoice.formData.sender.firstName }}</span>
-                        <span class="ml-2">{{invoice.formData.sender.lastName }}</span><br>
-                        <span class="ml-2">{{ invoice.formData.sender.address1 }}</span>
-                        <span class="ml-2">{{ invoice.formData.sender.address2 }}</span><br> 
-                        <span class="ml-2">{{ invoice.formData.sender.postalCode }}</span>
-                        <span class="ml-2">{{ invoice.formData.sender.city }}</span><br>
-                        <span class="ml-2">{{ invoice.formData.sender.state }}</span><br>
-                        <span class="ml-2">{{ invoice.formData.sender.email }}</span><br>
-                        <span class="ml-2">{{ invoice.formData.sender.city }}</span><br>
+                          <p class="pl-2">
+                          <span class="">{{ invoice.formData.sender.profileType }}</span><br>
+                        <span class="">{{ invoice.formData.sender.organizationName }}</span><br>
+                        <span class="">{{ invoice.formData.sender.firstName }}</span>
+                        <span class="">{{invoice.formData.sender.lastName }}</span><br>
+                        <span class="">{{ invoice.formData.sender.address1 }}</span>
+                        <span class="">{{ invoice.formData.sender.address2 }}</span><br> 
+                        <span class="">{{ invoice.formData.sender.postalCode }}</span>
+                        <span class="">{{ invoice.formData.sender.city }}</span><br>
+                        <span class="">{{ invoice.formData.sender.state }}</span><br>
+                        <span class="">{{ invoice.formData.sender.email }}</span><br>
+                        <span class="">{{ invoice.formData.sender.city }}</span><br>
+                        </p>
                         </div>
 
 
@@ -512,7 +555,7 @@ const formData = invoice.formData;
           
           <a-select  v-model:value="formData.receiver" class="ml-2 w-[100%]"   :loading="isLoading">
               <a-select-option
-              v-for="client in filteredClients" :key="client._id" >  {{ client.firstName }}
+              v-for="client in filteredClients" :key="client._id" >  {{ client.firstName }} {{ client.lastName }}
               </a-select-option>
             </a-select>
 
@@ -522,7 +565,7 @@ const formData = invoice.formData;
       <div class="flex flex-col items-end mt-4 ml-auto ">
         <div class="flex items-end mb-2">
           <div>
-            <p class="w-4/5 mb-0 ml-2 text-start">Date</p>
+            <p class="w-4/5 mb-0 ml-2 text-start"><span class="text-[#ff0000]">*</span>Date</p>
             <a-input
               type="Date"
               v-model:value="formData.date"
@@ -532,15 +575,21 @@ const formData = invoice.formData;
         </div>
         <div class="flex items-end mb-2">
           <div>
-            <p class="w-4/5 ml-2 text-start" ml-2 text-start>Invoice Due</p>
-            <a-select v-model:value="formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate">
+            <p class="w-4/5 ml-2 text-start" ml-2 text-start><span class="text-[#ff0000]">*</span>Invoice Due</p>
+            <a-input
+              type="Date"
+              v-model="formData.invoiceDueDate"
+              class="ml-2 w-[200px]"
+            />
+            
+            <!-- <a-select v-model:value="formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate">
         
               <a-select-option value="07">After 07 days</a-select-option>
               <a-select-option value="15">After 15 days</a-select-option>
               <a-select-option value="30">After 30 days</a-select-option>
               <a-select-option value="45">After 45 days</a-select-option>
               <a-select-option value="60">After 60 days</a-select-option>
-            </a-select>
+            </a-select> -->
           </div>
         </div>
        

@@ -31,10 +31,36 @@ const handleDropdownItemClickParent = (clickedItem) => {
   }
 };
 
+// const fetchClients = async () => {
+//   try {
+//     isLoading.value = true;
+//     const result = await getAllClient({ page: currentPage.value, pageSize: pageSize.value });
+//     clients.value = result.data;
+//     totalItems.value = result.totalItems;
+//   } catch (error) {
+//     console.error('Error fetching clients:', error.message);
+//   } finally {
+//     isLoading.value = false;
+//   }
+// };
+
+// onMounted(fetchClients);
+
+// const handlePageChange = async (page) => {
+//   currentPage.value = page;
+//   await fetchClients();
+// };
+// console.log("handlePageChange ",currentPage.value)
+
+// const handlePageSizeChange = async (current, size) => {
+//   pageSize.value = size;
+//   currentPage.value = 1;
+//   await fetchClients();
+// };
 const fetchClients = async () => {
   try {
     isLoading.value = true;
-    const result = await getAllClient({ page: currentPage.value, pageSize: pageSize.value });
+    const result = await getAllClient();
     clients.value = result.data;
     totalItems.value = result.totalItems;
   } catch (error) {
@@ -45,19 +71,6 @@ const fetchClients = async () => {
 };
 
 onMounted(fetchClients);
-
-const handlePageChange = async (page) => {
-  currentPage.value = page;
-  await fetchClients();
-};
-console.log("handlePageChange ",currentPage)
-console.log("handlePageChange ",currentPage.value)
-
-const handlePageSizeChange = async (current, size) => {
-  pageSize.value = size;
-  currentPage.value = 1;
-  await fetchClients();
-};
 
 const customRow = (record) => {
   return {
@@ -77,7 +90,7 @@ const columns = [
     title: 'First Name',
     dataIndex: 'firstName',
     key: 'firstName',
-    sorter: true,
+    // sorter: true,
     onCell: (record) => ({
         onClick: () => handleClientItemClick(record.id),
       }),
@@ -86,7 +99,7 @@ const columns = [
     title: 'Last Name',
     dataIndex: 'lastName',
     key: 'lastName',
-    sorter: true
+    // sorter: true
   },
   {
     title: 'Email',
@@ -168,14 +181,14 @@ const filteredClients = computed(() => {
           :columns="columns"
           :data-source="filteredClients"
           rowKey="clientId"
-          :scroll="{ x: 'max-content' }"
-          :pagination="{
+          :pagination="{ 
             showSizeChanger: false,
             showQuickJumper: false,
             pageSize: pageSize,
             total: totalItems,
-            onChange: handlePageChange,
-            onShowSizeChange: handlePageSizeChange
+            // current: currentPage.value, 
+            // onChange: handlePageChange,
+            // onShowSizeChange: handlePageSizeChange
           }"
         >
         </a-table>

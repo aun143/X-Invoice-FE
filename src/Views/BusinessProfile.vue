@@ -46,12 +46,12 @@ const validateForm = (profileType) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email)) {
     emailError.value = "Email must be Valid and contain '@' ";
   }
-  if (!/^[a-z A-Z 0-9 ,]+$/.test(profileData.address1)) {
-    address1Error.value = "Address1 must contain only Alphanumeric characters";
-  } 
-  if (!/^[a-z A-Z 0-9 ,]+$/.test(profileData.address2)) {
-    address2Error.value = "Address2 must contain only Alphanumeric characters";
-  } 
+  // if (!/^[a-z A-Z 0-9 ,]+$/.test(profileData.address1)) {
+  //   address1Error.value = "Address1 must contain only Alphanumeric characters";
+  // } 
+  // if (!/^[a-z A-Z 0-9 ,]+$/.test(profileData.address2)) {
+  //   address2Error.value = "Address2 must contain only Alphanumeric characters";
+  // } 
   if (!/^[a-z A-Z ]+$/.test(profileData.city)) {
     cityError.value = "City must contain only Alphabetic A-Z characters";
   }
@@ -422,14 +422,14 @@ const displayImage = (input) => {
                   v-model:value="
                     invoice.userProfileData.individualProfile.country
                   "
-                  class="w-full border p-2"
+                  class="w-full p-2"
                 >
                   <a-select-option
                     v-for="country in invoice.countryOptions"
                     :key="country.value"
                     :value="country.value"
                   >
-                    {{ country.value }}
+                    {{ country.label }}
                   </a-select-option>
                 </a-select>
               </div>
@@ -526,18 +526,19 @@ const displayImage = (input) => {
                 Personal Information
               </label>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <p class="justify-start flex">Organization Name</p>
+            <div>
+                <p class="justify-start flex ">Organization Name</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.organizationName
                   "
                   type="text"
                   placeholder="Organization Name"
-                  class="w-full p-2"
+                  class="w-full p-2 mb-4"
                 />
               </div>
+            <div class="grid grid-cols-2 gap-4">
+              
 
               <div>
                 <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>First Name</p>

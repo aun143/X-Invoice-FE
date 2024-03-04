@@ -79,14 +79,17 @@ if (!invoice.userClientProfile.clientDataOrganization.firstName) {
   }
   if (!invoice.userClientProfile.clientDataOrganization.email) {
     emptyFields.push(" Email must contain '@'");
-  }if (!invoice.userClientProfile.clientDataOrganization.state) {
+  }else if (!invoice.userClientProfile.clientDataOrganization.email.includes("@") || !/.+\@.+\..+/.test(invoice.userClientProfile.clientDataOrganization.email)) {
+    emptyFields.push("Email must be valid and contain '@'.");
+    }
+  if (!invoice.userClientProfile.clientDataOrganization.state) {
     emptyFields.push(" State must be Alphabetic");
   }if (!invoice.userClientProfile.clientDataOrganization.city) {
     emptyFields.push(" City must be Alphaetic");
   }
-  if (!invoice.userClientProfile.clientDataOrganization.address1) {
-    emptyFields.push(" Address1 must be AlphaNeumeric");
-  }
+  // if (!invoice.userClientProfile.clientDataOrganization.address1) {
+  //   emptyFields.push(" Address1 must be AlphaNeumeric");
+  // }
   if (!invoice.userClientProfile.clientDataOrganization.country) {
     emptyFields.push("Country must be Alphabetic");
   }
@@ -112,14 +115,17 @@ const validateFormInd = () => {
   }
   if (!invoice.userClientProfile.clientDataindividual.email) {
     emptyFields.push(" Email must contain '@'");
-  }if (!invoice.userClientProfile.clientDataindividual.state) {
+  }
+  else if (!invoice.userClientProfile.clientDataindividual.email.includes("@") || !/.+\@.+\..+/.test(invoice.userClientProfile.clientDataindividual.email)) {
+    emptyFields.push("Email must be valid and contain '@'.");
+    }if (!invoice.userClientProfile.clientDataindividual.state) {
     emptyFields.push(" State must be Alphabetic");
   }if (!invoice.userClientProfile.clientDataindividual.city) {
     emptyFields.push(" City must be Alphabetic");
   }
-  if (!invoice.userClientProfile.clientDataindividual.address1) {
-    emptyFields.push(" Address1  must be AlphaNeumeric");
-  }
+  // if (!invoice.userClientProfile.clientDataindividual.address1) {
+  //   emptyFields.push(" Address1  must be AlphaNeumeric");
+  // }
   if (!invoice.userClientProfile.clientDataindividual.country) {
     emptyFields.push("Country  must be Alphabetic");
   }

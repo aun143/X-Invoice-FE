@@ -78,11 +78,12 @@ const validateFields = () => {
       errors.address1 = "Address is required";
       openNotificationWithIcon("error", "Address is required");
       valid = false;
-    } else if (!/^[a-z A-Z 0-9\s ,]+$/.test(invoice.userProfileData.address1)) {
-      errors.address1 = "Address must contain only alphanumeric characters and spaces.";
-      openNotificationWithIcon("error", "Address must be valid and contain only alphanumeric characters and spaces.");
-      valid = false;
-    }
+    } 
+    // else if (!/^[a-z A-Z 0-9\s ,]+$/.test(invoice.userProfileData.address1)) {
+    //   errors.address1 = "Address must contain only alphanumeric characters and spaces.";
+    //   openNotificationWithIcon("error", "Address must be valid and contain only alphanumeric characters and spaces.");
+    //   valid = false;
+    // }
 
     if (invoice.userProfileData.companyName && !/^[a-zA-Z0-9\s]+$/.test(invoice.userProfileData.companyName)) {
         errors.companyName = "Company Name must contain only alphanumeric characters and spaces.";

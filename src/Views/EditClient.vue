@@ -124,9 +124,9 @@ const validateFormInd = () => {
   }if (!invoice.userClientProfile.clientDataindividual.city) {
     emptyFields.push(" City must be Alphabetic");
   }
-  if (!invoice.userClientProfile.clientDataindividual.address1) {
-    emptyFields.push(" Address1 must be AlphNeumeric");
-  }
+  // if (!invoice.userClientProfile.clientDataindividual.address1) {
+  //   emptyFields.push(" Address1 must be AlphNeumeric");
+  // }
   if (!invoice.userClientProfile.clientDataindividual.country) {
     emptyFields.push("Country must be Alphabetic");
   }
@@ -253,12 +253,12 @@ const fontSize = "12px";
             </label>
 
             <div class="flex-right w-48 ml-6">
-              <table class=" border">
+              <table class=" border mt-6">
                
-                <tr  v-if="invoice.userClientProfile.clientDataindividual.clientType === 'individual'">
+                <tr  v-if="invoice.userClientProfile.clientDataindividual.clientType === 'individual'" >
                   <td>
                     <div
-                      class="flex pl-4 my-6 cursor-pointer"
+                      class="flex pl-4 my-2 cursor-pointer"
                       >
                       <!-- @click="selectField('individual')" -->
                       <p class="mb-1  mr-12">Individual</p>
@@ -274,7 +274,7 @@ const fontSize = "12px";
                 </tr><tr  v-if="invoice.userClientProfile.clientDataindividual.clientType === 'organization'">
                   <td>
                     <div
-                      class="flex pl-4 my-6 cursor-pointer"
+                      class="flex pl-4 my-2 cursor-pointer"
                       >
                       <!-- @click="selectField('organization')" -->
                       <p class="mb-1  mr-12">Organization</p>

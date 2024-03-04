@@ -74,9 +74,11 @@ const validateForm = () => {
   }
   if (!invoice.formData.description) {
     emptyFields.push("Description");
-  }
-
-  if (emptyFields.length > 0) {
+  }if (!invoice.formData.date) {
+    emptyFields.push("Description");
+  }if (!invoice.formData.invoiceDueDate) {
+    emptyFields.push("Description");
+  }if (emptyFields.length > 0) {
     const alertMessage = `Please fill in the following required fields: ${emptyFields.join(", ")}`;
     openNotificationWithIcon("error", alertMessage);
     return false;
@@ -397,7 +399,7 @@ watch(invoice.formData, (newValue) => {
           
           <a-select  v-model:value="invoice.formData.receiver" class="ml-2 w-[100%]"   :loading="isLoading">
               <a-select-option
-              v-for="client in filteredClients" :key="client._id" >  {{ client.firstName }}
+              v-for="client in filteredClients" :key="client._id" >  {{ client.firstName }} {{ client.lastName }}
               </a-select-option>
             </a-select>
 

@@ -188,7 +188,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
                 :class="{
                   'bg-[#10C0CB] text-white text-[12px] ':
                     invoice.formData.paymentStatus === 'Paid',
-                  'bg-orange-300 text-white text-[12px]': invoice.formData.paymentStatus === 'Unpaid',
+                  'bg-[#FFB74D] text-white text-[12px]': invoice.formData.paymentStatus === 'Unpaid',
                   'bg-[#bababa] text-white text-[12px]': invoice.formData.paymentStatus === 'Draft',
                 }"
               >
@@ -354,7 +354,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
                 :class="{
                   'bg-[#10C0CB] text-white  ':
                     invoice.formData.paymentStatus === 'Paid',
-                  'bg-orange-300 text-white': invoice.formData.paymentStatus === 'Unpaid',
+                  'bg-[#FFB74D] text-white': invoice.formData.paymentStatus === 'Unpaid',
                   'bg-[#bababa] text-white':
                     invoice.formData.paymentStatus === 'Draft',
                 }"
