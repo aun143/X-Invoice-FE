@@ -386,7 +386,7 @@ watch(invoice.formData, (newValue) => {
             <p class="text-right ml-3"> <span class="text-[#ff0000]">*</span>To</p>
             <div class="justify-end flex w-full text-left">
               <!-- <div  @click="toggleModal" class="">New Client</div> -->
-              <div type="primary" class="text-[#10C0CB]" @click="showModal">New Client</div>
+              <div type="primary" class="text-[#10C0CB] cursor-pointer" @click="showModal">New Client</div>
               <div class="home">
                 <!-- <Modal @close="toggleModal" :modalActive="modalActive">
                 </Modal> -->
