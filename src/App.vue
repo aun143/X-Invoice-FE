@@ -27,6 +27,11 @@ const handleExitButtonClick = async () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('UserId');
     router.push({ name: 'Login' });
+    invoice.resetaccount();
+    invoice.resetState();
+    invoice.resetFormData();
+
+    
   }
 };
 

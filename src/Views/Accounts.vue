@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { Colors } from "../utils/color";
 import Button from "../components/Button.vue";
 import { useRouter } from "vue-router";
@@ -98,7 +98,9 @@ const validateFields = () => {
 
   return valid;
 };
-
+onMounted(()=>{
+    invoice.resetaccount();
+})
 const submit = async () => {
    proceedClicked.value = true; 
   resetErrors();

@@ -346,6 +346,9 @@ userClientProfile :{
           total: 0,
       }
     },
+    resetaccount(){
+      this.$state.userProfileData={}
+    },
     resetState() {
       this.$state.userClientProfile = {
      clientDataOrganization :{
