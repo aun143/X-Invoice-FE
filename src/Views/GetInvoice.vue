@@ -102,8 +102,7 @@ onMounted(async () => {
     const invoiceDetails = response;
     businessId.value = invoiceDetails.sender._id;
     clientId.value = invoiceDetails.receiver;
-// Fetch client details by ID
-const clientResponse = await getSingleClient(clientId.value);
+    const clientResponse = await getSingleClient(clientId.value);
     clientDetails.value = clientResponse; 
   
     
@@ -151,6 +150,11 @@ const handleDropdownItemClickParent = (clickedItem) => {
     router.push("/");
 
   }
+};
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const formattedDate = date.toISOString().split('T')[0];
+  return formattedDate;
 };
 </script>
 
@@ -242,11 +246,11 @@ const handleDropdownItemClickParent = (clickedItem) => {
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Date</p>
-              <div class="text-left">{{ invoice.formData.date }}</div>
+              <div class="text-left">{{formatDate(invoice.formData.date) }}</div>
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Invoice Due</p>
-              <div class="text-left">{{ invoice.formData.invoiceDueDate }}</div>
+              <div class="text-left">{{ formatDate(invoice.formData.invoiceDueDate) }}</div>
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold" >Purchase order Number</p>

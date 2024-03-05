@@ -9,6 +9,8 @@ import Client from "./Client.vue";
 import { getAllClient } from "../service/ClientService";
 import { Colors } from "../utils/color";
 import { useInvoiceService } from '../service/MainService';
+import {getSingleInvoice} from "../service/invoiceService";
+
 import Swal  from "sweetalert2";
 import { notification } from "ant-design-vue";
 // import {  Input } from "ant-design-vue";
@@ -18,6 +20,7 @@ const invoiceId = route.params._id;
 const InvoiceService = useInvoiceService();
 const invoice = useInvoiceStore();
 const isLoading=ref(false);
+const clientId=ref("");
 const handleSaveDraftButtonClick = async (Id) => {
  
     try {
@@ -195,6 +198,18 @@ onMounted(async()=>{
   });
 }finally {
     isLoading.value = false; // Set isLoading back to false after fetching data
+  };
+  try {
+    isLoading.value = true;
+    const response = await getSingleInvoice(invoiceId);
+     invoice.formData = response;
+    invoice.updateFormData(invoice.formData);
+    logoPreview.value = invoice.formData.logoPreview;
+    //console.log("Invoice details fetched successfully:", invoice.formData);
+  } catch (error) {
+    console.error("Error fetching invoice details:", error);
+  } finally {
+    isLoading.value = false;
   }
 })
 
@@ -226,8 +241,12 @@ watch(invoice.formData, (newValue) => {
 });
  </script>
 <template>
-
-  <div class="bg-gray-100 ">
+<div v-if="isLoading">
+    <a-space class="w-full p-8 flex justify-center mt-[25%]">
+      <a-spin size="large" />
+    </a-space>
+  </div>
+  <div class="bg-gray-100 " v-else>
      <div class="bg-white">
     <Header
     headerTitle="New Invoice"

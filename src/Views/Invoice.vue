@@ -491,7 +491,7 @@ const formData = invoice.formData;
       <hr />
     </div>
  <div class="container flex">
-      <div class="flex-left w-[35%] justify-center">
+      <div class="flex-left w-[45%] justify-center">
         <div class="mt-4 text-left ">
           <div v-if="isLoading" class="flex justify-center flex-col items-center">
       <a-space class="w-full ">
@@ -506,10 +506,10 @@ const formData = invoice.formData;
                 <router-link to="/businessProfile" class="text-[#10C0CB]" >Business Profile</router-link>
               </p>
             </div>
-                                  <div class="">
-                        <div v-if="invoice.selectedProfileType === 'individual'" class=" border-2 border-gray-100 rounded-2" >
+                                  <div class="ml-2">
+                        <div v-if="invoice.selectedProfileType === 'individual'" class=" border-2 pl-2 border-gray-100 rounded-2" >
                           <!-- <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br> -->
-                          <p class="pl-2">
+                          <p class="">
                           <span class="">Selected Profile Type: {{ invoice.formData.sender.profileType }}</span><br>
                         <span class="">{{ invoice.formData.sender.firstName }}</span>&nbsp;
                         <span class="">{{invoice.formData.sender.lastName }}</span><br>
@@ -520,8 +520,8 @@ const formData = invoice.formData;
                         <span class="">{{ invoice.formData.sender.state }}</span><br>
                         <span class="">{{ invoice.formData.sender.email }}</span><br></p>
                         </div> 
-                        <div v-if="invoice.selectedProfileType === 'organization'" class=" border-2 border-gray-300  rounded-2" >
-                          <p class="pl-2">
+                        <div v-if="invoice.selectedProfileType === 'organization'" class=" border-2 pl-2 border-gray-300  rounded-2" >
+                          <p class="">
                           <span class="">Selected Profile Type: {{ invoice.formData.sender.profileType }}:</span><br>
                         <span class="">{{ invoice.formData.sender.organizationName }}</span><br>
                         <span class="">{{ invoice.formData.sender.firstName }}</span>&nbsp;
