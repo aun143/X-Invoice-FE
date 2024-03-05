@@ -156,11 +156,11 @@ const handleDropdownItemClickParent = (clickedItem) => {
 
 <template>
   <div v-if="isLoading">
-    <a-space class="w-full p-8">
+    <a-space class="w-full p-8 flex justify-center mt-[25%]">
       <a-spin size="large" />
     </a-space>
   </div>
-  <div class="get" v-else>
+  <div class=" bg-gray-200 h-[max-content]" v-else>
     <div class="bg-white">
       <Header
         headerTitle="View Invoice"
@@ -176,7 +176,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
       />
     </div>
 
-    <section class="max-w-[96%]  mt-4 ml-4 ">
+    <section class="w-[100%] 2xl:w-[50%] md:w-[93%] lg:w-[85%] xl:w-[63%] pt-4 px-4 ">
       <form @submit.prevent class="p-4 bg-white">
         <div class="flex">
           <div class="flex w-full mt-8">
@@ -202,7 +202,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
             </div>
           </div>
           <div class="">
-            <div class="mr-32 2xl:mr-[320px] mt-4 max-w-24 2xl:w-48 max-h-auto">
+            <div class="mr-8 2xl:mr-[320px]  mt-4 max-w-24 2xl:w-48 max-h-auto">
               <img alt="Logo" src="../assets/3x.webp" />
             </div>
           </div>
@@ -397,10 +397,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
   </div>
 </template>
 <style scoped>
-.get {
-  overflow-x: hidden;
-  background-color: rgb(238, 238, 238);
-}
+
 p {
   text-align: left;
 }

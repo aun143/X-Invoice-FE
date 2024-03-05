@@ -119,9 +119,9 @@ const fontSize = "12px";
     :onDropdownItemClick="handleDropdownItemClickParent"
   />
 </div>
-  <div class="modal-content max-h-full flex max-w-[800px] p-4 justify-start">
+  <div class="modal-content max-h-full flex max-w-[800px] px-4 pt-4 justify-start">
       <div class="flex">
-        <div class="w-full p-8 bg-white">
+        <div class="w-full p-8 lg:w-[70%] 2xl:w-[100%] xl:w-[80%] bg-white">
           <div class=" flex ">
             <div class="text-[20px] font-semibold"> Single Client View: (Readonly) </div>
             

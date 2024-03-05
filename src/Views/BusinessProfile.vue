@@ -188,7 +188,7 @@ const displayImage = (input) => {
 </script>
 
 <template>
-  <div class="bg-gray-200">
+  <div class="bg-gray-200 h-[max-content]">
     <div class="bg-white">
       <Header
         headerTitle="Business Profile"
@@ -201,14 +201,14 @@ const displayImage = (input) => {
         :showBackButton="false"
       />
     </div>
-    <div v-if="isLoading" class="flex justify-center flex-col items-center">
-      <a-space class="w-full p-96 ml-96">
+    <div v-if="isLoading" class="flex justify-center items-center">
+      <a-space class="w-full flex h-96 justify-center items-center">
         <a-spin size="large" />
       </a-space>
     </div>
 
-    <div v-else class="flex container p-4 w-[70%] justify-start">
-      <div class="w-full p-8 bg-white">
+    <div v-else class="flex container pt-4 px-4 w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] justify-start">
+      <div class="w-full p-8 bg-white ">
         <div class="flex ml-4">
           <label for="logoInput" class="">
             <div
@@ -442,7 +442,7 @@ const displayImage = (input) => {
                 Additional Information
               </label>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4 mb-2">
               <div>
                 <p class="justify-start flex">Phone Number</p>
 
@@ -480,15 +480,15 @@ const displayImage = (input) => {
                   v-model:value="
                     invoice.userProfileData.individualProfile.notes
                   "
-                  rows="2"
+                  rows="1"
                   type="text"
                   class="w-full p-2"
                 />
               </div>
             </div>
 
-            <hr clas="mb-4 mt-4" />
-            <div class="grid grid-cols-2 gap-4 mt-4">
+            <hr />
+            <div class="grid grid-cols-2 gap-4 mt-2">
               <div>
                 <p class="justify-start flex">Custom Field</p>
                 <a-input

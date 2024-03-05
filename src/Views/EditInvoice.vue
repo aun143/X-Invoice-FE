@@ -243,15 +243,15 @@ watch(invoice.formData, (newValue) => {
 
   />
 </div>
- <form @submit.prevent class="container mt-6 ml-6 bg-white max-w-[1000px]  p-6">
+ <form @submit.prevent class="container mt-6 ml-6 bg-white 2xl:w-[50%] xl:w-[60%] w-[50%] lg:w-[70%] md:w-[90%] p-6">
     <div class="container">
       <div class="flex justify-between">
         <div class="flex flex-col space-y-5 w-1/2s sm:flex sm:space-x-4">
           <div class=" ">
-            <div class="mt-2 text-2xl ml-2 text-left ">
+            <div class="mt-2 text-2xl ml-2 text-left flex ">
               <span
               
-                class="px-[15px] mr-6  text-[12px] text-white px-3 py-2  rounded mr-4"
+                class="px-[15px]  text-[12px] text-white py-2  rounded mr-4"
                 :class="{
                   'bg-[#10C0CB] text-white text-[12px] ':
                     invoice.formData.paymentStatus === 'Paid',
@@ -261,14 +261,15 @@ watch(invoice.formData, (newValue) => {
               >
                 {{ invoice.formData.paymentStatus }}
               </span>
-              <span class="text-[#ff0000]">*</span>   <a-input
+              <div class="flex">
+               <a-input
    v-model:value="invoice.formData.invoiceName"
-    class="w-[250px] h-8 text-left text-[13px]"
+    class="w-[250px] h-12 text-left text-[15px]"
     type="text"
     placeholder="Invoice Name"
-  />
+  /></div>
             </div>
-          </div>
+          </div><div class="flex"><span class="text-[#ff0000] mr-2">*</span>
           <a-textarea
           v-model:value="invoice.formData.description"
             placeholder="Enter Description"
@@ -276,7 +277,7 @@ watch(invoice.formData, (newValue) => {
             id=""
             cols="60"
             rows="2"
-          ></a-textarea>
+          ></a-textarea></div>
         </div>
         <div class="flex flex-col w-1/2 items-end">
           <label for="logoInput" class="" >
@@ -296,7 +297,7 @@ watch(invoice.formData, (newValue) => {
          </label>
         </div>
       </div>
-      <div class="mt-10 flex w-full">
+      <div class="mt-10 lg:mt-10 md:mt-2 flex w-full">
         <div class="">
           <p class="ml-auto  mr-4"> <span class="text-[#ff0000]">*</span>Invoice No.</p>
           <a-input-number
@@ -309,7 +310,7 @@ watch(invoice.formData, (newValue) => {
         <div class="flex items-end justify-end w-full">
           <div class="">
             <p class="text-left ml-4 ">Language</p>
-            <a-select  v-model:value="invoice.formData.language" class="ml-2 w-[150px]">
+            <a-select  v-model:value="invoice.formData.language" class="ml-2 lg:w-[150px] w-[150px] md:w-[130px]">
               <a-select-option
                 v-for="language in invoice.languageOptions"
                 :key="language.value"
@@ -320,7 +321,7 @@ watch(invoice.formData, (newValue) => {
           </div>
           <div>
             <p class="text-left ml-3">Currency</p>
-            <a-select  v-model:value="invoice.formData.currency" class="ml-2 w-[200px]">
+            <a-select  v-model:value="invoice.formData.currency" class="ml-2 lg:w-[200px] w-[200px] md:w-[170px]">
               <a-select-option
                 v-for="currency in invoice.currencyOptions"
                 :key="currency.value"
@@ -337,44 +338,48 @@ watch(invoice.formData, (newValue) => {
       <hr />
     </div>
  <div class="container flex">
-      <div class="flex-left w-[35%] justify-center">
+      <div class="flex-left w-[45%] justify-center">
         <div class="mt-4 text-left ">
           <div v-if="isLoading" class="flex justify-center flex-col items-center">
       <a-space class="w-full ">
         <a-spin size="large" />
       </a-space>
     </div>
-          <div v-else>
+    <div v-else>
             <div class="flex w-full">
-              <p> <span class="text-[#ff0000]">*</span>From</p>
+              <p> <span class="text-[#ff0000]">*</span>From:</p>
+              
               <p class="justify-end flex w-full text-left">
-                <router-link to="/businessProfile">Edit Business Profile</router-link>
+                <router-link to="/businessProfile" class="text-[#10C0CB]" >Business Profile</router-link>
               </p>
             </div>
-                                  <div class="">
-                        <div v-if="invoice.selectedProfileType === 'individual'" class=" border-2 border-gray-100 rounded-2" >
+                                  <div class="ml-2">
+                        <div v-if="invoice.selectedProfileType === 'individual'" class=" border-2 pl-2 border-gray-100 rounded-2" >
                           <!-- <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br> -->
-                        <span class="ml-2">{{ invoice.formData.sender.firstName }}</span>
-                        <span class="ml-2">{{invoice.formData.sender.lastName }}</span><br>
-                     <span class="ml-2">{{ invoice.formData.sender.address1 }}</span>
-                        <span class="ml-2">{{ invoice.formData.sender.address2 }}</span><br> 
-                        <span class="ml-2">{{ invoice.formData.sender.email }}</span><br>
-                        <span class="ml-2">{{ invoice.formData.sender.state }}</span><br>
-                        <span class="ml-2">{{ invoice.formData.sender.city }}</span><br>
+                          <p class="">
+                          <span class="">Selected Profile Type: {{ invoice.formData.sender.profileType }}</span><br>
+                        <span class="">{{ invoice.formData.sender.firstName }}</span>&nbsp;
+                        <span class="">{{invoice.formData.sender.lastName }}</span><br>
+                        <span class="">{{ invoice.formData.sender.address1 }}</span>&nbsp;
+                        <span class="">{{ invoice.formData.sender.address2 }}</span><br> 
+                        <span class="">{{ invoice.formData.sender.postalCode }}</span> 
+                        <span class="">{{ invoice.formData.sender.city }}</span><br>
+                        <span class="">{{ invoice.formData.sender.state }}</span><br>
+                        <span class="">{{ invoice.formData.sender.email }}</span><br></p>
                         </div> 
-                        <div v-if="invoice.selectedProfileType === 'organization'" class=" border-2 border-gray-300  rounded-2" >
-                        <span class="ml-2"> 
-                          {{ invoice.formData.sender.organizationName }}</span><br>
-                          <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br>
-                          <span class="ml-2">{{ invoice.formData.sender.firstName }}</span>
-                        <span class="ml-2">{{invoice.formData.sender.lastName }}</span><br>
-                        <!-- <span class="ml-2">{{ invoice.formData.sender.address1 }}</span>
-                        <span class="ml-2">{{ invoice.formData.sender.address2 }}</span><br> -->
-                        <!-- <span class="ml-2">{{ invoice.formData.sender.postalCode }}</span> -->
-                        <span class="ml-2">{{ invoice.formData.sender.city }}</span><br>
-                        <!-- <span class="ml-2">{{ invoice.formData.sender.state }}</span><br> -->
-                        <!-- <span class="ml-2">{{ invoice.formData.sender.email }}</span><br> -->
-                        <!-- <span class="ml-2">{{ invoice.formData.sender.city }}</span><br> -->
+                        <div v-if="invoice.selectedProfileType === 'organization'" class=" border-2 pl-2 border-gray-300  rounded-2" >
+                          <p class="">
+                          <span class="">Selected Profile Type: {{ invoice.formData.sender.profileType }}:</span><br>
+                        <span class="">{{ invoice.formData.sender.organizationName }}</span><br>
+                        <span class="">{{ invoice.formData.sender.firstName }}</span>&nbsp;
+                        <span class="">{{invoice.formData.sender.lastName }}</span><br>
+                        <span class="">{{ invoice.formData.sender.address1 }}</span>&nbsp;
+                        <span class="">{{ invoice.formData.sender.address2 }}</span><br> 
+                        <span class="">{{ invoice.formData.sender.postalCode }}</span> 
+                        <span class="">{{ invoice.formData.sender.city }}</span><br>
+                        <span class="">{{ invoice.formData.sender.state }}</span><br>
+                        <span class="">{{ invoice.formData.sender.email }}</span><br>
+                        </p>
                         </div>
 
 
@@ -448,7 +453,7 @@ watch(invoice.formData, (newValue) => {
     <div class="">
       <table class="table-auto w-full">
   <tr class="text-left text-black">
-    <th class="align-top"></th>
+    <th class="align-top md:hidden lg:block block"></th>
     <th class="p-2 w-1/2 align-top">Description</th>
     <th class="p-2 align-top ">Quantity</th>
     <th class="p-2 align-top">Rate</th>
@@ -466,8 +471,8 @@ watch(invoice.formData, (newValue) => {
           @drop="handleDrop(index)"
           @dragend="handleDragEnd"
         >
-    <td class="align-top">
-      <div class="display-none"></div>
+    <td class="align-top md:hidden lg:block block">
+      <div class=""></div>
       <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="cursor-move" style="width: 20px; height: 20px; margin-right: 10px;">
         <path d="M5 3H3v2h2V3zm14 4h2v6h-2V9H9v10h4v2H7V7h12zM7 3h2v2H7V3zM5 7H3v2h2V7zm-2 4h2v2H3v-2zm2 4H3v2h2v-2zm6-12h2v2h-2V3zm6 0h-2v2h2V3zm-2 14v-2h6v2h-2v2h-2v2h-2v-4zm4 2v2h2v-2h-2z" fill="currentColor" />
       </svg>
@@ -481,7 +486,7 @@ watch(invoice.formData, (newValue) => {
     </td>
     <td class="align-top">
       <a-input-number v-model:value="item.rate" class="w-full ml-4" type="number" placeholder="Rate" />
-      <a-select v-model:value="item.unit" class="ml-2 mt-1 w-[60px]" @change="() => handleUnitChange(index, item.unit)">
+      <a-select v-model:value="item.unit" class="ml-2 mt-1 mb-2 w-[60px]" @change="() => handleUnitChange(index, item.unit)">
         <a-select-option v-for="unit in invoice.unitOptions" :key="unit.value" :value="unit.value">
           {{ unit.value }}
 
@@ -520,13 +525,13 @@ watch(invoice.formData, (newValue) => {
       </div>
 
     
-        <div class="mt-10 flex-y-5 text-right space-y-3 w-full">
+        <div class="mt-3 lg:mt-3 xl:mt-5 md:mt-0 flex-y-5 text-right space-y-3 w-full">
           <p>
-            <span>Subtotal</span>
+            <span>SubTotal</span>
             <a-input
               :value="getSubtotal()"
               readonly
-              class=" focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4  border-0 w-[500px]"
+              class=" focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4  border-0 2xl:w-[450px] xl:w-[350px] lg:w-[230px] md:w-[200px]"
               placeholder="Subtotal"
             />
           </p>
@@ -536,7 +541,7 @@ watch(invoice.formData, (newValue) => {
             <a-input
               :value="getTotal()"
               readonly
-              class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 border-0 w-[500px]"
+              class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 border-0 2xl:w-[470px] xl:w-[370px] lg:w-[250px]  md:w-[220px] "
               placeholder="Total"
             />
           </p>
@@ -547,7 +552,7 @@ watch(invoice.formData, (newValue) => {
     <br />
     <div class="container flex">
       <div class="flex-left">
-        <div class="mt-10 text-left space-y-3">
+        <div class="mt-10 lg:mt-10 md:mt-4 text-left space-y-3">
           <div>
             <div class="flex w-full">
               <p class="ml-1">Invoice Notes<a href="#">(Default Note)</a></p>

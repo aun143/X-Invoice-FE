@@ -90,7 +90,7 @@ const getIconType = (item) => {
       </VueSidebarMenuAkahon>
     </div>
 
-    <RouterView v-if="enableSidebar" class="max-w-full pl-[250px]" />
+    <RouterView v-if="enableSidebar" class="max-w-full pb-6 pl-[250px] lg:pl-[250px] md:pl-[195px]" />
     <RouterView v-else />
   </div>
 </template>
@@ -105,5 +105,18 @@ const getIconType = (item) => {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+@media (max-width: 1023px) {
+  .sidebar {
+    width: 195px !important; 
+}
+}@media (max-width: 1023px) {
+  .sidebar div.profile{
+    width: 195px !important; 
+}
+}@media (max-width: 1023px) {
+  .sidebar div.profile .job{
+    font-size:9px !important; 
+}
 }
 </style>

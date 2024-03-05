@@ -111,11 +111,11 @@ const columns = [
     dataIndex: 'phone',
     key: 'phone'
   },
-  {
-    title: 'Client Type',
-    dataIndex: 'clientType',
-    key: 'phone'
-  }
+  // {
+  //   title: 'Client Type',
+  //   dataIndex: 'clientType',
+  //   key: 'phone'
+  // }
 ];
 
 const filteredClients = computed(() => {
@@ -142,7 +142,7 @@ const filteredClients = computed(() => {
 </script>
 
 <template>
-  <div class="ml-60">
+  <div class="ml-60 lg:ml-60 md:ml-44">
     <Header
       :showBackButton="true"
       headerTitle="Clients"
@@ -157,7 +157,7 @@ const filteredClients = computed(() => {
   </div>
 
   <div class="content-center">
-    <div class="flex-col m-auto flex p-4 max-w-full ml-60">
+    <div class="flex-col m-auto flex p-4 max-w-full ml-60 lg:ml-60 md:ml-48">
       <div class="flex flex-col ">
         <span class="meta" style="display: inline"></span>
         <div class="">
