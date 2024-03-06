@@ -125,7 +125,7 @@ const computedStyle = {
   <section class="flex w-full h-screen items-center justify-center fixed top-1/2 transform -translate-y-1/2">
     <div class="grid grid-cols-10 max-w-5xl h-[80%] relative">
       <div class="flex w-full col-span-3  p-4 bg-[#10C0CB]">
-        <!-- <img src="../assets/3x.webp" class="w-full"> -->
+        <!-- <img src="../assets/3x.webp // https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png" class="w-full"> -->
         <div class="flex justify-center items-center">
           <svg
             width="200"

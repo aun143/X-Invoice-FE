@@ -123,14 +123,25 @@ onMounted(async () => {
 
     if (UserId) {
       const UserResponse = await getUserDetailsApi(UserId);
-      invoice.updateUser(UserResponse);
+      invoice.userProfileData=UserResponse
+      invoice.updateUser(invoice.userProfileData);
 
       const { userProfileData } = invoice;
       
       if (userProfileData.selectedProfileType === "individual") {
         invoice.updateUserProfileIndividual(userProfileData.individualProfile);
+
+        // Display the uploaded image URL if available
+        if (invoice.userProfileData.individualProfile.url) {
+          displayImage(logoInputRef.value, invoice.userProfileData.individualProfile.url);
+        }
       } else if (userProfileData.selectedProfileType === "organization") {
         invoice.updateUserProfileOrganization(userProfileData.organizationProfile);
+
+        // Display the uploaded image URL if available
+        if (invoice.userProfileData.organizationProfile.url) {
+          displayImage(logoInputRef.value, invoice.userProfileData.organizationProfile.url);
+        }
       }
     } else {
       router.push("/login");
@@ -172,23 +183,78 @@ const logo = () => {
 };
 const logoInputRef = ref(null);
 const logoPreview = ref(null);
-const handleFileInputChange = () => {
-  displayImage(logoInputRef.value);
+
+const handleFileInputChange = async () => {
+  const file = logoInputRef.value.files[0];
+  console.log("file",file)
+  if (file) {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('http://localhost:3010/api/upload/file', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      const imageUrl = data.url;
+
+      if (profileType.value === 'individual') {
+        invoice.userProfileData.individualProfile.url = imageUrl;
+      } else if (profileType.value === 'organization') {
+        invoice.userProfileData.organizationProfile.url = imageUrl;
+      }
+      displayImage(logoInputRef.value, imageUrl); // Update the image preview
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Error uploading image. Please try again.",
+        footer: "Please try again",
+      });
+    }
+  }
 };
-const displayImage = (input) => {
+
+const displayImage = (input, imageUrl) => {
   const file = input.files[0];
+
   if (file) {
     const reader = new FileReader();
+
     reader.onload = (e) => {
-      logoPreview.value.src = e.target.result;
+      if (profileType.value === 'individual') {
+        invoice.userProfileData.individualProfile.url = imageUrl;
+        console.log("invoice.ind.url",imageUrl)
+      } else if (profileType.value === 'organization') {
+        invoice.userProfileData.organizationProfile.url = imageUrl;
+        console.log("invoice.org.url",imageUrl)
+      } // Update the URL in the formData
+      const imagePreview = document.getElementById('imagePreview');
+      imagePreview.src = imageUrl;
     };
+
     reader.readAsDataURL(file);
+    if (profileType.value === 'individual') {
+        invoice.userProfileData.individualProfile.url = file;
+        console.log("invoice.ind.url",imageUrl)
+      } else if (profileType.value === 'organization') {
+        invoice.userProfileData.organizationProfile.url = file;
+        console.log("invoice.org.url",imageUrl)
+      } 
   }
 };
 </script>
 
-<template>
-  <div class="bg-gray-200 h-[max-content]">
+<template><div v-if="isLoading" class="flex justify-center items-center">
+  <a-space class="w-full flex h-96 justify-center items-center">
+    <a-spin size="large" />
+  </a-space>
+</div>
+
+<div v-else  class="bg-gray-200 h-[max-content]">
     <div class="bg-white">
       <Header
         headerTitle="Business Profile"
@@ -201,43 +267,39 @@ const displayImage = (input) => {
         :showBackButton="false"
       />
     </div>
-    <div v-if="isLoading" class="flex justify-center items-center">
-      <a-space class="w-full flex h-96 justify-center items-center">
-        <a-spin size="large" />
-      </a-space>
-    </div>
-
-    <div v-else class="flex container pt-4 px-4 w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] justify-start">
+    <div class="flex container pt-4 px-4 w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] justify-start">
       <div class="w-full p-8 bg-white ">
         <div class="flex ml-4">
           <label for="logoInput" class="">
             <div
-              class="logo-placeholder border-none cursor-pointer  w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
+              class="logo-placeholder hover:border-dashed border-none cursor-pointer  w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
             >
               <img
                 v-if="profileType === 'individual'"
-                src="../assets/3x.webp"
+                id="imagePreview"
+                :src="invoice.userProfileData.individualProfile.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
                 ref="logoPreview"
                 alt="Logo for Individual"
                 class="w-20 mb-4 h-20 cursor-pointer"
               />
               <img
                 v-if="profileType === 'organization'"
-                src="../assets/3x.webp"
+                id="imagePreview"
+                :src="invoice.userProfileData.organizationProfile.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
                 alt="Logo for Organization"
                 ref="logoPreview"
                 class="w-20 mb-4 h-20 cursor-pointer"
               />
             </div>
-            <!-- <a-input
-              id="logoInput"
-              type="file"
-              accept="image/*"
-              class=""
-              style="display: none"
-              @change="handleFileInputChange"
-              ref="logoInputRef"
-            /> -->
+            <input
+                id="logoInput"
+                type="file"
+                accept="image/*"
+                class=""
+                style="display: none"
+                @change="handleFileInputChange"
+                ref="logoInputRef"
+              />
           </label>
 
           <div class="flex-right w-48 ml-6">
@@ -248,7 +310,7 @@ const displayImage = (input) => {
                     class="flex pl-4 cursor-pointer"
                     @click="switchProfileType('individual')"
                   >
-                    <p class="mb-1 mt-4">Individual</p>
+                    <p class="mb-1 mt-4 mr-12">Individual</p>
                   </div>
                 </td>
                 <div></div>
@@ -266,7 +328,7 @@ const displayImage = (input) => {
                     class="flex pl-4 cursor-pointer"
                     @click="switchProfileType('organization')"
                   >
-                    <p class="mb-1 mt-2 mr-12">Organization</p>
+                    <p class="mb-1 mt-3 mr-12">Organization</p>
                     <!-- <span v-if="selectedField === 'organization'" class="text-orange-500">&#10003;</span> -->
                   </div>
                 </td>
@@ -671,7 +733,7 @@ const displayImage = (input) => {
                     :value="country.value"
                   >
                     {{ country.label }}
-                  </a-select-option>
+                  </a-select-option>       
                 </a-select>
               </div>
             </div>
@@ -683,7 +745,7 @@ const displayImage = (input) => {
                 Additional Information
               </label>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4 mb-2">
               <div>
                 <p class="justify-start flex">Phone Number</p>
                 <a-input
@@ -720,14 +782,14 @@ const displayImage = (input) => {
                   v-model:value="
                     invoice.userProfileData.organizationProfile.notes
                   "
-                  rows="2"
+                  rows="1"
                   type="text"
                   class="w-full p-2"
                 />
               </div>
             </div>
-            <hr clas="mb-4 " />
-            <div class="grid grid-cols-2 gap-4 mt-4">
+            <hr clas="" />
+            <div class="grid grid-cols-2 gap-4 mt-2">
               <div>
                 <p class="justify-start flex">Custom Field</p>
                 <a-input

@@ -125,28 +125,50 @@ const handleDragEnd = () => {
   draggedIndex.value = null;
 };
 const logoInputRef = ref(null);
-const logoPreview = ref(null);
-const handleFileInputChange = () => {
-  displayImage(logoInputRef.value);
-  // console.log("3rd")
+// const logoPreview = ref(null);
+const handleFileInputChange = async () => {
+  const file = logoInputRef.value.files[0];
+  if (file) {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('http://localhost:3010/api/upload/file', {
+        method: 'post',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const imageUrl = await response.json();
+        invoice.formData.url = imageUrl.url; // Update formData with the image URL
+        
+        // Call displayImage to update the image preview
+        displayImage(logoInputRef.value, imageUrl);
+      } else {
+        console.error('Failed to upload file');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  }
 };
 
-const displayImage = (input) => {
+const displayImage = (input, imageUrl) => {
   const file = input.files[0];
-// console.log("2nd")
+
   if (file) {
     const reader = new FileReader();
 
     reader.onload = (e) => {
-      logoPreview.value.src = e.target.result;
+      invoice.formData.url = imageUrl.url; // Update the URL in the formData
     };
 
     reader.readAsDataURL(file);
-    invoice.formData.logoPreview=file
-    //console.log("file>>>",file)
+    invoice.formData.url = file;
   }
-  
 };
+
+
 const filterStatus = ref("All");
 
 const filteredClients = computed(() => {
@@ -204,7 +226,7 @@ onMounted(async()=>{
     const response = await getSingleInvoice(invoiceId);
      invoice.formData = response;
     invoice.updateFormData(invoice.formData);
-    logoPreview.value = invoice.formData.logoPreview;
+    invoice.formData.file = invoice.formData.url;
     //console.log("Invoice details fetched successfully:", invoice.formData);
   } catch (error) {
     console.error("Error fetching invoice details:", error);
@@ -300,9 +322,12 @@ watch(invoice.formData, (newValue) => {
         </div>
         <div class="flex flex-col w-1/2 items-end">
           <label for="logoInput" class="" >
-             <div class="logo-placeholder border-none  cursor-pointer rounded w-24 h-24 border-2 grid place-items-center text-slate-500 text-5xl ">
-              <img src="../assets/3x.webp"  ref="logoPreview"  class="logo rounded"   alt="Logo" /> </div>
-               <!-- <input
+            <div class="logo-placeholder border-none  cursor-pointer rounded md:w-28 lg:w-48 h-32 border-2  grid place-items-center text-slate-500 text-5xl ">
+              <!-- <img src="https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png"  ref="logoPreview"  class="logo rounded"   alt="Logo" />  -->
+              <img :src="invoice.formData.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'" class="logo rounded" alt="Logo" />
+              </div>
+
+              <input
                  id="logoInput"
                   type="file"
                   accept="image/*"
@@ -311,8 +336,8 @@ watch(invoice.formData, (newValue) => {
                   @change="handleFileInputChange"
                   ref="logoInputRef"   
     /> 
-  hover:border-dashed
--->
+ 
+
          </label>
         </div>
       </div>

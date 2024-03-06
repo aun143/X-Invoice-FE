@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
+import { ref, onMounted,computed } from "vue";
 import {updateInvoiceStatus,updateUnpaidInvoiceStatus,deleteInvoice,getSingleInvoice} from "../service/invoiceService";
 import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
@@ -22,7 +22,7 @@ const dropdownItems = [
   { title: "Mark as Paid" },
   { title: "Mark as Unpaid" },
   { title: "Send Invoice" },
-  { title: "Delete " },
+  { title: "Delete" },
 ];
 
 const isLoading = ref(false);
@@ -81,20 +81,22 @@ const changeUnpaidStatus = async () => {
 
 const deleteInvoicee = async () => {
   try {
-    //console.log("Changing status for invoiceId:", invoiceId);
-    const status = await invoiceService.deleteInvoice(invoiceId);
+    // console.log("Changing status for invoiceId:", invoiceId);
+    const status = await deleteInvoice(invoiceId);
     router.push("/");
     Swal.fire({
       icon: "success",
       title: " Invoice Deleted ",
       text: " Invoice has been Deleted successfully.",
     });
-    console.log("invoice deleted successfully:", status);
+    // console.log("invoice deleted successfully:", status);
   } catch (error) {
     console.error("Error deleting invoice:", error);
   }
 };
-
+const imageUrl = computed(() => {
+  return invoice.formData.url ? invoice.formData.url : "https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png";
+});
 onMounted(async () => {
   try {
     isLoading.value = true;
@@ -206,9 +208,10 @@ const formatDate = (dateString) => {
             </div>
           </div>
           <div class="">
-            <div class="mr-8 2xl:mr-[320px]  mt-4 max-w-24 2xl:w-48 max-h-auto">
-              <img alt="Logo" src="../assets/3x.webp" />
-            </div>
+            <div class="mr-8 w-48 mt-8 h-auto">
+    <img :src="imageUrl" alt="Logo" />
+  </div>
+
           </div>
         </div>
         <div class="flex mb-8 mt-4">
@@ -246,11 +249,11 @@ const formatDate = (dateString) => {
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Date</p>
-              <div class="text-left">{{formatDate(invoice.formData.date) }}</div>
+              <div class="text-left">{{(invoice.formData.date) }}</div>
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Invoice Due</p>
-              <div class="text-left">{{ formatDate(invoice.formData.invoiceDueDate) }}</div>
+              <div class="text-left">{{ (invoice.formData.invoiceDueDate) }}</div>
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold" >Purchase order Number</p>

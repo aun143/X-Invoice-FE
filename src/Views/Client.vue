@@ -162,21 +162,65 @@ const handleSaveDraftButtonClick = () => {
 /////
 const logoInputRef = ref(null);
 const logoPreview = ref(null);
-const handleFileInputChange = () => {
-  displayImage(logoInputRef.value);
-  //console.log("1st image");
-};
-const displayImage = (input) => {
-  const file = input.files[0];
+const handleFileInputChange = async () => {
+  const file = logoInputRef.value.files[0];
   if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      logoPreview.value.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("http://localhost:3010/api/upload/file", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const imageUrl = data.url;
+
+if (selectedField.value === 'individual') {
+  invoice.userClientProfile.clientDataindividual.url = imageUrl;
+} else if (selectedField.value === 'organization') {
+  invoice.userClientProfile.clientDataOrganization.url = imageUrl;
+}
+displayImage(logoInputRef.value, imageUrl);
+      } else {
+        console.error("Failed to upload file");
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
   }
 };
 
+const displayImage = (input, imageUrl) => {
+  const file = input.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      if (selectedField.value === 'individual') {
+        invoice.userClientProfile.clientDataindividual.url = imageUrl;
+        console.log("invoice.ind.url",imageUrl)
+      } else if (selectedField.value === 'organization') {
+        invoice.userClientProfile.clientDataOrganization.url = imageUrl;
+        console.log("invoice.org.url",imageUrl)
+      } // Update the URL in the formData
+      const imagePreview = document.getElementById('imagePreview');
+      imagePreview.src = imageUrl;
+    };
+
+    reader.readAsDataURL(file);
+    if (selectedField.value === 'individual') {
+        invoice.userClientProfile.clientDataindividual.url = file;
+        console.log("invoice.ind.url",imageUrl)
+      } else if (selectedField.value === 'organization') {
+        invoice.userClientProfile.clientDataOrganization.url = file;
+        console.log("invoice.org.url",imageUrl)
+      } 
+  }
+};
 onMounted(() => {
   invoice.resetState();
 });
@@ -201,24 +245,26 @@ onMounted(() => {
           <div class="mb-4 flex ml-4">
             <label for="logoInput" class="">
               <div
-                class="logo-placeholder border-none cursor-pointer  w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
+                class="logo-placeholder border-none cursor-pointer    hover:border-solid  w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
               >
                 <img
                   v-if="selectedField === 'individual'"
-                  src="../assets/3x.webp"
+                  id="imagePreview"
+                  :src="invoice.userClientProfile.clientDataindividual.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
                   ref="logoPreview"
                   alt="Logo for Individual"
                   class="w-20 mb-4 h-20 cursor-pointer"
                 />
                 <img
                   v-if="selectedField === 'organization'"
-                  src="../assets/3x.webp"
+                  id="imagePreview"
+                  :src="invoice.userClientProfile.clientDataOrganization.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
                   alt="Logo for Organization"
                   ref="logoPreview"
                   class="w-20 mb-4 h-20 cursor-pointer"
                 />
               </div>
-              <!-- <a-input
+              <input
                 id="logoInput"
                 type="file"
                 accept="image/*"
@@ -226,9 +272,8 @@ onMounted(() => {
                 style="display: none"
                 @change="handleFileInputChange"
                 ref="logoInputRef"
-              /> 
-            hover:border-solid
-            -->
+              />
+                   
             </label>
 
             <div class="flex-right w-48 ml-6">
@@ -256,7 +301,7 @@ onMounted(() => {
                       class="flex pl-4 cursor-pointer"
                       @click="selectField('organization')"
                     >
-                      <p class="mb-1 mt-2 mr-12">Organization</p>
+                      <p class="mb-1 mt-3 mr-12">Organization</p>
                     </div>
                   </td>
                   <td>
@@ -296,7 +341,7 @@ onMounted(() => {
                   />
                 </div>
               </div>
-              <hr class="mb-2 mt-8" />
+              <hr class="my-4" />
             </div>
             <div>
               <div>
@@ -314,7 +359,7 @@ onMounted(() => {
                   </a-select-option>
                 </a-select>
               </div>
-              <hr class="mb-2 mt-8" />
+              <hr class="my-4" />
               <div class="">
                 <p class="text-left ml-4">Language</p>
                 <a-select
@@ -331,7 +376,7 @@ onMounted(() => {
                 </a-select>
               </div>
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="my-4" />
             <div>
               <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Email Address</p>
               <a-input
@@ -341,7 +386,7 @@ onMounted(() => {
                 class="w-full border p-2"
               />
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="my-4" />
             <div>
               <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Phone Number</p>
               <a-input
@@ -351,7 +396,7 @@ onMounted(() => {
                 class="w-full border p-2"
               />
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="my-4" />
             <div>
               <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Address(Line 1)</p>
               <a-input
@@ -410,7 +455,7 @@ onMounted(() => {
 
 </div>
 
-            <hr class="mb-4 mt-4" />
+            <hr class="my-4" />
 
             <div>
               <div>
@@ -421,52 +466,18 @@ onMounted(() => {
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-8" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Website URL</p>
                 <a-input
                   v-model:value="invoice.userClientProfile.clientDataindividual.websiteURL"
                   type="text"
-                  class="w-full border p-2"
+                  class="w-full border p-2 mb-4"
                 />
               </div>
-              <hr clas="mb-4 " />
-              <!-- <div>
-                <p class="justify-start flex">Notes</p>
-                <a-textarea
-                  v-model:value="invoice.userClientProfile.clientDataindividual.notes"
-                  rows="4"
-                  type="text"
-                  class="w-full border p-2"
-                />
-
-                <hr class="mb-4" />
-                <div class="grid grid-cols-2 gap-4 mt-6">
-                  <div class="">
-                    <p class="justify-start">Custom Field</p>
-
-                    <a-input
-                      v-model:value="
-                        invoice.userClientProfile.clientDataindividual.customFieldName
-                      "
-                      type="text"
-                      class="w-full border p-2"
-                      placeholder="Custom Field Name"
-                    />
-                  </div>
-                  <div class="">
-                    <a-input
-                      v-model:value="
-                        invoice.userClientProfile.clientDataindividual.customFieldValue
-                      "
-                      type="text"
-                      class="w-full border p-2 mt-6"
-                      placeholder="Custom Field Value"
-                    />
-                  </div>
-                </div>
-              </div> -->
-            </div>
+              <hr clas="mt-4" />
+              <div class="mt-4"></div>
+              </div>
             <div class="flex justify-between items-center"></div>
           </div>
 
@@ -524,7 +535,7 @@ onMounted(() => {
                     </a-select-option>
                   </a-select>
                 </div>
-                <hr class="mb-2 mt-8" />
+                <hr class="my-4" />
                 <div class="">
                   <p class="text-left ml-4">Language</p>
                   <a-select
@@ -541,7 +552,7 @@ onMounted(() => {
                   </a-select>
                 </div>
               </div>
-              <hr class="mb-2 mt-8" />
+              <hr class="my-4" />
               <p class="justify-start flex"> <span class="text-[#ff0000]">*</span> Email Address</p>
               <a-input
                 v-model:value="invoice.userClientProfile.clientDataOrganization.email"
@@ -550,7 +561,7 @@ onMounted(() => {
                 class="w-full border p-2"
               />
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="my-4" />
             <div>
               <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Phone Number</p>
               <a-input
@@ -560,7 +571,7 @@ onMounted(() => {
                 class="w-full border p-2"
               />
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="my-4" />
             <div>
               <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Address(Line 1)</p>
               <a-input
@@ -577,46 +588,7 @@ onMounted(() => {
                 class="w-full mt-2 border p-2"
               />
             </div>
-            <!-- <div class="">
-              <div class="mt-2 mr-2">
-                <a-input
-                  v-model:value="invoice.userClientProfile.clientDataOrganization.city"
-                  placeholder="City"
-                  type="text"
-                  class="mr-2 w-[30%]"
-                />
-                <a-input
-                  v-model:value="invoice.userClientProfile.clientDataOrganization.state"
-                  type="text"
-                  class="mr-2 w-[30%]"
-                  placeholder="State"
-                />
-                <a-input
-                  v-model:value="invoice.userClientProfile.clientDataOrganization.postalCode"
-                  type="number"
-                  class="mr-2 w-[30%]"
-                  placeholder="Postal Code"
-                />
-              </div>
-              <div class="">
-                <p class="text-left ml-4"> <span class="text-[#ff0000]">*</span>Country</p>
-                <a-select
-                  v-model:value="invoice.userClientProfile.clientDataOrganization.country"
-                  class="ml-2 w-full"
-                >
-                  <a-select-option
-                    v-for="country in invoice.countryOptions"
-                    :key="country.value"
-                    :value="country.label"
-                  >
-                    {{ country.label }}
-                  </a-select-option>
-                </a-select>
-              </div>
-            </div> -->
-
-
-            <div class="flex justify-between items-center mt-3">
+         <div class="flex justify-between items-center mt-3">
               <div class="">
     <p class="text-left"> <span class="text-[#ff0000]">*</span>Country</p>
     <a-select
@@ -658,7 +630,7 @@ onMounted(() => {
 
 </div>
 
-            <hr class="mb-4 mt-4" />
+            <hr class="my-4" />
 
             <div>
               <div>
@@ -669,7 +641,7 @@ onMounted(() => {
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-4" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Fax Number</p>
                 <a-input
@@ -678,7 +650,7 @@ onMounted(() => {
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-4" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Website URL</p>
                 <a-input
@@ -687,7 +659,7 @@ onMounted(() => {
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-4" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Notes</p>
                 <a-textarea
@@ -697,7 +669,7 @@ onMounted(() => {
                   class="w-full border p-2"
                 />
 
-                <hr class="mb-4" />
+                <hr class="my-4" />
                 <!-- <div class="grid grid-cols-2 gap-4 mt-6">
                   <div>
                     <p class="justify-start flex">Custom Field</p>

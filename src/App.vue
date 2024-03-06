@@ -53,8 +53,8 @@ const enableSidebar = computed(() => {
   return componentsWithSidebar.includes(route.name);
 });
 
-const menuLogo = "./src/assets/3x.webp"; 
-const profileImg = "./src/assets/3x.webp";
+const menuLogo = "https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png"; 
+const profileImg = "https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png";
 
 const getIconType = (item) => {
   return item.icon;

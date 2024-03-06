@@ -84,28 +84,20 @@ onMounted(() => {
   fetchclientDetails();
 });
 /////
-const logoInputRef = ref(null);
 const logoPreview = ref(null);
-const handleFileInputChange = () => {
-  displayImage(logoInputRef.value);
-  //console.log("1st image");
-};
-const displayImage = (input) => {
-  const file = input.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      logoPreview.value.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-};
+
 
 const fontSize = "12px";
 </script>
 
 <template>
- <div class="bg-gray-200">
+<div v-if="isLoading" class="flex justify-center items-center">
+  <a-space class="w-full flex h-96 justify-center items-center">
+    <a-spin size="large" />
+  </a-space>
+</div>
+
+<div v-else  class="bg-gray-200">
     <div class="bg-white">
   <Header
     headerTitle="Client"
@@ -127,73 +119,20 @@ const fontSize = "12px";
             
             <label for="logoInput" class="">
               
-              <!-- <div
-                class="logo-placeholder border-none cursor-pointer   w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
+             <div
+                class="logo-placeholder border-[1px] ml-[100%] justify-end items-end flex w-32 h-auto place-items-end text-slate-500 text-6xl font-bold"
               >
-                <img
-                  v-if="selectedField === 'individual'"
-                  src="../assets/3x.webp"
-                  ref="logoPreview"
-                  alt="Logo for Individual"
-                  class="w-20 mb-4 h-20 cursor-pointer"
+              <img
+                    :src="invoice.userClientProfile.clientDataindividual.url ? invoice.userClientProfile.clientDataindividual.url : 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
+                    ref="logoPreview"
+                    alt="Logo for Individual"
+                    class="w48 h-auto cursor-pointer"
                 />
-                <img
-                  v-if="selectedField === 'organization'"
-                  src="../assets/3x.webp"
-                  alt="Logo for Organization"
-                  ref="logoPreview"
-                  class="w-20 mb-4 h-20 cursor-pointer"
-                />
-              </div> -->
-              <!-- <a-input readonly
-                id="logoInput"
-                type="file"
-                accept="image/*"
-                class=""
-                style="display: none"
-                @change="handleFileInputChange"
-                ref="logoInputRef"
-              /> -->
+                
+              </div> 
+            
             </label>
 
-            <!-- <div class="flex-right w-48 ml-6">
-              <table class=" border">
-                <tr class="border">
-                  <td>
-                    <div
-                      class="flex pl-4 cursor-pointer"
-                      @click="selectField('individual')"
-                    >
-                      <p class="mb-1 mt-4">Individual</p>
-                    </div>
-                  </td>
-                  <td>
-                    <span
-                      v-if="selectedField === 'individual'"
-                      class="text-orange-500"
-                      >&#10003;</span
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div
-                      class="flex pl-4 cursor-pointer"
-                      @click="selectField('organization')"
-                    >
-                      <p class="mb-1 mt-2 mr-12">Organization</p>
-                    </div>
-                  </td>
-                  <td>
-                    <span
-                      v-if="selectedField === 'organization'"
-                      class="text-orange-500"
-                      >&#10003;</span
-                    >
-                  </td>
-                </tr>
-              </table>
-            </div> -->
           </div>
           <span class="font-medium text-[15px]"> {{ invoice.userClientProfile.clientDataindividual.clientType }} Profile</span>
           <br />
@@ -230,7 +169,7 @@ const fontSize = "12px";
                   />
                 </div>
               </div>
-              <hr class="mb-2 mt-8" />
+              <hr class="my-4" />
             </div>
             <div>
               <div>
@@ -239,16 +178,10 @@ const fontSize = "12px";
                   v-model:value="invoice.userClientProfile.clientDataindividual.currency"
                   class="ml-2 w-full"
                 >
-                  <!-- <a-select-option disabled
-                    v-for="currency in invoice.currencyOptions"
-                    :key="currency.value"
-                    :value="currency.value"
-                  >
-                    {{ currency.label }}
-                  </a-select-option> -->
+                  
                 </a-input>
               </div>
-              <hr class="mb-2 mt-8" />
+              <hr class="my-4" />
               <div class="">
                 <p class="text-left ml-4">Language</p>
                 <a-input readonly 
@@ -259,7 +192,7 @@ const fontSize = "12px";
                 </a-input>
               </div>
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="my-4" />
             <div>
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Email Address</p>
               <a-input readonly
@@ -269,7 +202,7 @@ const fontSize = "12px";
                 class="w-full border p-2"
               />
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="my-4" />
             <div>
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Phone Number</p>
               <a-input readonly
@@ -279,7 +212,7 @@ const fontSize = "12px";
                 class="w-full border p-2"
               />
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="my-4" />
             <div>
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Address(Line 1)</p>
               <a-input readonly
@@ -338,7 +271,7 @@ const fontSize = "12px";
 
 </div>
 
-            <hr class="mb-4 mt-4" />
+            <hr class="my-4" />
 
             <div>
               <div>
@@ -349,48 +282,28 @@ const fontSize = "12px";
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-8" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Website URL</p>
                 <a-input readonly
                   v-model:value="invoice.userClientProfile.clientDataindividual.websiteURL"
                   type="text"
-                  class="w-full border p-2"
+                  class="w-full border p-2 mb-4"
                 />
               </div>
-              <hr clas="mb-4 " />
+              <hr clas=" " />
               <div>
-                <p class="justify-start flex">Notes</p>
+                <p class="justify-start flex mt-4">Notes</p>
                 <a-textarea readonly 
                   v-model:value="invoice.userClientProfile.clientDataindividual.notes"
                   rows="4"
                   type="text"
-                  class="w-full border p-2"
+                  class="w-full border p-2 mb-4"
                   style="resize: none;" 
                 />
 
                 <hr class="mb-4" />
-                <!-- <div class="grid grid-cols-2 gap-4 mt-6">
-                  <div class="">
-                    <p class="justify-start">Custom Field</p>
-
-                    <a-input readonly
-                      v-model:value="invoice.clientDataindividual.customFieldName"
-                      type="text"
-                      class="w-full border p-2"
-                      placeholder="Custom Field Name"
-                    />
-                  </div>
-                  <div class="">
-                   <a @click="addNewLine" class="ml-32">Add Custom Field</a>
-                    <a-input readonly
-                      v-model:value="invoice.clientDataindividual.customFieldValue"
-                      type="text"
-                      class="w-full border p-2 mt-6"
-                      placeholder="Custom Field Value"
-                    />
-                  </div>
-                </div> -->
+                
               </div>
             </div>
             <div class="flex justify-between items-center"></div>
@@ -448,24 +361,18 @@ const fontSize = "12px";
                     </a-select-option>
                   </a-select>
                 </div>
-                <hr class="mb-2 mt-8" />
+                <hr class="my-4" />
                 <div class="">
                   <p class="text-left ml-4">Language</p>
                   <a-input readonly
                     v-model:value="invoice.userClientProfile.clientDataOrganization.language"
                     class="ml-2 w-full"
                   >
-                    <!-- <a-select-option readonly
-                      v-for="language in invoice.languageOptions"
-                      :key="language.value"
-                      :value="language.label"
-                    >
-                      {{ language.label }}
-                    </a-select-option> -->
+                    
                   </a-input>
                 </div>
               </div>
-              <hr class="mb-2 mt-8" />
+              <hr class="my-4" />
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Email Address</p>
               <a-input readonly
                 v-model:value="invoice.userClientProfile.clientDataOrganization.email"
@@ -474,7 +381,7 @@ const fontSize = "12px";
                 class="w-full border p-2"
               />
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="my-4" />
             <div>
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Phone Number</p>
               <a-input readonly
@@ -484,7 +391,7 @@ const fontSize = "12px";
                 class="w-full border p-2"
               />
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="my-4" />
             <div>
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Address(Line 1)</p>
               <a-input readonly
@@ -543,44 +450,7 @@ const fontSize = "12px";
 
 </div>
 
-            <!-- <div class="">
-              <div class="mt-2 mr-2">
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataOrganization.city"
-                  placeholder="City"
-                  type="text"
-                  class="mr-2 w-[30%]"
-                />
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataOrganization.state"
-                  type="text"
-                  class="mr-2 w-[30%]"
-                  placeholder="State"
-                />
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataOrganization.postalCode"
-                  type="number"
-                  class="mr-2 w-[30%]"
-                  placeholder="Postal Code"
-                />
-              </div>
-              <div class="">
-                <p class="text-left ml-4"><span class="text-[#ff0000]">*</span>Country</p>
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataOrganization.country"
-                  class="ml-2 w-full"
-                >
-                  <a-select-option readonly
-                    v-for="country in invoice.countryOptions"
-                    :key="country.value"
-                    :value="country.label"
-                  >
-                    {{ country.label }}
-                  </a-select-option>
-                </a-input>
-              </div>
-            </div> -->
-            <hr class="mb-4 mt-4" />
+                     <hr class="my-4" />
 
             <div>
               <div>
@@ -591,7 +461,7 @@ const fontSize = "12px";
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-4" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Fax Number</p>
                 <a-input readonly
@@ -600,7 +470,7 @@ const fontSize = "12px";
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-4" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Website URL</p>
                 <a-input readonly
@@ -609,7 +479,7 @@ const fontSize = "12px";
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-4" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Notes</p>
                 <a-textarea
@@ -620,28 +490,7 @@ const fontSize = "12px";
                   style="resize: none;" 
                 />
 
-                <hr class="mb-4" />
-                <!-- <div class="grid grid-cols-2 gap-4 mt-6">
-                  <div>
-                    <p class="justify-start flex">Custom Field</p>
-
-                    <a-input readonly
-                      v-model:value="invoice.clientDataOrganization.customFieldName"
-                      type="text"
-                      class="w-full border p-2"
-                      placeholder="Custom Field Name"
-                    />
-                  </div>
-                  <div>
-                    <a @click="addNewLine" class="ml-32">Add Custom Field</a>
-                    <a-input readonly
-                      v-model:value="invoice.clientDataOrganization.customFieldValue"
-                      type="text"
-                      class="w-full border p-2 mt-6"
-                      placeholder="Custom Field Value"
-                    />
-                  </div>
-                </div> -->
+                <hr class="my-4" />
               </div>
             </div>
             <div class="flex justify-between items-center"></div>

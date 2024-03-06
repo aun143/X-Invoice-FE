@@ -139,15 +139,6 @@ const validateFormInd = () => {
 
   return true;
 };
-const deletClient = async () => {
-  try {
-    //console.log("deletind clientId:", clientId);
-    const status = await deleteClient(clientId);
-    //console.log("delete client successfully:", status);
-  } catch (error) {
-    console.error("Error delete client:", error);
-  }
-};
 const fetchclientDetails = async () => {
   try {
     isLoading.value = true;
@@ -167,7 +158,7 @@ const fetchclientDetails = async () => {
         ...clientDetails,
     };
 }
-
+displayImage(logoInputRef.value, imageUrl);
     //console.log("Client details fetched successfully:", clientDetails);
   } catch (error) {
     console.error("Error fetching client details:", error);
@@ -175,28 +166,68 @@ const fetchclientDetails = async () => {
     isLoading.value = false;
   }
 };
+const displayImage = (input, imageUrl) => {
+  const file = input.files[0];
 
+  if (file) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      if (invoice.userClientProfile.clientDataindividual.clientType === 'individual') {
+        invoice.userClientProfile.clientDataindividual.url = imageUrl;
+      } else if (invoice.userClientProfile.clientDataindividual.clientType === 'organization') {
+        invoice.userClientProfile.clientDataOrganization.url = imageUrl;
+      }// Update the URL in the formData
+      const imagePreview = document.getElementById('imagePreview');
+      imagePreview.src = imageUrl;
+    };
+
+    reader.readAsDataURL(file);
+    if (invoice.userClientProfile.clientDataindividual.clientType === 'individual') {
+        invoice.userClientProfile.clientDataindividual.url = imageUrl;
+      } else if (invoice.userClientProfile.clientDataindividual.clientType === 'organization') {
+        invoice.userClientProfile.clientDataOrganization.url = imageUrl;
+      }
+  }
+};
 
 onMounted(() => {
   fetchclientDetails();
 });
 /////
 const logoInputRef = ref(null);
-const logoPreview = ref(null);
-const handleFileInputChange = () => {
-  displayImage(logoInputRef.value);
-  //console.log("1st image");
-};
-const displayImage = (input) => {
-  const file = input.files[0];
+const handleFileInputChange = async (e) => {
+  const file = e.target.files[0];
   if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      logoPreview.value.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      // Make an HTTP request to your API endpoint to upload the file
+      const response = await fetch("http://localhost:3010/api/upload/file", {
+        method: "POST",
+        body: formData,
+      });
+      const responseData = await response.json();
+      const imageUrl =responseData.url;
+      // Check if the upload was successful
+      if (response.ok) {
+        // Update logoPreview with the uploaded image URL
+        if (invoice.userClientProfile.clientDataindividual.clientType === 'individual') {
+        invoice.userClientProfile.clientDataindividual.url = imageUrl;
+      } else if (invoice.userClientProfile.clientDataindividual.clientType === 'organization') {
+        invoice.userClientProfile.clientDataOrganization.url = imageUrl;
+      }
+      } else {
+        // Handle upload error
+        console.error("Error uploading file:", responseData.error);
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
   }
 };
+
 
 const fontSize = "12px";
 </script>
@@ -224,24 +255,26 @@ const fontSize = "12px";
           <div class="mb-4 flex ml-4">
             <label for="logoInput" class="">
               <div
-                class="logo-placeholder border-none cursor-pointer   w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
+                class="logo-placeholder hover:border-dashed border-none cursor-pointer   w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
               >
                 <img
+                id="imagePreview"
                   v-if="selectedField === 'individual'"
-                  src="../assets/3x.webp"
+                  :src="invoice.userClientProfile.clientDataindividual.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
                   ref="logoPreview"
                   alt="Logo for Individual"
                   class="w-20 mb-4 h-20 cursor-pointer"
                 />
                 <img
+                id="imagePreview"
                   v-if="selectedField === 'organization'"
-                  src="../assets/3x.webp"
+                  :src="invoice.userClientProfile.clientDataOrganization.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
                   alt="Logo for Organization"
                   ref="logoPreview"
                   class="w-20 mb-4 h-20 cursor-pointer"
                 />
               </div>
-              <!-- <a-input
+              <input
                 id="logoInput"
                 type="file"
                 accept="image/*"
@@ -249,7 +282,7 @@ const fontSize = "12px";
                 style="display: none"
                 @change="handleFileInputChange"
                 ref="logoInputRef"
-              /> -->
+              />
             </label>
 
             <div class="flex-right w-48 ml-6">
