@@ -14,6 +14,7 @@ import { getUserDetailsApi } from "../service/LoginService";
 // import Modal from "../components/Modal.vue";
 
 const isLoading = ref(false);
+const isLoadingImg = ref(false);
 const route = useRoute();
 const router = useRouter();
 const invoice = useInvoiceStore();
@@ -189,6 +190,7 @@ const handleFileInputChange = async () => {
   console.log("file",file)
   if (file) {
     try {
+      isLoadingImg.value=true;
       const formData = new FormData();
       formData.append('file', file);
 
@@ -214,6 +216,9 @@ const handleFileInputChange = async () => {
         text: "Error uploading image. Please try again.",
         footer: "Please try again",
       });
+    }finally{
+      isLoadingImg.value=false;
+
     }
   }
 };
@@ -273,7 +278,12 @@ const displayImage = (input, imageUrl) => {
           <label for="logoInput" class="">
             <div
               class="logo-placeholder hover:border-dashed border-none cursor-pointer  w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
-            >
+            ><div v-if="isLoadingImg">
+                  <a-space class="w-full">
+                    <a-spin size="large" />
+                  </a-space>
+                </div>
+                <div v-else>
               <img
                 v-if="profileType === 'individual'"
                 id="imagePreview"
@@ -289,7 +299,7 @@ const displayImage = (input, imageUrl) => {
                 alt="Logo for Organization"
                 ref="logoPreview"
                 class="w-20 mb-4 h-20 cursor-pointer"
-              />
+              /></div>
             </div>
             <input
                 id="logoInput"

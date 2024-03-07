@@ -114,29 +114,34 @@ const fontSize = "12px";
   <div class="modal-content max-h-full flex max-w-[800px] px-4 pt-4 justify-start">
       <div class="flex">
         <div class="w-full p-8 lg:w-[70%] 2xl:w-[100%] xl:w-[80%] bg-white">
-          <div class=" flex ">
-            <div class="text-[20px] font-semibold"> Single Client View: (Readonly) </div>
-            
-            <label for="logoInput" class="">
-              
-             <div
-                class="logo-placeholder border-[1px] ml-[100%] justify-end items-end flex w-32 h-auto place-items-end text-slate-500 text-6xl font-bold"
-              >
-              <img
+          <div class="grid grid-cols-2">
+         
+          <div class="text-[20px] font-semibold"> Single Client View: (Readonly) <br>
+
+          <span class="font-medium text-[15px]"> {{ invoice.userClientProfile.clientDataindividual.clientType }} Profile</span>
+          <br />
+        </div>
+        <div class=" flex mb-4 border">
+            <img
                     :src="invoice.userClientProfile.clientDataindividual.url ? invoice.userClientProfile.clientDataindividual.url : 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
                     ref="logoPreview"
                     alt="Logo for Individual"
                     class="w48 h-auto cursor-pointer"
                 />
+<!--             
+            <label for="logoInput" class="">
+              
+             <div
+                class="logo-placeholder border-[1px]  justify-end items-end flex w-32 h-auto place-items-end text-slate-500 text-6xl font-bold"
+              >
+              
                 
               </div> 
             
-            </label>
+            </label> -->
 
           </div>
-          <span class="font-medium text-[15px]"> {{ invoice.userClientProfile.clientDataindividual.clientType }} Profile</span>
-          <br />
-
+</div>
           <div v-if="selectedField === 'individual'" :key="1">
             <div class="mb-4">
               <hr class="mb-4" />

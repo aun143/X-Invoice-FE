@@ -125,11 +125,13 @@ const handleDragEnd = () => {
   draggedIndex.value = null;
 };
 const logoInputRef = ref(null);
+const isLoadingImg = ref(false);
 // const logoPreview = ref(null);
 const handleFileInputChange = async () => {
   const file = logoInputRef.value.files[0];
   if (file) {
     try {
+      isLoadingImg.value=true;
       const formData = new FormData();
       formData.append('file', file);
 
@@ -149,6 +151,9 @@ const handleFileInputChange = async () => {
       }
     } catch (error) {
       console.error('Error uploading file:', error);
+    }finally{
+      isLoadingImg.value=false;
+
     }
   }
 };
@@ -161,6 +166,8 @@ const displayImage = (input, imageUrl) => {
 
     reader.onload = (e) => {
       invoice.formData.url = imageUrl.url; // Update the URL in the formData
+      const imagePreview = document.getElementById("imagePreview");
+      imagePreview.src = imageUrl.url;
     };
 
     reader.readAsDataURL(file);
@@ -324,7 +331,11 @@ watch(invoice.formData, (newValue) => {
           <label for="logoInput" class="" >
             <div class="logo-placeholder border-none  cursor-pointer rounded md:w-28 lg:w-48 h-32 border-2  grid place-items-center text-slate-500 text-5xl ">
               <!-- <img src="https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png"  ref="logoPreview"  class="logo rounded"   alt="Logo" />  -->
-              <img :src="invoice.formData.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'" class="logo rounded" alt="Logo" />
+              <div v-if="isLoadingImg"><a-spin size="large"/></div>
+              <img  v-else
+              id="imagePreview"
+              :src="invoice.formData.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"              
+              class="logo rounded" alt="Logo" />
               </div>
 
               <input

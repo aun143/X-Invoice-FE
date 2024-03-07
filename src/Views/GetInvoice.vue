@@ -184,7 +184,7 @@ const formatDate = (dateString) => {
 
     <section class="w-[100%] 2xl:w-[50%] md:w-[93%] lg:w-[85%] xl:w-[63%] pt-4 px-4 ">
       <form @submit.prevent class="p-4 bg-white">
-        <div class="flex">
+        <div class="grid grid-cols-2 items-center">
           <div class="flex w-full mt-8">
             <div
               class="flex mr-5 items-center justify-center text-xl w-[60px] max-h-12 text-black"
@@ -207,12 +207,12 @@ const formatDate = (dateString) => {
               }}</strong>
             </div>
           </div>
-          <div class="">
-            <div class="mr-8 w-48 mt-8 h-auto">
+          
+            <div class=" w-48 mt-4 lg:ml-[35%] md:ml-[20%] 2xl:ml-[20%] h-auto flex  justify-end items-end ">
     <img :src="imageUrl" alt="Logo" />
   </div>
 
-          </div>
+          
         </div>
         <div class="flex mb-8 mt-4">
           <div class="flex flex-col  mb-2">

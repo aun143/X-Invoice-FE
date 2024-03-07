@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
+const isLoadingImg = ref(false);
 
 const route = useRoute();
 const router = useRouter();
@@ -158,7 +159,7 @@ const fetchclientDetails = async () => {
         ...clientDetails,
     };
 }
-displayImage(logoInputRef.value, imageUrl);
+displayImage(logoInputRef.value);
     //console.log("Client details fetched successfully:", clientDetails);
   } catch (error) {
     console.error("Error fetching client details:", error);
@@ -200,6 +201,7 @@ const handleFileInputChange = async (e) => {
   const file = e.target.files[0];
   if (file) {
     try {
+      isLoadingImg.value=true;
       const formData = new FormData();
       formData.append("file", file);
 
@@ -224,6 +226,8 @@ const handleFileInputChange = async (e) => {
       }
     } catch (error) {
       console.error("Error uploading file:", error);
+    }finally{
+    isLoadingImg.value=false;
     }
   }
 };
@@ -257,6 +261,14 @@ const fontSize = "12px";
               <div
                 class="logo-placeholder hover:border-dashed border-none cursor-pointer   w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
               >
+              <div v-if="isLoadingImg">
+                <a-space class="w-full">
+                    <a-spin size="large" />
+                  </a-space>
+              </div>
+              
+              
+              <div v-else>
                 <img
                 id="imagePreview"
                   v-if="selectedField === 'individual'"
@@ -272,7 +284,7 @@ const fontSize = "12px";
                   alt="Logo for Organization"
                   ref="logoPreview"
                   class="w-20 mb-4 h-20 cursor-pointer"
-                />
+                /></div>
               </div>
               <input
                 id="logoInput"
