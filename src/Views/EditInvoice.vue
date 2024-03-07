@@ -22,10 +22,12 @@ const invoice = useInvoiceStore();
 const isLoading=ref(false);
 const clientId=ref("");
 const handleSaveDraftButtonClick = async (Id) => {
- 
+ if(isLoadingImg.value){
+  openNotificationWithIcon("error", "Please Wait To upload Image First");
+  return;
+ }
     try {
      if (!validateForm()) return;
-
       isLoading.value=true;
       const response = await InvoiceService.updateInvoiceData(invoiceId, invoice.formData);
 //console.log("response",response);
@@ -287,6 +289,7 @@ watch(invoice.formData, (newValue) => {
     saveDraftButtonText="&nbsp; Save Changes"
     :saveDraftButtonColor="Colors.orange"
     :onSaveDraftButtonClick="handleSaveDraftButtonClick"
+    
    
 
   />

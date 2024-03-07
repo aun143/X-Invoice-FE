@@ -66,6 +66,10 @@ const validateForm = (profileType) => {
 };
 
 const submitbusinessProfileDataOrganization = async (id) => {
+  if(isLoadingImg.value){
+  openNotificationWithIcon("error", "Please Wait To upload Image First");
+  return;
+ }
   try {
     const response = await PatchBusinessProfilerOrganizationApi(
       invoice.userProfileData.organizationProfile._id,
@@ -91,7 +95,10 @@ const submitbusinessProfileDataOrganization = async (id) => {
 };
 
 const submitbusinessProfileDataindividual = async (Id) => {
-  
+  if(isLoadingImg.value){
+  openNotificationWithIcon("error", "Please Wait To upload Image First");
+  return;
+ }
   try {
     const response = await PatchBusinessProfilerIndiviualApi(
       invoice.userProfileData.individualProfile._id,

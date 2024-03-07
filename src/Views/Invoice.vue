@@ -18,8 +18,14 @@ const route = useRoute();
 const router = useRouter();
 const invoiceId = route.params.id;
 const invoice = useInvoiceStore();
+const isLoadingImg = ref(false);
 
 const invoiceSubmit = async () => {
+
+  if(isLoadingImg.value){
+    openNotificationWithIcon("error","Please wait To Upload Image First")
+    return;
+  }
   try {
     isLoading.value = true;
 
@@ -157,47 +163,32 @@ const handleDragEnd = () => {
   draggedIndex.value = null;
 };
 const logoInputRef = ref(null);
-// const handleFileInputChange = () => {
-//   displayImage(logoInputRef.value);
-// };
-// const displayImage = (input) => {
-//   const file = input.files[0];
-// // console.log("2nd")
-//   if (file) {
-//     const reader = new FileReader();
-
-//     reader.onload = (e) => {
-//       invoice.formData.file.src = e.target.result;
-//     };
-
-//     reader.readAsDataURL(file);
-//     invoice.formData.file = file
-//     console.log("invoice.formData.file>>>",invoice.formData.file)
-//   }
-// };
 const handleFileInputChange = async () => {
   const file = logoInputRef.value.files[0];
   if (file) {
     try {
+      // isLoadingImg.value = true;
       const formData = new FormData();
       formData.append("file", file);
-
       const response = await fetch("http://localhost:3010/api/upload/file", {
         method: "POST",
         body: formData,
       });
-
+      
       if (response.ok) {
         const imageUrl = await response.json();
         invoice.formData.url = imageUrl.url; // Update formData with the image URL
-
+        
         // Call displayImage to update the image preview
         displayImage(logoInputRef.value, imageUrl);
+        
       } else {
         console.error("Failed to upload file");
       }
     } catch (error) {
       console.error("Error uploading file:", error);
+    } finally {
+      // isLoadingImg.value = false;
     }
   }
 };
@@ -218,8 +209,12 @@ const displayImage = (input, imageUrl) => {
     };
 
     reader.readAsDataURL(file);
+  } else {
+    // Handle the case when no file is selected
+    console.error("No file selected");
   }
 };
+
 
 const deleteItem = (index) => {
   if (invoice.formData.items.length > 1) {
@@ -486,7 +481,8 @@ const formData = invoice.formData;
               <div
                 class="logo-placeholder hover:border-dashed border-none cursor-pointer rounded md:w-28 lg:w-48 h-32 border-2 grid place-items-center text-slate-500 text-5xl"
               >
-                <img
+              <!-- <div v-if="isLoadingImg"><a-spin size="large"/></div> -->
+                <img 
                   id="imagePreview"
                   src="https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png"
                   class="logo w-32 rounded"
@@ -501,6 +497,7 @@ const formData = invoice.formData;
                 style="display: none"
                 @change="handleFileInputChange"
                 ref="logoInputRef"
+                
               />
             </label>
           </div>

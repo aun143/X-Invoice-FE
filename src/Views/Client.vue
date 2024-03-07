@@ -13,6 +13,10 @@ const router = useRouter();
 const isLoading = ref(false);
 const isLoadingImg = ref(false);
 const submitclientDataOrganization = async () => {
+  if(isLoadingImg.value){
+  openNotificationWithIcon("error", "Please Wait To upload Image First");
+  return;
+ }
   try {
     isLoading=true;
     if (!validateFormOrg()) return;
@@ -43,6 +47,10 @@ const submitclientDataOrganization = async () => {
 };
 
 const submitclietDataindividual = async () => {
+  if(isLoadingImg.value){
+  openNotificationWithIcon("error", "Please Wait To upload Image First");
+  return;
+ }
   try {
     if (!validateFormInd()) return;
     const clientData = {

@@ -27,6 +27,10 @@ const selectField = (field) => {
 const dropdownTitle = "Actions";
 
 const handleSaveDraftButtonClick = async () => {
+  if(isLoadingImg.value){
+  openNotificationWithIcon("error", "Please Wait To upload Image First");
+  return;
+ }
   try {
     let dataToUpdate = null;
 
