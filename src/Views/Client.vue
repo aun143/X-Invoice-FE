@@ -8,6 +8,8 @@ import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
+import {BASE_URL} from "../utils/config";
+
 
 const router = useRouter();
 const isLoading = ref(false);
@@ -194,7 +196,7 @@ const handleFileInputChange = async () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch("http://3.1.100.174:3010/api/upload/file", {
+      const response = await fetch(`${BASE_URL}/upload/file `, {
         method: "POST",
         body: formData,
       });

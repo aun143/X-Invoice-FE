@@ -12,6 +12,7 @@ import {
 } from "../service/BusinessProfileService";
 import { getUserDetailsApi } from "../service/LoginService";
 // import Modal from "../components/Modal.vue";
+import {BASE_URL} from "../utils/config";
 
 const isLoading = ref(false);
 const isLoadingImg = ref(false);
@@ -201,7 +202,7 @@ const handleFileInputChange = async () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('http://3.1.100.174:3010/api/upload/file', {
+      const response = await fetch(`${BASE_URL}/upload/file `, {
         method: 'POST',
         body: formData
       });

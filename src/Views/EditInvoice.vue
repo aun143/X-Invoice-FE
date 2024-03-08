@@ -10,7 +10,7 @@ import { getAllClient } from "../service/ClientService";
 import { Colors } from "../utils/color";
 import { useInvoiceService } from '../service/MainService';
 import {getSingleInvoice} from "../service/invoiceService";
-
+import {BASE_URL} from "../utils/config";
 import Swal  from "sweetalert2";
 import { notification } from "ant-design-vue";
 // import {  Input } from "ant-design-vue";
@@ -137,7 +137,7 @@ const handleFileInputChange = async () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('http://3.1.100.174:3010/api/upload/file', {
+      const response = await fetch(`${BASE_URL}/upload/file `, {
         method: 'post',
         body: formData,
       });

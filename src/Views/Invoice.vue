@@ -13,6 +13,7 @@ import { getUserDetailsApi } from "../service/LoginService";
 import Swal from "sweetalert2";
 import { notification } from "ant-design-vue";
 import { useInvoiceService } from "../service/MainService";
+import {BASE_URL} from "../utils/config";
 // import {  Input } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
@@ -169,7 +170,7 @@ const handleFileInputChange = async () => {
       // isLoadingImg.value = true;
       const formData = new FormData();
       formData.append("file", file);
-      const response = await fetch("http://3.1.100.174:3010/api/upload/file", {
+      const response = await fetch(`${BASE_URL}/upload/file `, {
         method: "POST",
         body: formData,
       });

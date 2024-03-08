@@ -8,6 +8,7 @@ import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
 import Swal from "sweetalert2";
+import {BASE_URL} from "../utils/config";
 
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
@@ -210,7 +211,7 @@ const handleFileInputChange = async (e) => {
       formData.append("file", file);
 
       // Make an HTTP request to your API endpoint to upload the file
-      const response = await fetch("http://3.1.100.174:3010/api/upload/file", {
+      const response = await fetch(`${BASE_URL}/upload/file `, {
         method: "POST",
         body: formData,
       });
