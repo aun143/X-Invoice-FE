@@ -21,9 +21,8 @@ const invoice = useInvoiceStore();
 const isLoadingImg = ref(false);
 
 const invoiceSubmit = async () => {
-
-  if(isLoadingImg.value){
-    openNotificationWithIcon("error","Please wait To Upload Image First")
+  if (isLoadingImg.value) {
+    openNotificationWithIcon("error", "Please wait To Upload Image First");
     return;
   }
   try {
@@ -174,14 +173,12 @@ const handleFileInputChange = async () => {
         method: "POST",
         body: formData,
       });
-      
       if (response.ok) {
         const imageUrl = await response.json();
         invoice.formData.url = imageUrl.url; // Update formData with the image URL
-        
         // Call displayImage to update the image preview
         displayImage(logoInputRef.value, imageUrl);
-        
+
       } else {
         console.error("Failed to upload file");
       }
@@ -214,7 +211,6 @@ const displayImage = (input, imageUrl) => {
     console.error("No file selected");
   }
 };
-
 
 const deleteItem = (index) => {
   if (invoice.formData.items.length > 1) {
@@ -481,8 +477,8 @@ const formData = invoice.formData;
               <div
                 class="logo-placeholder hover:border-dashed border-none cursor-pointer rounded md:w-28 lg:w-48 h-32 border-2 grid place-items-center text-slate-500 text-5xl"
               >
-              <!-- <div v-if="isLoadingImg"><a-spin size="large"/></div> -->
-                <img 
+                <!-- <div v-if="isLoadingImg"><a-spin size="large"/></div> -->
+                <img
                   id="imagePreview"
                   src="https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png"
                   class="logo w-32 rounded"
@@ -497,7 +493,6 @@ const formData = invoice.formData;
                 style="display: none"
                 @change="handleFileInputChange"
                 ref="logoInputRef"
-                
               />
             </label>
           </div>
