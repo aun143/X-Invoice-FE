@@ -14,11 +14,11 @@ import GetInvoice from "../Views/GetInvoice.vue";
 import EditClient from "../Views/EditClient.vue";
 import EditInvoice from "../Views/EditInvoice.vue";
 import SendInvoice from "../Views/SendInvoice.vue";
-import UploadImg from "../Views/UploadImg.vue";
+import Subscription from "../Views/Subscription.vue";
 
 const routes = [
   { path: "/", redirect: "/Index" },
-  { name: "Invoice", path: "/new", component: Invoice, meta: { public: false } },
+  { name: "Invoice", path: "/New", component: Invoice, meta: { public: false } },
   { name: "Index", path: "/Index", component: Index, meta: { public: false } },
   {
     name: "Client",
@@ -33,9 +33,9 @@ const routes = [
     meta: { public: false },
   },
   {
-    name: "UploadImg",
-    path: "/UploadImg",
-    component: UploadImg,
+    name: "Subscription",
+    path: "/Subscription",
+    component: Subscription,
     meta: { public: false },
   },
   {

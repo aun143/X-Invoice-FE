@@ -13,6 +13,8 @@ import {getSingleInvoice} from "../service/invoiceService";
 import {BASE_URL} from "../utils/config";
 import Swal  from "sweetalert2";
 import { notification } from "ant-design-vue";
+import {uploadImage} from "../service/UploadImage"
+
 // import {  Input } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
@@ -133,19 +135,9 @@ const handleFileInputChange = async () => {
   const file = logoInputRef.value.files[0];
   if (file) {
     try {
-      isLoadingImg.value=true;
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch(`${BASE_URL}/upload/file `, {
-        method: 'post',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const imageUrl = await response.json();
-        invoice.formData.url = imageUrl.url; // Update formData with the image URL
-        
+      isLoadingImg.value = true;
+      const imageUrl = await uploadImage(file);
+      if (imageUrl) {
         // Call displayImage to update the image preview
         displayImage(logoInputRef.value, imageUrl);
       } else {
@@ -167,9 +159,9 @@ const displayImage = (input, imageUrl) => {
     const reader = new FileReader();
 
     reader.onload = (e) => {
-      invoice.formData.url = imageUrl.url; // Update the URL in the formData
+      invoice.formData.url = imageUrl; // Update the URL in the formData
       const imagePreview = document.getElementById("imagePreview");
-      imagePreview.src = imageUrl.url;
+      imagePreview.src = imageUrl;
     };
 
     reader.readAsDataURL(file);

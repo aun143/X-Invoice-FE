@@ -9,6 +9,7 @@ import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
 import Swal from "sweetalert2";
 import {BASE_URL} from "../utils/config";
+import {uploadImage} from "../service/UploadImage"
 
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
@@ -202,40 +203,31 @@ onMounted(() => {
 });
 /////
 const logoInputRef = ref(null);
-const handleFileInputChange = async (e) => {
-  const file = e.target.files[0];
+const handleFileInputChange = async () => {
+  const file = logoInputRef.value.files[0];
   if (file) {
     try {
-      isLoadingImg.value=true;
-      const formData = new FormData();
-      formData.append("file", file);
+      isLoadingImg.value = true;
+      const imageUrl = await uploadImage(file);
+      if (imageUrl) {
 
-      // Make an HTTP request to your API endpoint to upload the file
-      const response = await fetch(`${BASE_URL}/upload/file `, {
-        method: "POST",
-        body: formData,
-      });
-      const responseData = await response.json();
-      const imageUrl =responseData.url;
-      // Check if the upload was successful
-      if (response.ok) {
-        // Update logoPreview with the uploaded image URL
-        if (invoice.userClientProfile.clientDataindividual.clientType === 'individual') {
-        invoice.userClientProfile.clientDataindividual.url = imageUrl;
-      } else if (invoice.userClientProfile.clientDataindividual.clientType === 'organization') {
-        invoice.userClientProfile.clientDataOrganization.url = imageUrl;
-      }
+        if (selectedField.value === "individual") {
+          invoice.userClientProfile.clientDataindividual.url = imageUrl;
+        } else if (selectedField.value === "organization") {
+          invoice.userClientProfile.clientDataOrganization.url = imageUrl;
+        }
+        displayImage(logoInputRef.value, imageUrl);
       } else {
-        // Handle upload error
-        console.error("Error uploading file:", responseData.error);
+        console.error("Failed to upload file");
       }
     } catch (error) {
       console.error("Error uploading file:", error);
-    }finally{
-    isLoadingImg.value=false;
+    } finally {
+      isLoadingImg.value = false;
     }
   }
 };
+
 
 
 const fontSize = "12px";

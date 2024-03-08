@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import { notification } from "ant-design-vue";
 import { useInvoiceService } from "../service/MainService";
 import {BASE_URL} from "../utils/config";
+import {uploadImage} from "../service/UploadImage"
 // import {  Input } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
@@ -168,15 +169,8 @@ const handleFileInputChange = async () => {
   if (file) {
     try {
       // isLoadingImg.value = true;
-      const formData = new FormData();
-      formData.append("file", file);
-      const response = await fetch(`${BASE_URL}/upload/file `, {
-        method: "POST",
-        body: formData,
-      });
-      if (response.ok) {
-        const imageUrl = await response.json();
-        invoice.formData.url = imageUrl.url; // Update formData with the image URL
+      const imageUrl = await uploadImage(file);
+      if (imageUrl) {
         // Call displayImage to update the image preview
         displayImage(logoInputRef.value, imageUrl);
 
@@ -199,11 +193,11 @@ const displayImage = (input, imageUrl) => {
 
     reader.onload = (e) => {
       // Update formData with the image URL
-      invoice.formData.url = imageUrl.url; // Update formData with the image URL
+      invoice.formData.url = imageUrl; // Update formData with the image URL
       console.log("invoice.formData.url", invoice.formData.url);
       // Display the image using the URL
       const imagePreview = document.getElementById("imagePreview");
-      imagePreview.src = imageUrl.url;
+      imagePreview.src = imageUrl;
     };
 
     reader.readAsDataURL(file);
@@ -479,7 +473,7 @@ const formData = invoice.formData;
                 class="logo-placeholder hover:border-dashed border-none cursor-pointer rounded md:w-28 lg:w-48 h-32 border-2 grid place-items-center text-slate-500 text-5xl"
               >
                 <!-- <div v-if="isLoadingImg"><a-spin size="large"/></div> -->
-                <img
+                <img 
                   id="imagePreview"
                   src="https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png"
                   class="logo w-32 rounded"

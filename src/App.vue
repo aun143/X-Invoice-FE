@@ -3,11 +3,12 @@ import Swal from 'sweetalert2';
 import VueSidebarMenuAkahon from "vue-sidebar-menu-akahon";
 import { useRoute, useRouter } from "vue-router";
 import { computed } from "vue";
-
+import { Colors } from "./utils/color";
 const menuItems = [
+  { link: "/Subscription", name: "Upgrade", icon: "bxs-up-arrow" },
   { link: "/Index", name: "Invoices",  icon: "bxs-inbox" },
   { link: "/AllClients", name: "All Clients",  icon: "bxs-user-detail" },
-  { link: "/businessProfile", name: "Business", icon: "bxs-user-account" },
+  { link: "/businessProfile", name: "Business", icon: "bxs-user-account"},
 ];
 
 const router = useRouter();
@@ -45,7 +46,7 @@ const componentsWithSidebar = [
   "EditInvoice",
   "EditClient",
   "SendInvoice",
-  "UploadImg",
+  "Subscription",
 ];
 
 const route = useRoute();
@@ -80,13 +81,6 @@ const getIconType = (item) => {
         @button-exit-clicked="handleExitButtonClick"
         :isUsedVueRouter="true"
       >
-        <!-- Customizing menu items to show icons -->
-        <template #menuItem="{ item }">
-          <a-menu-item :key="item.link" :to="item.link">
-            <a-icon :type="getIconType(item)" />
-            <span>{{ item.name }}</span>
-          </a-menu-item>
-        </template>
       </VueSidebarMenuAkahon>
     </div>
 

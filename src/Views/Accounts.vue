@@ -154,7 +154,7 @@ const computedClasses = {
 
 <template>
   
-  <section class="flex w-[100%]  items-center justify-center lg:mt-[3%] 2xl:mt-[10%]">
+  <section class="flex w-[100%]  items-center justify-center lg:mt-[15%] 2xl:mt-[10%] 2xl:[mt-40%] mt-[2%]" >
     <div class="grid grid-cols-10 max-w-5xl h-[80%] shadow-md relative">
       <div
         class="grid justify-center items-center w-full col-span-3 p-4 bg-[#10C0CB]"

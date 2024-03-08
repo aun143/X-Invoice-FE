@@ -9,7 +9,7 @@ import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
 import {BASE_URL} from "../utils/config";
-
+import {uploadImage} from "../service/UploadImage"
 
 const router = useRouter();
 const isLoading = ref(false);
@@ -193,17 +193,8 @@ const handleFileInputChange = async () => {
   if (file) {
     try {
       isLoadingImg.value = true;
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch(`${BASE_URL}/upload/file `, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const imageUrl = data.url;
+      const imageUrl = await uploadImage(file);
+      if (imageUrl) {
 
         if (selectedField.value === "individual") {
           invoice.userClientProfile.clientDataindividual.url = imageUrl;
@@ -231,10 +222,8 @@ const displayImage = (input, imageUrl) => {
     reader.onload = (e) => {
       if (selectedField.value === "individual") {
         invoice.userClientProfile.clientDataindividual.url = imageUrl;
-        console.log("invoice.ind.url", imageUrl);
       } else if (selectedField.value === "organization") {
         invoice.userClientProfile.clientDataOrganization.url = imageUrl;
-        console.log("invoice.org.url", imageUrl);
       } // Update the URL in the formData
       const imagePreview = document.getElementById("imagePreview");
       imagePreview.src = imageUrl;
@@ -243,10 +232,8 @@ const displayImage = (input, imageUrl) => {
     reader.readAsDataURL(file);
     if (selectedField.value === "individual") {
       invoice.userClientProfile.clientDataindividual.url = file;
-      console.log("invoice.ind.url", imageUrl);
     } else if (selectedField.value === "organization") {
       invoice.userClientProfile.clientDataOrganization.url = file;
-      console.log("invoice.org.url", imageUrl);
     }
   }
 };

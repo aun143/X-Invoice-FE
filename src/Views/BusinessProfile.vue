@@ -13,6 +13,7 @@ import {
 import { getUserDetailsApi } from "../service/LoginService";
 // import Modal from "../components/Modal.vue";
 import {BASE_URL} from "../utils/config";
+import {uploadImage} from "../service/UploadImage"
 
 const isLoading = ref(false);
 const isLoadingImg = ref(false);
@@ -195,20 +196,11 @@ const logoPreview = ref(null);
 
 const handleFileInputChange = async () => {
   const file = logoInputRef.value.files[0];
-  console.log("file",file)
   if (file) {
     try {
-      isLoadingImg.value=true;
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch(`${BASE_URL}/upload/file `, {
-        method: 'POST',
-        body: formData
-      });
-
-      const data = await response.json();
-      const imageUrl = data.url;
+      isLoadingImg.value = true;
+      const imageUrl = await uploadImage(file);
+      if (imageUrl) {
 
       if (profileType.value === 'individual') {
         invoice.userProfileData.individualProfile.url = imageUrl;
@@ -216,7 +208,10 @@ const handleFileInputChange = async () => {
         invoice.userProfileData.organizationProfile.url = imageUrl;
       }
       displayImage(logoInputRef.value, imageUrl); // Update the image preview
-    } catch (error) {
+    }else{
+      console.error("Failed To Upload File")
+    }
+  } catch (error) {
       console.error('Error uploading image:', error);
       Swal.fire({
         icon: "error",
