@@ -201,7 +201,7 @@ const handleFileInputChange = async () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('http://localhost:3010/api/upload/file', {
+      const response = await fetch('http://3.1.100.174:3010/api/upload/file', {
         method: 'POST',
         body: formData
       });

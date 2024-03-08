@@ -139,7 +139,7 @@ export const getClientApiData = async (id) => {
 
   return response.json();
 };
-const API_URL = `${BASE_URL}http://localhost:3010/upload/file`;
+const API_URL = `${BASE_URL}http://3.1.100.174:3010/upload/file`;
 
 async function uploadImage(file) {
   try {
