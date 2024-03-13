@@ -109,7 +109,7 @@ const handleSendEmailButtonClick = async () => {
           <textarea
             class="w-full bg-gray-300 text-black"
             cols="30"
-            rows="15"
+            rows=15
             readonly
           >Invoice Number: {{ invoiceData?.invoiceNumber }}
 Invoice Name: {{ invoiceData?.invoiceName }}

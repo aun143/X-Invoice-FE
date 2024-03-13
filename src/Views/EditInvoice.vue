@@ -319,7 +319,7 @@ watch(invoice.formData, (newValue) => {
             name=""
             id=""
             cols="60"
-            rows="2"
+            rows=2
           ></a-textarea></div>
         </div>
         <div class="flex flex-col w-1/2 items-end">
@@ -360,7 +360,7 @@ watch(invoice.formData, (newValue) => {
         <div class="flex items-end justify-end w-full">
           <div class="">
             <p class="text-left ml-4 ">Language</p>
-            <a-select  v-model:value="invoice.formData.language" class="ml-2 lg:w-[150px] w-[150px] md:w-[130px]">
+            <a-select  v-model:value="invoice.formData.language" class="ml-2 lg:w-[150px] w-[150px] md:w-[130px]"  style="text-align: left;">
               <a-select-option
                 v-for="language in invoice.languageOptions"
                 :key="language.value"
@@ -371,7 +371,7 @@ watch(invoice.formData, (newValue) => {
           </div>
           <div>
             <p class="text-left ml-3">Currency</p>
-            <a-select  v-model:value="invoice.formData.currency" class="ml-2 lg:w-[200px] w-[200px] md:w-[170px]">
+            <a-select  v-model:value="invoice.formData.currency" class="ml-2 lg:w-[200px] w-[200px] md:w-[170px]" style="text-align: left;">
               <a-select-option
                 v-for="currency in invoice.currencyOptions"
                 :key="currency.value"
@@ -452,7 +452,7 @@ watch(invoice.formData, (newValue) => {
 </div>
           </div>
           
-          <a-select  v-model:value="invoice.formData.receiver" class="ml-2 w-[100%]"   :loading="isLoading">
+          <a-select  v-model:value="invoice.formData.receiver" class="ml-2 w-[100%]"   :loading="isLoading" style="text-align: left;">
               <a-select-option
               v-for="client in filteredClients" :key="client._id" >  {{ client.firstName }} {{ client.lastName }}
               </a-select-option>
@@ -475,7 +475,7 @@ watch(invoice.formData, (newValue) => {
         <div class="flex items-end mb-2">
           <div>
             <p class="w-4/5 ml-3 text-start" ml-2 text-start>Invoice Due</p>
-            <a-select v-model:value="invoice.formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate">
+            <a-select v-model:value="invoice.formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate" style="text-align: left;">
         
               <a-select-option value="07">After 07 days</a-select-option>
               <a-select-option value="15">After 15 days</a-select-option>
@@ -529,14 +529,14 @@ watch(invoice.formData, (newValue) => {
     </td>
 
     <td class="align-top">
-      <a-textarea v-model:value="item.description" name="" id="" cols="70" rows="2"></a-textarea>
+      <a-textarea v-model:value="item.description" name="" id="" cols="70" rows=2></a-textarea>
     </td>
     <td class="align-top">
       <a-input-number v-model:value="item.quantity" class="w-full mx-2" type="number" placeholder="Quantity" />
     </td>
     <td class="align-top">
       <a-input-number v-model:value="item.rate" class="w-full ml-4" type="number" placeholder="Rate" />
-      <a-select v-model:value="item.unit" class="ml-2 mt-1 mb-2 w-[60px]" @change="() => handleUnitChange(index, item.unit)">
+      <a-select v-model:value="item.unit" class="ml-2 mt-1 mb-2 w-[60px]" @change="() => handleUnitChange(index, item.unit)" style="text-align: left;">
         <a-select-option v-for="unit in invoice.unitOptions" :key="unit.value" :value="unit.value">
           {{ unit.value }}
 
@@ -544,7 +544,7 @@ watch(invoice.formData, (newValue) => {
       </a-select>
     </td>
     <td class="align-top">
-      <!-- <a-textarea v-model:value="item.amount" readonly class="" cols="10" rows="1" placeholder="Amount" >{{ item.quantity * item.rate }}</a-textarea> -->
+      <!-- <a-textarea v-model:value="item.amount" readonly class="" cols="10" rows=1 placeholder="Amount" >{{ item.quantity * item.rate }}</a-textarea> -->
       <div readonly class=" ml-12">{{ calculateAmount(item) }}</div>
       <!-- <div readonly class=" ml-12" >{{ item.quantity * item.rate }}</div> -->
     </td>
@@ -610,7 +610,7 @@ watch(invoice.formData, (newValue) => {
             <a-textarea
               class="border-none"
               cols="60"
-              rows="2"
+              rows=2
               v-model:value="invoice.formData.notes"
             ></a-textarea>
           </div>

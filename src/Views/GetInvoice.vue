@@ -272,7 +272,7 @@ const formatDate = (dateString) => {
               :key="index"
               disabled
               cols="50"
-              rows="2"
+              rows=2
               class="flex"
               v-model="item.description"
             ></textarea>
@@ -284,7 +284,7 @@ const formatDate = (dateString) => {
               :key="index"
               disabled
               cols="60"
-              rows="6"
+              rows=6
               class="flex mb-8"
               v-model="item.quantity"
             />
@@ -296,7 +296,7 @@ const formatDate = (dateString) => {
               :key="index"
               disabled
               cols="60"
-              rows="6"
+              rows=6
               class="flex mb-8"
               v-model="item.rate"
             />
@@ -313,7 +313,7 @@ const formatDate = (dateString) => {
               :key="index"
               disabled
               cols="60"
-              rows="6"
+              rows=6
               class="flex mb-8"
               v-model="item.amount"
             />

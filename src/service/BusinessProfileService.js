@@ -48,7 +48,7 @@ export const PostBusinessProfilerIndiviualApi = async (data) => {
   };
   
   export const PostBusinessProfilerOrganizationApi = async (data) => {
-    const response = await fetch('${BASE_URL}/business/postbusinessProfile', {
+    const response = await fetch(`${BASE_URL}/business/postbusinessProfile`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

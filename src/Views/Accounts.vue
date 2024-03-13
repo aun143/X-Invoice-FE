@@ -111,15 +111,14 @@ const submit = async () => {
   }
   try {
     //console.log("Stored id:", invoice.signupData.data._id);
-    const userid = localStorage.getItem("UserId");;
+    const userid = localStorage.getItem("UserId");
 
     
     const body = { userId: userid, profileBody: invoice.userProfileData };
     const response = await PostBusinessProfilerIndiviualApi(body);
     invoice.updateUser(response);
-    //console.log("account response >>>>>", response);
+    router.push("/Subscription");
     openNotificationWithIcon("success", "Profiles Created Successfully");
-    router.push("/");
     Swal.fire({
       icon: "success",
       title: " Account Created ",
@@ -297,7 +296,7 @@ const computedClasses = {
             </div>
              <div>{{  }}
               <p class="justify-start flex text-md font-medium"> <span class="text-[#ff0000]">*</span>Country:</p>
-              <a-select
+              <a-select style="text-align: left;"
                 v-model:value="invoice.userProfileData.country"
                 class="w-full "
               >

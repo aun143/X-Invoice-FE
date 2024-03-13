@@ -54,27 +54,48 @@ const submitclietDataindividual = async () => {
   return;
  }
   try {
+    isLoading.value=true
     if (!validateFormInd()) return;
     const clientData = {
       ...invoice.userClientProfile.clientDataindividual,
       clientType: "individual",
     };
     const response = await clientApi(clientData);
-    router.push("/AllClients");
-    Swal.fire({
+    if (response) {
+      router.push("/AllClients");
+      Swal.fire({
       icon: "success",
       title: "Client Created ",
       text: "Client has been Created successfully.",
     });
-    //console.log(response);
-  } catch (error) {
-    Swal.fire({
+    }
+
+    else{
+      console.log("resp" , response);
+      Swal.fire({
       icon: "error",
-      title: "Oops...",
-      text: ("Error During Client individual:", error),
-      footer: "Please try again ",
+      title: "Error During ",
+      text: response.message,
     });
-    console.error("Error During Client individual:", error);
+    }
+
+
+  } catch (error) {
+    console.log("error",error)
+    let errorMessage = "An error occurred while creating the client.";
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
+    }
+    if (errorMessage === "Your subscription plan has expired. Please update your plan.") {
+      // Specific handling for subscription expiration error
+      // For example, redirect to subscription page
+      router.push("/subscription");
+    } else {
+      openNotificationWithIcon("error", errorMessage);
+      console.error("Error During Client organization:", error);
+    }
+  }finally{
+    isLoading.value=false;
   }
 };
 const invoice = useInvoiceStore();
@@ -381,7 +402,7 @@ onMounted(() => {
             <div>
               <div>
                 <p class="text-left ml-4">Currency</p>
-                <a-select
+                <a-select style="text-align: left;"
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.currency
                   "
@@ -399,7 +420,7 @@ onMounted(() => {
               <hr class="my-4" />
               <div class="">
                 <p class="text-left ml-4">Language</p>
-                <a-select
+                <a-select style="text-align: left;"
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.language
                   "
@@ -471,7 +492,7 @@ onMounted(() => {
                 <p class="text-left">
                   <span class="text-[#ff0000]">*</span>Country
                 </p>
-                <a-select
+                <a-select  style="text-align: left;"
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.country
                   "
@@ -597,7 +618,7 @@ onMounted(() => {
               <div>
                 <div>
                   <p class="text-left ml-4">Currency</p>
-                  <a-select
+                  <a-select  style="text-align: left;"
                     v-model:value="
                       invoice.userClientProfile.clientDataOrganization.currency
                     "
@@ -615,7 +636,7 @@ onMounted(() => {
                 <hr class="my-4" />
                 <div class="">
                   <p class="text-left ml-4">Language</p>
-                  <a-select
+                  <a-select style="text-align: left;"
                     v-model:value="
                       invoice.userClientProfile.clientDataOrganization.language
                     "
@@ -686,7 +707,7 @@ onMounted(() => {
                 <p class="text-left">
                   <span class="text-[#ff0000]">*</span>Country
                 </p>
-                <a-select
+                <a-select style="text-align: left;"
                   v-model:value="
                     invoice.userClientProfile.clientDataOrganization.country
                   "
@@ -772,7 +793,7 @@ onMounted(() => {
                   v-model:value="
                     invoice.userClientProfile.clientDataOrganization.notes
                   "
-                  rows="4"
+                  rows=4
                   type="text"
                   class="w-full border p-2"
                 />

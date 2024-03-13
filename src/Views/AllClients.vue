@@ -4,9 +4,10 @@ import { getAllClient } from '../service/ClientService';
 import { useRoute, useRouter } from 'vue-router';
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
-const invoice = useInvoiceStore();
 import Swal from "sweetalert2";
+import { Colors } from "../utils/color";
 
+const invoice = useInvoiceStore();
 const isLoading = ref(false);
 const router = useRouter();
 const pageSize = ref(10);

@@ -493,7 +493,7 @@ const displayImage = (input, imageUrl) => {
               </div>
               <div>
                 <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Country</p>
-                <a-select
+                <a-select style="text-align: left;"
                   v-model:value="
                     invoice.userProfileData.individualProfile.country
                   "
@@ -555,7 +555,7 @@ const displayImage = (input, imageUrl) => {
                   v-model:value="
                     invoice.userProfileData.individualProfile.notes
                   "
-                  rows="1"
+                  rows=1
                   type="text"
                   class="w-full p-2"
                 />
@@ -734,7 +734,7 @@ const displayImage = (input, imageUrl) => {
               </div>
               <div>
                 <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Country</p>
-                <a-select
+                <a-select style="text-align: left;"
                   v-model:value="
                     invoice.userProfileData.organizationProfile.country
                   "
@@ -795,7 +795,7 @@ const displayImage = (input, imageUrl) => {
                   v-model:value="
                     invoice.userProfileData.organizationProfile.notes
                   "
-                  rows="1"
+                  rows=1
                   type="text"
                   class="w-full p-2"
                 />

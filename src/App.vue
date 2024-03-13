@@ -5,7 +5,6 @@ import { useRoute, useRouter } from "vue-router";
 import { computed } from "vue";
 import { Colors } from "./utils/color";
 const menuItems = [
-  { link: "/Subscription", name: "Upgrade", icon: "bxs-up-arrow" },
   { link: "/Index", name: "Invoices",  icon: "bxs-inbox" },
   { link: "/AllClients", name: "All Clients",  icon: "bxs-user-detail" },
   { link: "/businessProfile", name: "Business", icon: "bxs-user-account"},
@@ -27,6 +26,7 @@ const handleExitButtonClick = async () => {
   if (result.isConfirmed) {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('UserId');
+    localStorage.removeItem('userRole');
     router.push({ name: 'Login' });
 
     
@@ -57,14 +57,15 @@ const enableSidebar = computed(() => {
 const menuLogo = "https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png"; 
 const profileImg = "https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png";
 
-const getIconType = (item) => {
-  return item.icon;
+const upgradeAccount = () => {
+  router.push('/subscription');
 };
+
 </script>
 
 
 <template>
-  <div>
+  <div class="overflow-hidden">
     <div class="">
 
       <VueSidebarMenuAkahon
@@ -85,16 +86,17 @@ const getIconType = (item) => {
     </div>
 
     <RouterView v-if="enableSidebar" class="max-w-full pb-6 pl-[250px] lg:pl-[250px] md:pl-[195px]" />
-    <RouterView v-else />
+    <RouterView v-else /> 
+    <div class="fixed bottom-[28px] right-[28px] z-[999]">
+      <button @click="upgradeAccount" class=" mb-[8px] flex items-center justify-center  h-[40px] rounded bg-[#4AA7AD] text-white cursor-pointer tran hover:bg-[#10C0CB] hover:text-white">
+        <span class=" mx-4">  Upgrade  </span>
+      </button>
+    </div>
   </div>
 </template>
 
 
 <style>
-#btn {
-    display: none;
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -112,5 +114,15 @@ const getIconType = (item) => {
   .sidebar div.profile .job{
     font-size:9px !important; 
 }
+}.tran{
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 }
+
+
+
+.float-button:hover {
+  background-color: #388d94;
+}
+
 </style>

@@ -114,33 +114,19 @@ const fontSize = "12px";
   <div class="modal-content max-h-full flex max-w-[800px] px-4 pt-4 justify-start">
       <div class="flex">
         <div class="w-full p-8 lg:w-[70%] 2xl:w-[100%] xl:w-[80%] bg-white">
-          <div class="grid grid-cols-2">
-         
-          <div class="text-[20px] font-semibold"> Single Client View: (Readonly) <br>
-
-          <span class="font-medium text-[15px]"> {{ invoice.userClientProfile.clientDataindividual.clientType }} Profile</span>
-          <br />
-        </div>
-        <div class=" flex mb-4 border">
+          <div class="flex"><div class="logo-placeholder mb-4 border-none cursor-pointer  border-2 grid ">
             <img
                     :src="invoice.userClientProfile.clientDataindividual.url ? invoice.userClientProfile.clientDataindividual.url : 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
                     ref="logoPreview"
                     alt="Logo for Individual"
-                    class="w48 h-auto cursor-pointer"
+                    class="w-20 mb-4 h-20 cursor-pointer"
                 />
-<!--             
-            <label for="logoInput" class="">
-              
-             <div
-                class="logo-placeholder border-[1px]  justify-end items-end flex w-32 h-auto place-items-end text-slate-500 text-6xl font-bold"
-              >
-              
-                
-              </div> 
-            
-            </label> -->
-
           </div>
+         <div class="flex ">
+          <div class="flex flex-col mb-6 justify-center items-center text-2xl ml-6"> <strong>Single Client View: (Readonly) </strong>
+          <div class="">{{ invoice.userClientProfile.clientDataindividual.clientType }} Profile</div>
+        </div>
+        </div>
 </div>
           <div v-if="selectedField === 'individual'" :key="1">
             <div class="mb-4">
@@ -237,7 +223,7 @@ const fontSize = "12px";
             <div class="flex justify-between items-center mt-3">
               <div class="">
     <p class="text-left"> <span class="text-[#ff0000]">*</span>Country</p>
-    <a-select
+    <a-select style="text-align: left;" readonly
       v-model:value="invoice.userClientProfile.clientDataindividual.country"
       class="mr-2 "
     >
@@ -251,13 +237,13 @@ const fontSize = "12px";
     </a-select>
   </div>
   <div class="mt-2 flex">
-    <a-input 
+    <a-input readonly
       v-model:value="invoice.userClientProfile.clientDataindividual.postalCode"
       type="number"
       class="mr-2 mt-3"
       placeholder="Postal Code"
     />
-    <a-input
+    <a-input readonly
       v-model:value="invoice.userClientProfile.clientDataindividual.state"
       type="text"
       class="mr-2 mt-3 "
@@ -265,7 +251,7 @@ const fontSize = "12px";
     />
 
 
-  <a-input
+  <a-input readonly
       v-model:value="invoice.userClientProfile.clientDataindividual.city"
       placeholder="City"
       type="text"
@@ -301,7 +287,7 @@ const fontSize = "12px";
                 <p class="justify-start flex mt-4">Notes</p>
                 <a-textarea readonly 
                   v-model:value="invoice.userClientProfile.clientDataindividual.notes"
-                  rows="4"
+                  rows=4
                   type="text"
                   class="w-full border p-2 mb-4"
                   style="resize: none;" 
@@ -353,7 +339,7 @@ const fontSize = "12px";
               <div>
                 <div>
                   <p class="text-left ml-4">Currency</p>
-                  <a-select readonly 
+                  <a-select readonly  style="text-align: left;"
                     v-model:value="invoice.userClientProfile.clientDataOrganization.currency"
                     class="ml-2 w-full"
                   >
@@ -416,7 +402,7 @@ const fontSize = "12px";
             <div class="flex justify-between items-center mt-3">
               <div class="">
     <p class="text-left"> <span class="text-[#ff0000]">*</span>Country</p>
-    <a-select
+    <a-select style="text-align: left;" readonly
       v-model:value="invoice.userClientProfile.clientDataOrganization.country"
       class="mr-2 "
     >
@@ -430,13 +416,13 @@ const fontSize = "12px";
     </a-select>
   </div>
   <div class="mt-2 flex">
-    <a-input 
+    <a-input readonly
       v-model:value="invoice.userClientProfile.clientDataOrganization.postalCode"
       type="number"
       class="mr-2 mt-3"
       placeholder="Postal Code"
     />
-    <a-input
+    <a-input readonly
       v-model:value="invoice.userClientProfile.clientDataOrganization.state"
       type="text"
       class="mr-2 mt-3 "
@@ -444,7 +430,7 @@ const fontSize = "12px";
     />
 
 
-  <a-input
+  <a-input readonly
       v-model:value="invoice.userClientProfile.clientDataOrganization.city"
       placeholder="City"
       type="text"
@@ -487,9 +473,9 @@ const fontSize = "12px";
               <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Notes</p>
-                <a-textarea
+                <a-textarea readonly
                   v-model:value="invoice.userClientProfile.clientDataOrganization.notes"
-                  rows="4"
+                  rows= 4
                   type="text"
                   class="w-full border p-2"
                   style="resize: none;" 
@@ -504,5 +490,15 @@ const fontSize = "12px";
       </div>
     </div></div>
 </template>
-
+<style>
+select {
+  border: none !important;
+  background: none;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  resize: none;
+}</style>
 

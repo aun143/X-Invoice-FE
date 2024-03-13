@@ -1,6 +1,6 @@
 <script setup>
-import { ref, watch, computed, onMounted } from "vue";
-import { useRoute, useRouter, RouterLink } from "vue-router";
+import { ref, watch, computed, onMounted, watchEffect,onUnmounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import Button from "../components/Button.vue";
@@ -13,14 +13,31 @@ import { getUserDetailsApi } from "../service/LoginService";
 import Swal from "sweetalert2";
 import { notification } from "ant-design-vue";
 import { useInvoiceService } from "../service/MainService";
-import {BASE_URL} from "../utils/config";
-import {uploadImage} from "../service/UploadImage"
+import { BASE_URL } from "../utils/config";
+import { uploadImage } from "../service/UploadImage";
 // import {  Input } from "ant-design-vue";
+
+const date = ref("");
+const { getDate, setDate } = useInvoiceStore();
+// watchEffect(() => {
+//   setDate(date.value); // Update the store when the value changes in the component
+// });
+
 const route = useRoute();
 const router = useRouter();
 const invoiceId = route.params.id;
 const invoice = useInvoiceStore();
 const isLoadingImg = ref(false);
+watchEffect(() => {
+  const unwatch = watch(invoice.formData, (newValue, oldValue) => {
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      invoice.updateFormData(newValue);
+    }
+  }, { deep: true });
+
+  // Cleanup function to stop watching when component is unmounted
+  // onUnmounted(unwatch);
+});
 
 const invoiceSubmit = async () => {
   if (isLoadingImg.value) {
@@ -79,9 +96,9 @@ const validateForm = () => {
   if (!invoice.formData.description) {
     emptyFields.push("Description");
   }
-  if (!invoice.formData.date) {
-    emptyFields.push("Date");
-  }
+  // if (!invoice.formData.date) {
+  //   emptyFields.push("Date");
+  // }
   if (!invoice.formData.invoiceDueDate) {
     emptyFields.push("Invoice Due Date");
   }
@@ -173,7 +190,6 @@ const handleFileInputChange = async () => {
       if (imageUrl) {
         // Call displayImage to update the image preview
         displayImage(logoInputRef.value, imageUrl);
-
       } else {
         console.error("Failed to upload file");
       }
@@ -184,6 +200,13 @@ const handleFileInputChange = async () => {
     }
   }
 };
+const currentDate = computed(() => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+});
 
 const displayImage = (input, imageUrl) => {
   const file = input.files[0];
@@ -273,8 +296,7 @@ const filterStatus = ref("All");
 const client = ref([]);
 const clients = ref([]);
 const profile = ref({});
-
-onMounted(async () => {
+const BusinessProfile = async () => {
   try {
     invoice.resetFormData();
 
@@ -309,7 +331,8 @@ onMounted(async () => {
   } finally {
     isLoading.value = false;
   }
-
+};
+const ClientProfile=async ()=>{
   try {
     invoice.resetFormData();
 
@@ -331,6 +354,10 @@ onMounted(async () => {
   } finally {
     isLoading.value = false; // Set isLoading back to false after fetching data
   }
+}
+onMounted(async () => {
+  BusinessProfile();
+  ClientProfile();
 });
 
 const invoiceName = ref("");
@@ -384,7 +411,7 @@ const validateDueDate = () => {
   }
 
   const maxDueDate = new Date(invoiceDate); // Set maxDueDate as a copy of invoiceDate
-  maxDueDate.setDate(maxDueDate.getDate() + 60); // Add 60 days to invoiceDate
+  maxDueDate.setDate(maxDueDate.getDate() + 60);
 
   // Check if due date is more than 60 days in the future relative to invoice date
   if (dueDate > maxDueDate) {
@@ -404,11 +431,14 @@ const validateDueDate = () => {
 //   const year = date.getFullYear();
 //   return `${year}/${month}/${day}`;
 // };
+const profileType = ref(invoice.selectedProfileType);
 
-watch(invoice.formData, (newValue) => {
-  invoice.updateFormData(newValue);
-});
 
+const switchProfileType = (type) => {
+  invoice.selectProfileType(type);
+  profileType.value = type;
+  BusinessProfile();
+};
 const formData = invoice.formData;
 </script>
 
@@ -462,7 +492,7 @@ const formData = invoice.formData;
                   name=""
                   id=""
                   cols="60"
-                  rows="2"
+                  rows=2
                 ></a-textarea>
               </div>
             </div>
@@ -473,7 +503,7 @@ const formData = invoice.formData;
                 class="logo-placeholder hover:border-dashed border-none cursor-pointer rounded md:w-28 lg:w-48 h-32 border-2 grid place-items-center text-slate-500 text-5xl"
               >
                 <!-- <div v-if="isLoadingImg"><a-spin size="large"/></div> -->
-                <img 
+                <img
                   id="imagePreview"
                   src="https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png"
                   class="logo w-32 rounded"
@@ -509,7 +539,7 @@ const formData = invoice.formData;
               <p class="text-left ml-4">Language</p>
               <a-select
                 v-model:value="formData.language"
-                class="ml-2 lg:w-[200px] w-[150px] md:w-[130px]"
+                class="ml-2 lg:w-[200px] w-[150px] md:w-[130px] " style="text-align: left;"
               >
                 <a-select-option
                   v-for="language in invoice.languageOptions"
@@ -523,7 +553,7 @@ const formData = invoice.formData;
               <p class="text-left ml-4">Currency</p>
               <a-select
                 v-model:value="formData.currency"
-                class="ml-2 lg:w-[200px] w-[200px] md:w-[170px]"
+                class="ml-2 lg:w-[200px] w-[200px] md:w-[170px]" style="text-align: left;"
               >
                 <a-select-option
                   v-for="currency in invoice.currencyOptions"
@@ -552,76 +582,107 @@ const formData = invoice.formData;
             </div>
             <div v-else>
               <div class="flex w-full">
-                <p><span class="text-[#ff0000]">*</span>From:</p>
-
+                <p><span class="text-[#ff0000] ml-2">*</span>From:</p>
                 <p class="justify-end flex w-full text-left">
-                  <router-link to="/businessProfile" class="text-[#10C0CB]"
-                    >Business Profile</router-link
+                  <button
+                    @click="switchProfileType('individual')"
+                    v-if="profileType === 'organization'"
+                    class="text-[#10C0CB]"
                   >
+                    Switch to Individual
+                  </button>
+                  <button
+                    @click="switchProfileType('organization')"
+                    v-if="profileType === 'individual'"
+                    class="text-[#10C0CB]"
+                  >
+                    Switch to Organization
+                  </button>
                 </p>
               </div>
-              <div class="ml-2">
+              <div class="ml-2 border rounded-lg">
                 <div
                   v-if="invoice.selectedProfileType === 'individual'"
-                  class="border-2 pl-2 border-gray-100 rounded-2"
+                  class=" pl-2 border-gray-100 rounded-2"
                 >
                   <!-- <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br> -->
                   <p class="">
-                    <span class=""
-                      >Selected Profile Type:
-                      {{ invoice.formData.sender.profileType }}</span
+                    <span class="">
+                      Selected Profile Type:
+                      {{ invoice.formData.sender.profileType }} </span
                     ><br />
-                    <span class="">{{ invoice.formData.sender.firstName }}</span
-                    >&nbsp;
-                    <span class="">{{ invoice.formData.sender.lastName }}</span
+                    <span v-if="invoice.formData.sender.firstName"
+                      >{{ invoice.formData.sender.firstName }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.lastName">{{
+                      invoice.formData.sender.lastName
+                    }}</span
                     ><br />
-                    <span class="">{{ invoice.formData.sender.address1 }}</span
-                    >&nbsp;
-                    <span class="">{{ invoice.formData.sender.address2 }}</span
+                    <span v-if="invoice.formData.sender.address1"
+                      >{{ invoice.formData.sender.address1 }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.address2">{{
+                      invoice.formData.sender.address2
+                    }}</span
                     ><br />
-                    <span class="">{{
-                      invoice.formData.sender.postalCode
+                    <span v-if="invoice.formData.sender.postalCode"
+                      >{{ invoice.formData.sender.postalCode }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.city">{{
+                      invoice.formData.sender.city
                     }}</span>
-                    &nbsp;
-                    <span class="">{{ invoice.formData.sender.city }}</span
+                    <span v-if="invoice.formData.sender.state">{{
+                      invoice.formData.sender.state
+                    }}</span
                     ><br />
-                    <span class="">{{ invoice.formData.sender.state }}</span
-                    ><br />
-                    <span class="">{{ invoice.formData.sender.email }}</span
+                    <span v-if="invoice.formData.sender.email">{{
+                      invoice.formData.sender.email
+                    }}</span
                     ><br />
                   </p>
                 </div>
                 <div
                   v-if="invoice.selectedProfileType === 'organization'"
-                  class="border-2 pl-2 border-gray-300 rounded-2"
+                  class=" pl-2 border-gray-300 rounded-2"
                 >
                   <p class="">
-                    <span class=""
-                      >Selected Profile Type:
-                      {{ invoice.formData.sender.profileType }}:</span
+                    <span class="">
+                      Selected Profile Type:
+                      {{ invoice.formData.sender.profileType }} </span
                     ><br />
-                    <span class="">{{
-                      invoice.formData.sender.organizationName
+
+                    <span v-if="invoice.formData.sender.organizationName"
+                      >{{
+                        invoice.formData.sender.organizationName
+                      }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.firstName"
+                      >{{ invoice.formData.sender.firstName }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.lastName">{{
+                      invoice.formData.sender.lastName
                     }}</span
                     ><br />
-                    <span class="">{{ invoice.formData.sender.firstName }}</span
-                    >&nbsp;
-                    <span class="">{{ invoice.formData.sender.lastName }}</span
+                    <span v-if="invoice.formData.sender.address1"
+                      >{{ invoice.formData.sender.address1 }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.address2">{{
+                      invoice.formData.sender.address2
+                    }}</span
                     ><br />
-                    <span class="">{{ invoice.formData.sender.address1 }}</span
-                    >&nbsp;
-                    <span class="">{{ invoice.formData.sender.address2 }}</span
-                    ><br />
-                    <span class="">{{
-                      invoice.formData.sender.postalCode
+                    <span v-if="invoice.formData.sender.postalCode"
+                      >{{ invoice.formData.sender.postalCode }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.city">{{
+                      invoice.formData.sender.city
                     }}</span>
-                    &nbsp;
-                    <span class="">{{ invoice.formData.sender.city }}</span
+                    <span v-if="invoice.formData.sender.state">{{
+                      invoice.formData.sender.state
+                    }}</span
                     ><br />
-                    <span class="">{{ invoice.formData.sender.state }}</span
-                    ><br />
-                    <span class="">{{ invoice.formData.sender.email }}</span
-                    ><br />
+                    <span v-if="invoice.formData.sender.email">{{
+                      invoice.formData.sender.email
+                    }}</span>
                   </p>
                 </div>
               </div>
@@ -632,8 +693,7 @@ const formData = invoice.formData;
               </p>
               <div class="justify-end flex w-full text-left">
                 <!-- <div  @click="toggleModal" class="">New Client</div> -->
-                <div
-                  type="primary"
+                <div type="primary"
                   class="text-[#10C0CB] cursor-pointer"
                   @click="showModal"
                 >
@@ -652,7 +712,7 @@ const formData = invoice.formData;
             <a-select
               v-model:value="formData.receiver"
               class="ml-2 w-[100%]"
-              :loading="isLoading"
+              :loading="isLoading" style="text-align: left;"
             >
               <a-select-option
                 v-for="client in filteredClients"
@@ -666,9 +726,7 @@ const formData = invoice.formData;
         <div class="flex flex-col items-end mt-4 ml-auto">
           <div class="flex items-end mb-2">
             <div>
-              <p class="w-4/5 mb-0 ml-2 text-start">
-                <span class="text-[#ff0000]">*</span>Date
-              </p>
+              <p class="w-4/5 mb-0 ml-3 text-start">Date</p>
               <a-input
                 type="Date"
                 v-model:value="formData.date"
@@ -718,8 +776,10 @@ const formData = invoice.formData;
             <th class="align-top md:hidden lg:block"></th>
             <th class="p-2 w-1/2 align-top">Description</th>
             <th class="p-2 align-top">Quantity</th>
-            <th class="p-2 align-top">Rate</th>
-            <th class="p-2 w-[150px] text-right pr-5 align-top">Amount</th>
+            <th class="p-2 align-top"><span class="ml-4">Rate</span></th>
+            <th class="p-2 w-[150px] text-right pr-5 align-top">
+              <span class="ml-4">Amount</span>
+            </th>
             <th class="p-2 w-[30px] text-right pr-5 align-top">Options</th>
           </tr>
 
@@ -756,7 +816,7 @@ const formData = invoice.formData;
                 name=""
                 id=""
                 cols="70"
-                rows="2"
+                rows=2
               ></a-textarea>
             </td>
             <td class="align-top">
@@ -764,25 +824,26 @@ const formData = invoice.formData;
                 v-model:value="item.quantity"
                 class="w-full mx-2"
                 type="number"
-                placeholder="Quantity"
+                placeholder="0"
               />
             </td>
-            <td class="align-top">
+            <td class="align-top flex flex-col">
               <a-input-number
                 v-model:value="item.rate"
                 class="w-full ml-4"
                 type="number"
-                placeholder="Rate"
+                placeholder="0"
               />
               <a-select
                 v-model:value="item.unit"
-                class="ml-2 mt-1 mb-2 w-[60px]"
-                @change="() => handleUnitChange(index, item.unit)"
+                class="mt-1 mb-2 flex ml-6"
+                @change="() => handleUnitChange(index, item.unit)" style="text-align: left;"
               >
                 <a-select-option
                   v-for="unit in invoice.unitOptions"
                   :key="unit.value"
                   :value="unit.value"
+                  class="w-12"
                 >
                   {{ unit.value }}
                 </a-select-option>
@@ -790,7 +851,9 @@ const formData = invoice.formData;
             </td>
             <td class="align-top">
               <!-- <a-textarea v-model:value="item.amount" readonly class="" cols="10" rows="1" placeholder="Amount" >{{ item.quantity * item.rate }}</a-textarea> -->
-              <div readonly class="ml-12">{{ calculateAmount(item) }}</div>
+              <div readonly class="ml-12 xl:ml-12 md:ml-8 text-left">
+                {{ calculateAmount(item) }}
+              </div>
               <!-- <div readonly class=" ml-12" >{{ item.quantity * item.rate }}</div> -->
             </td>
             <td class="align-top">
@@ -819,28 +882,26 @@ const formData = invoice.formData;
             </td>
           </tr>
         </table>
+        <hr class="mb-2" />
 
+        <div style="text-align: left; margin-left: 10px" class="w-[50%]">
+          <Button
+            :bgColor="Colors.addMore"
+            :textColor="Colors.white"
+            :fontSize="fontSize"
+            buttonText="New Line"
+            class=""
+            @click="addMoreItem()"
+          />
+        </div>
         <div class="flex justify-between items-center">
-          <div style="text-align: left; margin-left: 10px" class="w-[50%]">
-            <Button
-              :bgColor="Colors.addMore"
-              :textColor="Colors.white"
-              :fontSize="fontSize"
-              buttonText="New Line"
-              class=""
-              @click="addMoreItem()"
-            />
-          </div>
-
-          <div
-            class="mt-5 lg:mt-5 md:mt-0 flex-y-5 text-right space-y-3 w-full"
-          >
+          <div class="flex-y-5 text-right space-y-3 w-full">
             <p>
               <span>SubTotal</span>
               <a-input
                 :value="getSubtotal()"
                 readonly
-                class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 border-0 2xl:w-[450px] xl:w-[350px] lg:w-[230px] md:w-[200px]"
+                class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 border-0 2xl:w-[440px] xl:w-[350px] lg:w-[230px] md:w-[200px]"
                 placeholder="Subtotal"
               />
             </p>
@@ -868,7 +929,7 @@ const formData = invoice.formData;
               <a-textarea
                 class="border-none"
                 cols="60"
-                rows="2"
+                rows=2
                 v-model:value="formData.notes"
               ></a-textarea>
             </div>

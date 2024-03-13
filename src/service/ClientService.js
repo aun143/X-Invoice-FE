@@ -1,21 +1,24 @@
 import {BASE_URL} from "../utils/config";
 export const clientApi = async (data) => {
-  const token = localStorage.getItem("accessToken");
 
-  const response = await fetch(`${BASE_URL}/client/createClient`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const token = localStorage.getItem("accessToken");
 
-  if (!response.ok) {
-    throw new Error("Failed to Client Post Data");
+    const response = await fetch(`${BASE_URL}/client/createClient`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+   
+    return response.json();
+  } catch (error) {
+    return Error
   }
 
-  return response.json();
+
 };
 
 export const getAllClient = async () => {
@@ -34,7 +37,7 @@ export const getAllClient = async () => {
     // console.log("token: is This Of This User" , accessToken);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch all AllClients");
+      throw new Error("Failed to fetch AllClients");
     }
 
     return response.json();

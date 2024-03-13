@@ -19,10 +19,10 @@ export const useInvoiceStore = defineStore("invoice", {
       items: [
         {
           description: "",
-          quantity: 0,
-          rate: 0,
+          quantity: "",
+          rate: "",
           unit: "d",
-          amount: 0,
+          amount: "",
         },
       ],
       notes: "",
@@ -183,6 +183,7 @@ userClientProfile :{
       { label: "month", value: "m" },
       { label: "year", value: "y" },
     ],
+    
 
     // async fetchBusinessProfileDataBasedOnProfileType() {
     //   const profileType = this.selectedProfileType;
@@ -224,9 +225,21 @@ userClientProfile :{
     //     console.error("Error fetching business profile data:", error.message);
     //   }
     // },
-  }),
-
+  }),getters: {
+    clonedFormData() {
+      // Return a deep clone of the formData object
+      return JSON.parse(JSON.stringify(this.formData));
+    },
+  },
   actions: {
+    updateFormData(newFormData) {
+      // Update the formData object
+      Object.keys(newFormData).forEach(key => {
+        if (this.formData.hasOwnProperty(key)) {
+          this.formData[key] = newFormData[key];
+        }
+      });
+    },
     selectProfileType(profileType) {
       this.selectedProfileType = profileType;
 
@@ -397,7 +410,10 @@ userClientProfile :{
         customFieldValue: "",
       },
     }
-  },
+  }, setDate(newValue) {
+      // Set the date to the new value
+      this.formData.date = newValue;
+    },
   
     // onSelectProfileTypeChange(newProfileType) {
     //  console.log(`Selected profile type changed to: ${newProfileType}`);
@@ -405,9 +421,10 @@ userClientProfile :{
     addMoreItem() {
       this.formData.items.push({
         description: "",
-        quantity: 0,
-        rate: 0,
-        amount: 0,
+        quantity: "",
+        rate: "",
+        unit: "y",
+        amount: "",
       });
     },
   
@@ -436,3 +453,11 @@ userClientProfile :{
     // },
   },
 });
+function getCurrentDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  console.log("date", `${month}/${day}/${year}`);
+  return `${month}/${day}/${year}`;
+}

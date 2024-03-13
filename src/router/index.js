@@ -115,45 +115,36 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("accessToken");
 
-  // console.log("Current route:", to);
-  // console.log("Token:", token);
-
   if (!to.meta.public) {
-    // Page requires authentication - if there is none, redirect to /login
+    // Page requires authentication
     if (!token) {
       // User does not have token, redirect to login
-      // console.log("User does not have token, redirect to login");
       next({ name: "Login" });
     } else {
       // User has token, allow access to authenticated routes
-      // console.log("User has token, allow access");
       next();
     }
   } else {
     // Login is supposedly public - skip navigation if we have a token
     if (token) {
-      // If user has token and tries to access login, signup, or forgetPass, redirect to main or another authenticated route
+      // If user has token and tries to access public routes that should be restricted, redirect to main or another authenticated route
       if (
-        to.path === "/Login" ||
-        to.path === "/Signup" ||
-        to.path === "/ForgetPass" ||
-        to.path === "/Accounts"
+        to.path === "/login" ||
+        to.path === "/signup" ||
+        to.path === "/ForgetPass" 
+        // to.path === "/accounts"
       ) {
-        // console.log(
-        //   "User with token trying to access login, signup, or ForgetPass, redirecting to main"
-        // );
         next({ name: "Index" });
       } else {
         // Allow access to other authenticated routes
-        // console.log("Allow access to other authenticated routes");
         next();
       }
     } else {
       // Allow access to public routes
-      // console.log("Allow access to public routes");
       next();
     }
   }
 });
+
 
 export default router;
