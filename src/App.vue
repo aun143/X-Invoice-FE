@@ -2,16 +2,20 @@
 import Swal from 'sweetalert2';
 import VueSidebarMenuAkahon from "vue-sidebar-menu-akahon";
 import { useRoute, useRouter } from "vue-router";
-import { computed } from "vue";
+import { getUserDetailsApi } from "../src/service/LoginService";
+import { computed,ref,onMounted } from "vue";
+import { useInvoiceStore } from "../src/stores/index";
+
 import { Colors } from "./utils/color";
 const menuItems = [
-  { link: "/dashBoard", name: "DashBoard", icon: "bxs-user-account"},
+  { link: "/dashBoard", name: "DashBoard", icon: "bxs-dashboard"},
   { link: "/Index", name: "Invoices",  icon: "bxs-inbox" },
   { link: "/AllClients", name: "All Clients",  icon: "bxs-user-detail" },
   { link: "/businessProfile", name: "Business", icon: "bxs-user-account"},
 ];
 
 const router = useRouter();
+const invoice = useInvoiceStore();
 
 const handleExitButtonClick = async () => {
   const result = await Swal.fire({
@@ -29,12 +33,14 @@ const handleExitButtonClick = async () => {
     localStorage.removeItem('UserId');
     localStorage.removeItem('userRole');
     router.push({ name: 'Login' });
+    userRole.value= "";
 
     
   }
 };
 
 const enableExitButton = true;
+const isLoading = ref(false);
 const disableSearch = false;
 const componentsWithSidebar = [
   "Index",
@@ -51,9 +57,41 @@ const componentsWithSidebar = [
   "DashBoard",
 
 ];
+const userRole = ref();
+onMounted(async () => {
+  try {
+    isLoading.value = true;
 
+    const UserId = localStorage.getItem("UserId");
+
+    if (UserId) {
+      const userProfileData = await getUserDetailsApi(UserId);
+      invoice.userProfileData.userRole = userProfileData.userRole;
+    } else {
+      router.push("/login");
+    }
+    // showPopup();
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: ("Error During Getting Account:", error),
+      footer: "Please try again ",
+    });
+    console.error("Error During getting Business Profile:", error);
+  } finally {
+    isLoading.value = false;
+  }
+});
+
+// const enableSidebar = computed(() => {
+//   return componentsWithSidebar.includes(route.name);
+// });
 const route = useRoute();
 const enableSidebar = computed(() => {
+  if (invoice.userProfileData.userRole === undefined || invoice.userProfileData.userRole === "") {
+    return false;
+  }
   return componentsWithSidebar.includes(route.name);
 });
 
@@ -70,7 +108,6 @@ const upgradeAccount = () => {
 <template>
   <div class="overflow-hidden">
     <div class="">
-
       <VueSidebarMenuAkahon
         v-if="enableSidebar"
         menuTitle="X-Invoice"
@@ -87,11 +124,10 @@ const upgradeAccount = () => {
       >
       </VueSidebarMenuAkahon>
     </div>
-
     <RouterView v-if="enableSidebar" class="max-w-full pb-6 pl-[250px] lg:pl-[250px] md:pl-[195px]" />
     <RouterView v-else /> 
     <div class="fixed bottom-[28px] right-[28px] z-[999]">
-      <button @click="upgradeAccount" class=" mb-[8px] flex items-center justify-center  h-[40px] rounded bg-[#4AA7AD] text-white cursor-pointer tran hover:bg-[#10C0CB] hover:text-white">
+      <button v-if="invoice.userProfileData.userRole" @click="upgradeAccount" class=" mb-[8px] flex items-center justify-center  h-[40px] rounded bg-[#4AA7AD] text-white cursor-pointer tran hover:bg-[#10C0CB] hover:text-white">
         <span class=" mx-4">  Upgrade  </span>
       </button>
     </div>
@@ -117,15 +153,16 @@ const upgradeAccount = () => {
   .sidebar div.profile .job{
     font-size:9px !important; 
 }
+}
+.sidebar{
+  transition:none !important;
 }.tran{
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
 }
-
 #btn{
   display: none;
 }
-
 .float-button:hover {
   background-color: #388d94;
 }

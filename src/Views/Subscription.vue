@@ -197,7 +197,7 @@ onMounted(async () => {
     } else {
       router.push("/login");
     }
-    showPopup();
+    // showPopup();
   } catch (error) {
     Swal.fire({
       icon: "error",
@@ -210,21 +210,21 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
-async function showPopup() {
-  if (
-    userRole.value === "user" ||
-    userRole.value === undefined ||
-    userRole.value === ""
-  ) {
-    console.log("userRole.value", userRole.value);
-    await Swal.fire({
-      title: "Free Mode",
-      text: "Can Create up to 3 Clients & 3 Invoices",
-      icon: "info",
-      confirmButtonText: "OK",
-    });
-  }
-}
+// async function showPopup() {
+//   if (
+//     userRole.value === "user" ||
+//     userRole.value === undefined ||
+//     userRole.value === ""
+//   ) {
+//     console.log("userRole.value", userRole.value);
+//     await Swal.fire({
+//       title: "Free Mode",
+//       text: "Can Create up to 3 Clients & 3 Invoices",
+//       icon: "info",
+//       confirmButtonText: "OK",
+//     });
+//   }
+// }
 const plans = [
   {
     name: "Free",
@@ -342,7 +342,7 @@ watch(userRole, (newValue) => {
           <div
             v-for="(plan, index) in plans"
             :key="index"
-            :class="`relative col-span-full md:col-span-3 bg-white shadow-md rounded-sm border border-gray-200 ${
+            :class="`relative col-span-full md:col-span-6 lg:col-span-3  bg-white shadow-md rounded-sm border border-gray-200 ${
               plan.active ? 'border-[#10C0CB]' : ''
             }`"
           >

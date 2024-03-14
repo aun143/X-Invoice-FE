@@ -55,28 +55,42 @@ const deletClient = async () => {
 const fetchclientDetails = async () => {
   try {
     isLoading.value = true;
-    
-    const response = await getSingleClient(clientId);
-    const clientDetails = response;
+        //console.log("Client details fetched successfully:", clientDetails);
+    const { success, data, error } = await getSingleClient(clientId);
 
-    if (selectedField.value === "individual") {
-    // Update individual data
-    invoice.userClientProfile.clientDataindividual = {
-        ...clientDetails,
-    };
+if (success) {
+  const clientDetails = data;
+
+if (selectedField.value === "individual") {
+// Update individual data
+invoice.userClientProfile.clientDataindividual = {
+    ...clientDetails,
+};
 } else if (selectedField.value === "organization") {
-    // Update organization data
-    invoice.userClientProfile.clientDataOrganization = {
-        ...clientDetails,
-    };
+// Update organization data
+invoice.userClientProfile.clientDataOrganization = {
+    ...clientDetails,
+};
 }
-
-    //console.log("Client details fetched successfully:", clientDetails);
-  } catch (error) {
-    console.error("Error fetching client details:", error);
-  } finally {
-    isLoading.value = false;
+} else {
+  console.error("Error During Client Get:", error);
+  Swal.fire({
+    icon: "error",
+    title: "Error During Client Get",
+    text: error || "An error occurred while gettting the client.",
+  });
+  if (error === "Your subscription plan has expired. Please update your plan.") {
+    router.push("/subscription");
+  } else {
+    openNotificationWithIcon("error", error);
   }
+}
+} catch (error) {
+console.error("Error During Client Get:", error);
+openNotificationWithIcon("error", "An error occurred while Getting the client.");
+} finally {
+isLoading.value = false;
+}
 };
 
 
@@ -133,167 +147,103 @@ const fontSize = "12px";
               <hr class="mb-4" />
               <div v-if="invoice.userClientProfile.clientDataindividual.clientType === 'organization'">
                 <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Organization Name</p>
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataindividual.organizationName"
-                  type="text"
-                  placeholder="Organization Name"
-                  class="w-full border p-2"
-                />
+              <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.organizationName }}</span></div>
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>First Name</p>
-                  <a-input readonly
-                    v-model:value="invoice.userClientProfile.clientDataindividual.firstName"
-                    type="text"
-                    placeholder="First Name"
-                    class="w-full border p-2"
-                  />
+                  <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.firstName }}</span></div>
                 </div>
                 <div>
                   <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Last Name</p>
-                  <a-input readonly
-                    v-model:value="invoice.userClientProfile.clientDataindividual.lastName"
-                    type="text"
-                    placeholder="Last Name"
-                    class="w-full border p-2"
-                  />
+                  <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.lastName }}</span></div>
                 </div>
               </div>
               <hr class="my-4" />
             </div>
             <div>
               <div>
-                <p class="text-left ml-4">Currency</p>
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataindividual.currency"
-                  class="ml-2 w-full"
-                >
-                  
-                </a-input>
+                <p class="text-left ml-2">Currency</p>
+                <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.currency }}</span></div>
+
               </div>
               <hr class="my-4" />
               <div class="">
-                <p class="text-left ml-4">Language</p>
-                <a-input readonly 
-                  v-model:value="invoice.userClientProfile.clientDataindividual.language"
-                  class="ml-2 w-full"
-                >
-                  
-                </a-input>
+                <p class="text-left ml-2">Language</p>
+                <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.language }}</span></div>
+
               </div>
             </div>
             <hr class="my-4" />
             <div>
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Email Address</p>
-              <a-input readonly
-                v-model:value="invoice.userClientProfile.clientDataindividual.email"
-                type="email"
-                placeholder="Email"
-                class="w-full border p-2"
-              />
+              <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.email }}</span></div>
+
             </div>
             <hr class="my-4" />
             <div>
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Phone Number</p>
-              <a-input readonly
-                v-model:value="invoice.userClientProfile.clientDataindividual.phone"
-                type="number"
-                placeholder="Phone Number"
-                class="w-full border p-2"
-              />
+              <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.phone }}</span></div>
             </div>
             <hr class="my-4" />
             <div>
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Address(Line 1)</p>
-              <a-input readonly
-                v-model:value="invoice.userClientProfile.clientDataindividual.address1"
-                type="text"
-                placeholder="Streeet Line 1"
-                class="w-full border p-2"
-              />
+              <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.address1 }}</span></div>
+              <div class="border rounded-lg text-left py-2 mt-2"><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.address2 }}</span></div>
 
-              <a-input readonly
-                v-model:value="invoice.userClientProfile.clientDataindividual.address2"
-                type="text"
-                placeholder="Street Line 2"
-                class="w-full mt-2 border p-2"
-              />
             </div>
-            <div class="flex justify-between items-center mt-3">
+            <div class=" justify-between items-center grid grid-cols-2 mt-1 gap-2">
               <div class="">
-    <p class="text-left"> <span class="text-[#ff0000]">*</span>Country</p>
-    <a-select style="text-align: left;" readonly
-      v-model:value="invoice.userClientProfile.clientDataindividual.country"
-      class="mr-2 "
-    >
-      <a-select-option
-        v-for="country in invoice.countryOptions"
-        :key="country.value"
-        :value="country.label"
-      >
-        {{ country.label }}
-      </a-select-option>
-    </a-select>
-  </div>
-  <div class="mt-2 flex">
-    <a-input readonly
-      v-model:value="invoice.userClientProfile.clientDataindividual.postalCode"
-      type="number"
-      class="mr-2 mt-3"
-      placeholder="Postal Code"
-    />
-    <a-input readonly
-      v-model:value="invoice.userClientProfile.clientDataindividual.state"
-      type="text"
-      class="mr-2 mt-3 "
-      placeholder="State"
-    />
+                <p class="text-left">
+                  <span class="text-[#ff0000]">*</span>Country
+                </p>
+                <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.country }}</span></div>
+              </div>
+              <div class="">
+                <p class="text-left">
+                  Postal Code
+                </p>
+                <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.postalCode }}</span></div>
 
+              </div> 
+              <div class="">
+                <p class="text-left">
+                  State
+                </p>
+                <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.state }}</span></div>
 
-  <a-input readonly
-      v-model:value="invoice.userClientProfile.clientDataindividual.city"
-      placeholder="City"
-      type="text"
-      class="mr-2 mt-3"
-    />
+              </div>
+              <div class="">
+                <p class="text-left">
+             City
+                </p>
+                <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.city }}</span></div>
 
-  </div>
+              </div>
+            
+            </div>
 
-</div>
+            <hr class="mt-4" />
 
-            <hr class="my-4" />
-
-            <div>
+            <div class="mt-2">
               <div>
                 <p class="justify-start flex">Fax Number</p>
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataindividual.faxNumber"
-                  type="number"
-                  class="w-full border p-2"
-                />
+                <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.faxNumber }}</span></div>
+
               </div>
-              <hr class="my-4" />
-              <div>
+              <hr class="mt-4" />
+              <div class="my-4">
                 <p class="justify-start flex">Website URL</p>
-                <a-input readonly
-                  v-model:value="invoice.userClientProfile.clientDataindividual.websiteURL"
-                  type="text"
-                  class="w-full border p-2 mb-4"
-                />
+                <div class="border rounded-lg text-left py-2 "><span class="ml-2 ">{{ invoice.userClientProfile.clientDataindividual.websiteURL }}</span></div>
+
               </div>
               <hr clas=" " />
-              <div>
+              <div class="my-4">
                 <p class="justify-start flex mt-4">Notes</p>
-                <a-textarea readonly 
-                  v-model:value="invoice.userClientProfile.clientDataindividual.notes"
-                  rows=4
-                  type="text"
-                  class="w-full border p-2 mb-4"
-                  style="resize: none;" 
-                />
+                <div class="border rounded-lg text-left py-2 "><span class="ml-2 ">{{ invoice.userClientProfile.clientDataindividual.notes }}</span></div>
 
-                <hr class="mb-4" />
+
+                <hr class="mt-4" />
                 
               </div>
             </div>

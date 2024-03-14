@@ -391,7 +391,7 @@ const formattedDueDate = computed(() => {
 //   }
 // };
 const validateDueDate = () => {
-  const invoiceDate = new Date(formData.date); // Get formData.date
+  const invoiceDate = new Date(invoice.formData.date); // Get formData.date
 
   // Check if formData.date is provided
   if (!invoiceDate || isNaN(invoiceDate.getTime())) {
@@ -399,7 +399,7 @@ const validateDueDate = () => {
     return false;
   }
 
-  const dueDate = new Date(formData.invoiceDueDate);
+  const dueDate = new Date(invoice.formData.invoiceDueDate);
 
   // Check if due date is before the invoice date or is more than 60 days ahead
   if (dueDate < invoiceDate) {
@@ -439,7 +439,6 @@ const switchProfileType = (type) => {
   profileType.value = type;
   BusinessProfile();
 };
-const formData = invoice.formData;
 </script>
 
 <template>
@@ -460,7 +459,7 @@ const formData = invoice.formData;
         :showBackButton="false"
       />
     </div>
-
+{{ invoice.formData }}
     <!-- <form @submit.prevent class="container mt-6 ml-6 bg-white max-w-[1000px]  p-6"> -->
     <form
       @submit.prevent
@@ -476,7 +475,7 @@ const formData = invoice.formData;
                   >Draft</span
                 >
                 <a-input
-                  v-model:value="formData.invoiceName"
+                  v-model:value="invoice.formData.invoiceName"
                   class="w-[250px] h-12 text-left text-[15px]"
                   type="text"
                   placeholder="Invoice Name"
@@ -487,7 +486,7 @@ const formData = invoice.formData;
               <div class="flex">
                 <span class="text-[#ff0000] mr-2">*</span>
                 <a-textarea
-                  v-model:value="formData.description"
+                  v-model:value="invoice.formData.description"
                   placeholder="Enter Description"
                   name=""
                   id=""
@@ -530,7 +529,7 @@ const formData = invoice.formData;
             <a-input-number
               required
               type="number"
-              v-model:value="formData.invoiceNumber"
+              v-model:value="invoice.formData.invoiceNumber"
               class="ml-2 w-[100px]"
             />
           </div>
@@ -538,7 +537,7 @@ const formData = invoice.formData;
             <div class="">
               <p class="text-left ml-4">Language</p>
               <a-select
-                v-model:value="formData.language"
+                v-model:value="invoice.formData.language"
                 class="ml-2 lg:w-[200px] w-[150px] md:w-[130px] " style="text-align: left;"
               >
                 <a-select-option
@@ -552,7 +551,7 @@ const formData = invoice.formData;
             <div>
               <p class="text-left ml-4">Currency</p>
               <a-select
-                v-model:value="formData.currency"
+                v-model:value="invoice.formData.currency"
                 class="ml-2 lg:w-[200px] w-[200px] md:w-[170px]" style="text-align: left;"
               >
                 <a-select-option
@@ -710,7 +709,7 @@ const formData = invoice.formData;
             </div>
 
             <a-select
-              v-model:value="formData.receiver"
+              v-model:value="invoice.formData.receiver"
               class="ml-2 w-[100%]"
               :loading="isLoading" style="text-align: left;"
             >
@@ -729,7 +728,7 @@ const formData = invoice.formData;
               <p class="w-4/5 mb-0 ml-3 text-start">Date</p>
               <a-input
                 type="Date"
-                v-model:value="formData.date"
+                v-model:value="invoice.formData.date"
                 class="ml-2 w-[200px]"
               />
             </div>
@@ -741,11 +740,11 @@ const formData = invoice.formData;
               </p>
               <a-input
                 type="Date"
-                v-model:value="formData.invoiceDueDate"
+                v-model:value="invoice.formData.invoiceDueDate"
                 class="ml-2 w-[200px]"
               />
 
-              <!-- <a-select v-model:value="formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate">
+              <!-- <a-select v-model:value="invoice.formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate">
         
               <a-select-option value="07">After 07 days</a-select-option>
               <a-select-option value="15">After 15 days</a-select-option>
@@ -760,7 +759,7 @@ const formData = invoice.formData;
             <div>
               <p class="w-3/3 mb-0 ml-4 text-start">Purchase Order Number</p>
               <a-input-number
-                v-model:value="formData.purchaseOrderNumber"
+                v-model:value="invoice.formData.purchaseOrderNumber"
                 class="ml-2 w-[200px]"
                 type="number"
               />
@@ -930,7 +929,7 @@ const formData = invoice.formData;
                 class="border-none"
                 cols="60"
                 rows=2
-                v-model:value="formData.notes"
+                v-model:value="invoice.formData.notes"
               ></a-textarea>
             </div>
           </div>

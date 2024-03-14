@@ -12,8 +12,8 @@ import {
 } from "../service/BusinessProfileService";
 import { getUserDetailsApi } from "../service/LoginService";
 // import Modal from "../components/Modal.vue";
-import {BASE_URL} from "../utils/config";
-import {uploadImage} from "../service/UploadImage"
+import { BASE_URL } from "../utils/config";
+import { uploadImage } from "../service/UploadImage";
 
 const isLoading = ref(false);
 const isLoadingImg = ref(false);
@@ -21,46 +21,58 @@ const route = useRoute();
 const router = useRouter();
 const invoice = useInvoiceStore();
 
-const firstNameError = ref('');
-const lastNameError = ref('');
-const emailError = ref('');
-const address1Error = ref('');
-const address2Error = ref('');
-const cityError = ref('');
+const firstNameError = ref("");
+const lastNameError = ref("");
+const emailError = ref("");
+const address1Error = ref("");
+const address2Error = ref("");
+const cityError = ref("");
 
 const validateForm = (profileType) => {
   // Reset errors
-  firstNameError.value = '';
-  lastNameError.value = '';
-  emailError.value = '';
-  address1Error.value = '';
-  address2Error.value = '';
-  cityError.value = '';
+  firstNameError.value = "";
+  lastNameError.value = "";
+  emailError.value = "";
+  address1Error.value = "";
+  address2Error.value = "";
+  cityError.value = "";
 
-  const profileData = profileType === 'individual' ? invoice.userProfileData.individualProfile : invoice.userProfileData.organizationProfile;
+  const profileData =
+    profileType === "individual"
+      ? invoice.userProfileData.individualProfile
+      : invoice.userProfileData.organizationProfile;
 
   // Validate First Name
   if (!/^[a-z A-Z]+$/.test(profileData.firstName)) {
-    firstNameError.value = "First name must contain only letters from A-Z and a-z";
+    firstNameError.value =
+      "First name must contain only letters from A-Z and a-z";
   }
   if (!/^[a-z A-Z]+$/.test(profileData.lastName)) {
-    lastNameError.value = "Last name must contain only letters from A-Z and a-z";
+    lastNameError.value =
+      "Last name must contain only letters from A-Z and a-z";
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email)) {
     emailError.value = "Email must be Valid and contain '@' ";
   }
   // if (!/^[a-z A-Z 0-9 ,]+$/.test(profileData.address1)) {
   //   address1Error.value = "Address1 must contain only Alphanumeric characters";
-  // } 
+  // }
   // if (!/^[a-z A-Z 0-9 ,]+$/.test(profileData.address2)) {
   //   address2Error.value = "Address2 must contain only Alphanumeric characters";
-  // } 
+  // }
   if (!/^[a-z A-Z ]+$/.test(profileData.city)) {
     cityError.value = "City must contain only Alphabetic A-Z characters";
   }
 
   // Check if any errors
-  if (firstNameError.value || lastNameError.value || emailError.value || address1Error.value || address2Error.value || cityError.value) {
+  if (
+    firstNameError.value ||
+    lastNameError.value ||
+    emailError.value ||
+    address1Error.value ||
+    address2Error.value ||
+    cityError.value
+  ) {
     return false;
   }
 
@@ -68,17 +80,17 @@ const validateForm = (profileType) => {
 };
 
 const submitbusinessProfileDataOrganization = async (id) => {
-  if(isLoadingImg.value){
-  openNotificationWithIcon("error", "Please Wait To upload Image First");
-  return;
- }
+  if (isLoadingImg.value) {
+    openNotificationWithIcon("error", "Please Wait To upload Image First");
+    return;
+  }
   try {
     const response = await PatchBusinessProfilerOrganizationApi(
       invoice.userProfileData.organizationProfile._id,
       invoice.userProfileData.organizationProfile
-      );
-      router.push("/");
-      //console.log(response);
+    );
+    router.push("/");
+    //console.log(response);
     invoice.updateUserProfileAndBusinessProfile(response.data);
     Swal.fire({
       icon: "success",
@@ -97,16 +109,16 @@ const submitbusinessProfileDataOrganization = async (id) => {
 };
 
 const submitbusinessProfileDataindividual = async (Id) => {
-  if(isLoadingImg.value){
-  openNotificationWithIcon("error", "Please Wait To upload Image First");
-  return;
- }
+  if (isLoadingImg.value) {
+    openNotificationWithIcon("error", "Please Wait To upload Image First");
+    return;
+  }
   try {
     const response = await PatchBusinessProfilerIndiviualApi(
       invoice.userProfileData.individualProfile._id,
       invoice.userProfileData.individualProfile
-      );
-      router.push("/");
+    );
+    router.push("/");
     //console.log(response);
     invoice.updateUserProfileAndBusinessProfile(response.data);
     Swal.fire({
@@ -133,24 +145,32 @@ onMounted(async () => {
 
     if (UserId) {
       const UserResponse = await getUserDetailsApi(UserId);
-      invoice.userProfileData=UserResponse
+      invoice.userProfileData = UserResponse;
       invoice.updateUser(invoice.userProfileData);
 
       const { userProfileData } = invoice;
-      
+
       if (userProfileData.selectedProfileType === "individual") {
         invoice.updateUserProfileIndividual(userProfileData.individualProfile);
 
         // Display the uploaded image URL if available
         if (invoice.userProfileData.individualProfile.url) {
-          displayImage(logoInputRef.value, invoice.userProfileData.individualProfile.url);
+          displayImage(
+            logoInputRef.value,
+            invoice.userProfileData.individualProfile.url
+          );
         }
       } else if (userProfileData.selectedProfileType === "organization") {
-        invoice.updateUserProfileOrganization(userProfileData.organizationProfile);
+        invoice.updateUserProfileOrganization(
+          userProfileData.organizationProfile
+        );
 
         // Display the uploaded image URL if available
         if (invoice.userProfileData.organizationProfile.url) {
-          displayImage(logoInputRef.value, invoice.userProfileData.organizationProfile.url);
+          displayImage(
+            logoInputRef.value,
+            invoice.userProfileData.organizationProfile.url
+          );
         }
       }
     } else {
@@ -178,11 +198,11 @@ const switchProfileType = (type) => {
 
 const handleSaveDraftButtonClick = () => {
   if (profileType.value === "individual") {
-    if (validateForm('individual')) {
+    if (validateForm("individual")) {
       submitbusinessProfileDataindividual();
     }
   } else if (profileType.value === "organization") {
-    if (validateForm('organization')) {
+    if (validateForm("organization")) {
       submitbusinessProfileDataOrganization();
     }
   }
@@ -201,27 +221,25 @@ const handleFileInputChange = async () => {
       isLoadingImg.value = true;
       const imageUrl = await uploadImage(file);
       if (imageUrl) {
-
-      if (profileType.value === 'individual') {
-        invoice.userProfileData.individualProfile.url = imageUrl;
-      } else if (profileType.value === 'organization') {
-        invoice.userProfileData.organizationProfile.url = imageUrl;
+        if (profileType.value === "individual") {
+          invoice.userProfileData.individualProfile.url = imageUrl;
+        } else if (profileType.value === "organization") {
+          invoice.userProfileData.organizationProfile.url = imageUrl;
+        }
+        displayImage(logoInputRef.value, imageUrl); // Update the image preview
+      } else {
+        console.error("Failed To Upload File");
       }
-      displayImage(logoInputRef.value, imageUrl); // Update the image preview
-    }else{
-      console.error("Failed To Upload File")
-    }
-  } catch (error) {
-      console.error('Error uploading image:', error);
+    } catch (error) {
+      console.error("Error uploading image:", error);
       Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "Error uploading image. Please try again.",
         footer: "Please try again",
       });
-    }finally{
-      isLoadingImg.value=false;
-
+    } finally {
+      isLoadingImg.value = false;
     }
   }
 };
@@ -233,36 +251,37 @@ const displayImage = (input, imageUrl) => {
     const reader = new FileReader();
 
     reader.onload = (e) => {
-      if (profileType.value === 'individual') {
+      if (profileType.value === "individual") {
         invoice.userProfileData.individualProfile.url = imageUrl;
-        console.log("invoice.ind.url",imageUrl)
-      } else if (profileType.value === 'organization') {
+        console.log("invoice.ind.url", imageUrl);
+      } else if (profileType.value === "organization") {
         invoice.userProfileData.organizationProfile.url = imageUrl;
-        console.log("invoice.org.url",imageUrl)
+        console.log("invoice.org.url", imageUrl);
       } // Update the URL in the formData
-      const imagePreview = document.getElementById('imagePreview');
+      const imagePreview = document.getElementById("imagePreview");
       imagePreview.src = imageUrl;
     };
 
     reader.readAsDataURL(file);
-    if (profileType.value === 'individual') {
-        invoice.userProfileData.individualProfile.url = file;
-        console.log("invoice.ind.url",imageUrl)
-      } else if (profileType.value === 'organization') {
-        invoice.userProfileData.organizationProfile.url = file;
-        console.log("invoice.org.url",imageUrl)
-      } 
+    if (profileType.value === "individual") {
+      invoice.userProfileData.individualProfile.url = file;
+      console.log("invoice.ind.url", imageUrl);
+    } else if (profileType.value === "organization") {
+      invoice.userProfileData.organizationProfile.url = file;
+      console.log("invoice.org.url", imageUrl);
+    }
   }
 };
 </script>
 
-<template><div v-if="isLoading" class="flex justify-center items-center">
-  <a-space class="w-full flex h-96 justify-center items-center">
-    <a-spin size="large" />
-  </a-space>
-</div>
+<template>
+  <div v-if="isLoading" class="flex justify-center items-center">
+    <a-space class="w-full flex h-96 justify-center items-center">
+      <a-spin size="large" />
+    </a-space>
+  </div>
 
-<div v-else  class="bg-gray-200 h-[max-content]">
+  <div v-else class="bg-gray-200 h-[max-content]">
     <div class="bg-white">
       <Header
         headerTitle="Business Profile"
@@ -275,44 +294,54 @@ const displayImage = (input, imageUrl) => {
         :showBackButton="false"
       />
     </div>
-    <div class="flex container pt-4 px-4 w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] justify-start">
-      <div class="w-full p-8 bg-white ">
+    <div
+      class="flex container pt-4 px-4 w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] justify-start"
+    >
+      <div class="w-full p-8 bg-white">
         <div class="flex ml-4">
           <label for="logoInput" class="">
             <div
-              class="logo-placeholder hover:border-dashed border-none cursor-pointer  w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
-            ><div v-if="isLoadingImg">
-                  <a-space class="w-full">
-                    <a-spin size="large" />
-                  </a-space>
-                </div>
-                <div v-else>
-              <img
-                v-if="profileType === 'individual'"
-                id="imagePreview"
-                :src="invoice.userProfileData.individualProfile.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
-                ref="logoPreview"
-                alt="Logo for Individual"
-                class="w-20 mb-4 h-20 cursor-pointer"
-              />
-              <img
-                v-if="profileType === 'organization'"
-                id="imagePreview"
-                :src="invoice.userProfileData.organizationProfile.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
-                alt="Logo for Organization"
-                ref="logoPreview"
-                class="w-20 mb-4 h-20 cursor-pointer"
-              /></div>
+              class="logo-placeholder hover:border-dashed border-none cursor-pointer w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
+            >
+              <div v-if="isLoadingImg">
+                <a-space class="w-full">
+                  <a-spin size="large" />
+                </a-space>
+              </div>
+              <div v-else>
+                <img
+                  v-if="profileType === 'individual'"
+                  id="imagePreview"
+                  :src="
+                    invoice.userProfileData.individualProfile.url ||
+                    'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'
+                  "
+                  ref="logoPreview"
+                  alt="Logo for Individual"
+                  class="w-20 mb-4 h-20 cursor-pointer"
+                />
+                <img
+                  v-if="profileType === 'organization'"
+                  id="imagePreview"
+                  :src="
+                    invoice.userProfileData.organizationProfile.url ||
+                    'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'
+                  "
+                  alt="Logo for Organization"
+                  ref="logoPreview"
+                  class="w-20 mb-4 h-20 cursor-pointer"
+                />
+              </div>
             </div>
             <input
-                id="logoInput"
-                type="file"
-                accept="image/*"
-                class=""
-                style="display: none"
-                @change="handleFileInputChange"
-                ref="logoInputRef"
-              />
+              id="logoInput"
+              type="file"
+              accept="image/*"
+              class=""
+              style="display: none"
+              @change="handleFileInputChange"
+              ref="logoInputRef"
+            />
           </label>
 
           <div class="flex-right w-48 ml-6">
@@ -365,7 +394,6 @@ const displayImage = (input, imageUrl) => {
         <!-- <transition name="fade" mode="out-in"> -->
         <div v-if="profileType === 'individual'" :key="1">
           <div class="mb-4">
- 
             <div class="bg-[lightgray] pt-2 pb-2">
               <label class="flex font-bold mb-2 ml-4 mt-2 c"
                 >Personal Information
@@ -373,7 +401,9 @@ const displayImage = (input, imageUrl) => {
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>First Name</p>
+                <p class="justify-start flex">
+                  <span class="text-[#ff0000]">*</span>First Name
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.individualProfile.firstName
@@ -382,11 +412,14 @@ const displayImage = (input, imageUrl) => {
                   placeholder="First Name"
                   class="w-full p-2"
                 />
-                <p v-if="firstNameError" class="text-red-500">{{ firstNameError }}</p>
-
+                <p v-if="firstNameError" class="text-red-500">
+                  {{ firstNameError }}
+                </p>
               </div>
               <div>
-                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Last Name</p>
+                <p class="justify-start flex">
+                  <span class="text-[#ff0000]">*</span>Last Name
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.individualProfile.lastName
@@ -395,11 +428,14 @@ const displayImage = (input, imageUrl) => {
                   placeholder="Last Name"
                   class="w-full p-2"
                 />
-                <p v-if="lastNameError" class="text-red-500">{{ lastNameError }}</p>
-
+                <p v-if="lastNameError" class="text-red-500">
+                  {{ lastNameError }}
+                </p>
               </div>
               <div>
-                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Email Address</p>
+                <p class="justify-start flex">
+                  <span class="text-[#ff0000]">*</span>Email Address
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.individualProfile.email
@@ -409,7 +445,6 @@ const displayImage = (input, imageUrl) => {
                   class="w-full p-2"
                 />
                 <p v-if="emailError" class="text-red-500">{{ emailError }}</p>
-
               </div>
               <div>
                 <p class="justify-start flex">Website URL</p>
@@ -427,15 +462,16 @@ const displayImage = (input, imageUrl) => {
 
           <div class="mb-12 mt-10 flex flex-col">
             <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-2 c">
-                Address</label>
+              <label class="flex font-bold mb-2 ml-4 mt-2 c"> Address</label>
             </div>
             <br /><br />
             <div class="grid grid-cols-2 gap-4">
               <div class="col-span-2">
                 <div class="flex">
-                  <div class="w-1/2 pr-4">
-                    <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Address(Line 1)</p>
+                  <div class="w-1/2 pr-2">
+                    <p class="justify-start flex">
+                      <span class="text-[#ff0000]">*</span>Address(Line 1)
+                    </p>
                     <a-input
                       v-model:value="
                         invoice.userProfileData.individualProfile.address1
@@ -444,8 +480,9 @@ const displayImage = (input, imageUrl) => {
                       placeholder="Address"
                       class="w-full border p-2"
                     />
-                <p v-if="address1Error" class="text-red-500">{{ address1Error }}</p>
-
+                    <p v-if="address1Error" class="text-red-500">
+                      {{ address1Error }}
+                    </p>
                   </div>
                   <div class="w-1/2">
                     <p class="justify-start flex">Address (Line 2)</p>
@@ -454,59 +491,71 @@ const displayImage = (input, imageUrl) => {
                         invoice.userProfileData.individualProfile.address2
                       "
                       type="text"
-                      placeholder="Address 2"
+                      placeholder="Address2"
                       class="w-full border p-2"
-                      />
-                <p v-if="address2Error" class="text-red-500">{{ address2Error }}</p>
-              </div>
+                    />
+                    <p v-if="address2Error" class="text-red-500">
+                      {{ address2Error }}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p class="justify-start flex">Postal Code</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.postalCode
-                  "
-                  type="number"
-                  class="w-full border p-2"
-                />
-                
-              </div>
-              <div>
-                <p class="justify-start flex">State</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.state
-                  "
-                  type="text"
-                  class="w-full border p-2"
-                />
-              </div>
-              <div>
-                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>City</p>
-                <a-input
-                  v-model:value="invoice.userProfileData.individualProfile.city"
-                  type="text"
-                  class="w-full border p-2"
-                  />
-                  <p v-if="cityError" class="text-red-500">{{ cityError }}</p>
-              </div>
-              <div>
-                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Country</p>
-                <a-select style="text-align: left;"
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.country
-                  "
-                  class="w-full p-2"
-                >
-                  <a-select-option
-                    v-for="country in invoice.countryOptions"
-                    :key="country.value"
-                    :value="country.value"
-                  >
-                    {{ country.label }}
-                  </a-select-option>
-                </a-select>
+
+                <div class="flex">
+                  <div class="w-1/2 pr-2">
+                    <p class="justify-start flex">Postal Code</p>
+                    <a-input
+                      v-model:value="
+                        invoice.userProfileData.individualProfile.postalCode
+                      "
+                      type="number"
+                      class="w-full border p-2"
+                    />
+                  </div>
+                  <div class="w-1/2">
+                    <p class="justify-start flex">State</p>
+                    <a-input
+                      v-model:value="
+                        invoice.userProfileData.individualProfile.state
+                      "
+                      type="text"
+                      class="w-full border p-2"
+                    />
+                  </div>
+                </div>
+                <div class="flex">
+                  <div class="w-1/2 pr-2">
+                    <p class="justify-start flex">
+                      <span class="text-[#ff0000]">*</span>City
+                    </p>
+                    <a-input
+                      v-model:value="
+                        invoice.userProfileData.individualProfile.city
+                      "
+                      type="text"
+                      class="w-full border p-2"
+                    />
+                    <p v-if="cityError" class="text-red-500">{{ cityError }}</p>
+                  </div>
+                  <div class="w-1/2">
+                    <p class="justify-start flex">
+                      <span class="text-[#ff0000]">*</span>Country
+                    </p>
+                    <a-select
+                      v-model:value="
+                        invoice.userProfileData.individualProfile.country
+                      "
+                      class="w-full text-left"
+                    >
+                      <a-select-option
+                        v-for="country in invoice.countryOptions"
+                        :key="country.value"
+                        :value="country.value"
+                      >
+                        {{ country.label }}
+                      </a-select-option>
+                    </a-select>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -555,7 +604,7 @@ const displayImage = (input, imageUrl) => {
                   v-model:value="
                     invoice.userProfileData.individualProfile.notes
                   "
-                  rows=1
+                  rows="1"
                   type="text"
                   class="w-full p-2"
                 />
@@ -602,21 +651,21 @@ const displayImage = (input, imageUrl) => {
               </label>
             </div>
             <div>
-                <p class="justify-start flex ">Organization Name</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.organizationProfile.organizationName
-                  "
-                  type="text"
-                  placeholder="Organization Name"
-                  class="w-full p-2 mb-4"
-                />
-              </div>
+              <p class="justify-start flex">Organization Name</p>
+              <a-input
+                v-model:value="
+                  invoice.userProfileData.organizationProfile.organizationName
+                "
+                type="text"
+                placeholder="Organization Name"
+                class="w-full p-2 mb-4"
+              />
+            </div>
             <div class="grid grid-cols-2 gap-4">
-              
-
               <div>
-                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>First Name</p>
+                <p class="justify-start flex">
+                  <span class="text-[#ff0000]">*</span>First Name
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.firstName
@@ -624,11 +673,15 @@ const displayImage = (input, imageUrl) => {
                   type="text"
                   placeholder="First Name"
                   class="w-full p-2"
-                  />
-                <p v-if="firstNameError" class="text-red-500">{{ firstNameError }}</p>
+                />
+                <p v-if="firstNameError" class="text-red-500">
+                  {{ firstNameError }}
+                </p>
               </div>
               <div>
-                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Last Name</p>
+                <p class="justify-start flex">
+                  <span class="text-[#ff0000]">*</span>Last Name
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.lastName
@@ -637,11 +690,14 @@ const displayImage = (input, imageUrl) => {
                   placeholder="Last Name"
                   class="w-full p-2"
                 />
-                <p v-if="lastNameError" class="text-red-500">{{ lastNameError }}</p>
-
+                <p v-if="lastNameError" class="text-red-500">
+                  {{ lastNameError }}
+                </p>
               </div>
               <div>
-                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Email Address</p>
+                <p class="justify-start flex">
+                  <span class="text-[#ff0000]">*</span>Email Address
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.email
@@ -651,7 +707,6 @@ const displayImage = (input, imageUrl) => {
                   class="w-full p-2"
                 />
                 <p v-if="emailError" class="text-red-500">{{ emailError }}</p>
-
               </div>
               <div>
                 <p class="justify-start flex">Website URL</p>
@@ -669,14 +724,15 @@ const displayImage = (input, imageUrl) => {
 
           <div class="mb-12 mt-10 flex flex-col">
             <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-2 c">
-                Address</label>
+              <label class="flex font-bold mb-2 ml-4 mt-2 c"> Address</label>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div class="col-span-2">
                 <div class="flex">
                   <div class="w-1/2 pr-4">
-                    <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Address(Line 1)</p>
+                    <p class="justify-start flex">
+                      <span class="text-[#ff0000]">*</span>Address(Line 1)
+                    </p>
                     <a-input
                       v-model:value="
                         invoice.userProfileData.organizationProfile.address1
@@ -685,7 +741,9 @@ const displayImage = (input, imageUrl) => {
                       placeholder="Address"
                       class="w-full p-2"
                     />
-                    <p v-if="address1Error" class="text-red-500">{{ address1Error }}</p>
+                    <p v-if="address1Error" class="text-red-500">
+                      {{ address1Error }}
+                    </p>
                   </div>
                   <div class="w-1/2">
                     <p class="justify-start flex">Address (Line 2)</p>
@@ -697,136 +755,148 @@ const displayImage = (input, imageUrl) => {
                       placeholder="Address 2"
                       class="w-full p-2"
                     />
-                    <p v-if="address2Error" class="text-red-500">{{ address2Error }}</p>
+                    <p v-if="address2Error" class="text-red-500">
+                      {{ address2Error }}
+                    </p>
+                  </div>
+                </div>
+                <div class="flex">
+                  <div class="w-1/2 pr-4">
+                    <p class="justify-start flex">Postal Code</p>
+                    <a-input
+                      v-model:value="
+                        invoice.userProfileData.organizationProfile.postalCode
+                      "
+                      type="number"
+                      class="w-full p-2"
+                    />
+                  </div>
+                  <div class="w-1/2">
+                    <p class="justify-start flex">State</p>
+                    <a-input
+                      v-model:value="
+                        invoice.userProfileData.organizationProfile.state
+                      "
+                      type="text"
+                      class="w-full p-2"
+                    />
+                  </div>
+                </div>
+                <div class="flex">
+                  <div class="w-1/2 pr-4">
+                    <p class="justify-start flex">
+                      <span class="text-[#ff0000]">*</span>City
+                    </p>
+                    <a-input
+                      v-model:value="
+                        invoice.userProfileData.organizationProfile.city
+                      "
+                      type="text"
+                      class="w-full p-2"
+                    />
+                    <p v-if="cityError" class="text-red-500">{{ cityError }}</p>
+                  </div>
+                  <div class="w-1/2">
+                    <p class="justify-start flex">
+                      <span class="text-[#ff0000]">*</span>Country
+                    </p>
+                    <a-select
+                      style="text-align: left"
+                      v-model:value="
+                        invoice.userProfileData.organizationProfile.country
+                      "
+                      class="w-full"
+                    >
+                      <a-select-option
+                        v-for="country in invoice.countryOptions"
+                        :key="country.value"
+                        :value="country.value"
+                      >
+                        {{ country.label }}
+                      </a-select-option>
+                    </a-select>
                   </div>
                 </div>
               </div>
-              <div>
-                <p class="justify-start flex">Postal Code</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.organizationProfile.postalCode
-                  "
-                  type="number"
-                  class="w-full p-2"
-                />
-              </div>
-              <div>
-                <p class="justify-start flex">State</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.organizationProfile.state
-                  "
-                  type="text"
-                  class="w-full p-2"
-                />
-              </div>
-              <div>
-                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>City</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.organizationProfile.city
-                  "
-                  type="text"
-                  class="w-full p-2"
-                />
-                <p v-if="cityError" class="text-red-500">{{ cityError }}</p>
-              </div>
-              <div>
-                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Country</p>
-                <a-select style="text-align: left;"
-                  v-model:value="
-                    invoice.userProfileData.organizationProfile.country
-                  "
-                  class="w-full p-2"
-                >
-                  <a-select-option
-                    v-for="country in invoice.countryOptions"
-                    :key="country.value"
-                    :value="country.value"
-                  >
-                    {{ country.label }}
-                  </a-select-option>       
-                </a-select>
-              </div>
             </div>
           </div>
+        </div>
 
-          <div class="mb-">
-            <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-2 c">
-                Additional Information
-              </label>
+        <div class="mb-">
+          <div class="bg-[lightgray] pt-2 pb-2">
+            <label class="flex font-bold mb-2 ml-4 mt-2 c">
+              Additional Information
+            </label>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-2">
+            <div>
+              <p class="justify-start flex">Phone Number</p>
+              <a-input
+                v-model:value="
+                  invoice.userProfileData.organizationProfile.phone
+                "
+                type="number"
+                class="w-full p-2"
+              />
             </div>
-            <div class="grid grid-cols-2 gap-4 mb-2">
-              <div>
-                <p class="justify-start flex">Phone Number</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.organizationProfile.phone
-                  "
-                  type="number"
-                  class="w-full p-2"
-                />
-              </div>
-              <div>
-                <p class="justify-start flex">Fax Number</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.organizationProfile.faxNumber
-                  "
-                  type="number"
-                  class="w-full p-2"
-                />
-              </div>
-              <div>
-                <p class="justify-start flex">Tax Identification Number</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.organizationProfile.taxId
-                  "
-                  type="number"
-                  class="w-full p-2"
-                />
-              </div>
-              <div>
-                <p class="justify-start flex">Notes</p>
-                <a-textarea
-                  v-model:value="
-                    invoice.userProfileData.organizationProfile.notes
-                  "
-                  rows=1
-                  type="text"
-                  class="w-full p-2"
-                />
-              </div>
+            <div>
+              <p class="justify-start flex">Fax Number</p>
+              <a-input
+                v-model:value="
+                  invoice.userProfileData.organizationProfile.faxNumber
+                "
+                type="number"
+                class="w-full p-2"
+              />
             </div>
-            <hr clas="" />
-            <div class="grid grid-cols-2 gap-4 mt-2">
-              <div>
-                <p class="justify-start flex">Custom Field</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.organizationProfile.customFieldName
-                  "
-                  type="text"
-                  class="w-full p-2"
-                  placeholder="Custom Field Name"
-                />
-              </div>
-              <div>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.organizationProfile.customFieldValue
-                  "
-                  type="text"
-                  class="w-full p-2 mt-5"
-                  placeholder="Custom Field Value"
-                />
-              </div>
+            <div>
+              <p class="justify-start flex">Tax Identification Number</p>
+              <a-input
+                v-model:value="
+                  invoice.userProfileData.organizationProfile.taxId
+                "
+                type="number"
+                class="w-full p-2"
+              />
+            </div>
+            <div>
+              <p class="justify-start flex">Notes</p>
+              <a-textarea
+                v-model:value="
+                  invoice.userProfileData.organizationProfile.notes
+                "
+                rows="1"
+                type="text"
+                class="w-full p-2"
+              />
             </div>
           </div>
-          <!-- <div style="text-align: left; margin-left: 10px; margin-top: 10px">
+          <hr clas="" />
+          <div class="grid grid-cols-2 gap-4 mt-2">
+            <div>
+              <p class="justify-start flex">Custom Field</p>
+              <a-input
+                v-model:value="
+                  invoice.userProfileData.organizationProfile.customFieldName
+                "
+                type="text"
+                class="w-full p-2"
+                placeholder="Custom Field Name"
+              />
+            </div>
+            <div>
+              <a-input
+                v-model:value="
+                  invoice.userProfileData.organizationProfile.customFieldValue
+                "
+                type="text"
+                class="w-full p-2 mt-5"
+                placeholder="Custom Field Value"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- <div style="text-align: left; margin-left: 10px; margin-top: 10px">
             <Button
               :bgColor="Colors.addMore"
               :textColor="Colors.white"
@@ -836,10 +906,9 @@ const displayImage = (input, imageUrl) => {
               @click="addNewLine()"
             />
           </div> -->
-        </div>
-        <!-- </transition> -->
-        <!-- <button class="bg-orange-500 text-white py-2 px-4 rounded">Submit</button> -->
       </div>
+      <!-- </transition> -->
+      <!-- <button class="bg-orange-500 text-white py-2 px-4 rounded">Submit</button> -->
     </div>
   </div>
 </template>

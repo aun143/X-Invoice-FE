@@ -15,39 +15,47 @@ const router = useRouter();
 const isLoading = ref(false);
 const isLoadingImg = ref(false);
 const submitclientDataOrganization = async () => {
-  if(isLoadingImg.value){
-  openNotificationWithIcon("error", "Please Wait To upload Image First");
-  return;
- }
+  if (isLoadingImg.value) {
+    openNotificationWithIcon("error", "Please Wait To upload Image First");
+    return;
+  }
+
   try {
-    isLoading=true;
-    if (!validateFormOrg()) return;
+    isLoading.value = true;
+    // if (!validateFormOrg()) return;
     const clientData = {
       ...invoice.userClientProfile.clientDataOrganization,
       clientType: "organization",
     };
-    const response = await clientApi(clientData);
-    //console.log(response);
-    router.push("/AllClients");
-    Swal.fire({
-      icon: "success",
-      title: "Client Created ",
-      text: "Client has been Created successfully.",
-    });
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Client organiation:", error),
-      footer: "Please try again ",
-    });
-    console.error("Error During Client organiation:", error);
-  }finally{
-    isLoading.value = false;
+    const { success, data, error } = await clientApi(clientData);
 
+    if (success) {
+      router.push("/AllClients");
+      Swal.fire({
+        icon: "success",
+        title: "Client Created",
+        text: data.message || "Client has been Created successfully.",
+      });
+    } else {
+      console.error("Error During Client organization:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error During Client creation",
+        text: error || "An error occurred while creating the client.",
+      });
+      if (error === "Your subscription plan has expired. Please update your plan.") {
+        router.push("/subscription");
+      } else {
+        openNotificationWithIcon("error", error);
+      }
+    }
+  } catch (error) {
+    console.error("Error During Client organization:", error);
+    openNotificationWithIcon("error", "An error occurred while creating the client.");
+  } finally {
+    isLoading.value = false;
   }
 };
-
 const submitclietDataindividual = async () => {
   if (isLoadingImg.value) {
     openNotificationWithIcon("error", "Please Wait To upload Image First");
@@ -56,7 +64,7 @@ const submitclietDataindividual = async () => {
 
   try {
     isLoading.value = true;
-    if (!validateFormInd()) return;
+    // if (!validateFormInd()) return;
     const clientData = {
       ...invoice.userClientProfile.clientDataindividual,
       clientType: "individual",
@@ -442,14 +450,14 @@ onMounted(() => {
               </div>
               <hr class="my-4" />
             </div>
-            <div>
-              <div>
-                <p class="text-left ml-4">Currency</p>
-                <a-select style="text-align: left;"
+            <div class="flex">
+              <div class="w-1/2 pr-2">
+                <p class="text-left ml-2">Currency</p>
+                <a-select 
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.currency
                   "
-                  class="ml-2 w-full"
+                  class=" w-full text-left"
                 >
                   <a-select-option
                     v-for="currency in invoice.currencyOptions"
@@ -460,14 +468,14 @@ onMounted(() => {
                   </a-select-option>
                 </a-select>
               </div>
-              <hr class="my-4" />
-              <div class="">
-                <p class="text-left ml-4">Language</p>
-                <a-select style="text-align: left;"
+              
+              <div class="w-1/2 pl-2">
+                <p class="text-left ml-2">Language</p>
+                <a-select 
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.language
                   "
-                  class="ml-2 w-full"
+                  class=" w-full text-left"
                 >
                   <a-select-option
                     v-for="language in invoice.languageOptions"
@@ -530,16 +538,16 @@ onMounted(() => {
                 class="w-full mt-2 border p-2"
               />
             </div>
-            <div class="flex justify-between items-center mt-3">
+            <div class="flex justify-between items-center mt-3 gap-2">
               <div class="">
                 <p class="text-left">
                   <span class="text-[#ff0000]">*</span>Country
                 </p>
-                <a-select style="text-align: left;" 
+                <a-select
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.country
                   "
-                  class="mr-2"
+                  class=""
                 >
                   <a-select-option
                     v-for="country in invoice.countryOptions"
@@ -550,33 +558,46 @@ onMounted(() => {
                   </a-select-option>
                 </a-select>
               </div>
-              <div class="mt-2 flex">
+              <div class="">
+                <p class="text-left">
+                  Postal Code
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.postalCode
                   "
                   type="number"
-                  class="mr-2 mt-3"
+                  class=""
                   placeholder="Postal Code"
                 />
+              </div> 
+              <div class="">
+                <p class="text-left">
+                  State
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.state
                   "
                   type="text"
-                  class="mr-2 mt-3"
+                  class=""
                   placeholder="State"
                 />
-
+              </div>
+              <div class="">
+                <p class="text-left">
+             City
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.city
                   "
                   placeholder="City"
                   type="text"
-                  class="mr-2 mt-3"
+                  class=""
                 />
               </div>
+            
             </div>
 
             <hr class="my-4" />
@@ -657,15 +678,15 @@ onMounted(() => {
               </div>
             </div>
             <hr class="mb-4" />
-            <div>
-              <div>
-                <div>
-                  <p class="text-left ml-4">Currency</p>
+            <div >
+              <div class="flex">
+                <div class="w-1/2 pr-2">
+                  <p class="text-left ml-2">Currency</p>
                   <a-select
                     v-model:value="
                       invoice.userClientProfile.clientDataOrganization.currency
                     "
-                    class="ml-2 w-full"
+                    class=" w-full text-left"
                   >
                     <a-select-option
                       v-for="currency in invoice.currencyOptions"
@@ -676,14 +697,14 @@ onMounted(() => {
                     </a-select-option>
                   </a-select>
                 </div>
-                <hr class="my-4" />
-                <div class="">
-                  <p class="text-left ml-4">Language</p>
+           
+                <div class="w-1/2 pl-2 ">
+                  <p class="text-left ml-2">Language</p>
                   <a-select
                     v-model:value="
                       invoice.userClientProfile.clientDataOrganization.language
                     "
-                    class="ml-2 w-full"
+                    class=" w-full text-left"
                   >
                     <a-select-option
                       v-for="language in invoice.languageOptions"
@@ -745,7 +766,7 @@ onMounted(() => {
                 class="w-full mt-2 border p-2"
               />
             </div>
-            <div class="flex justify-between items-center mt-3">
+            <div class="flex justify-between items-center mt-3 gap-2">
               <div class="">
                 <p class="text-left">
                   <span class="text-[#ff0000]">*</span>Country
@@ -754,7 +775,7 @@ onMounted(() => {
                   v-model:value="
                     invoice.userClientProfile.clientDataOrganization.country
                   "
-                  class="mr-2"
+                  class=""
                 >
                   <a-select-option
                     v-for="country in invoice.countryOptions"
@@ -765,33 +786,46 @@ onMounted(() => {
                   </a-select-option>
                 </a-select>
               </div>
-              <div class="mt-2 flex">
+              <div class="">
+                <p class="text-left">
+                  Postal Code
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userClientProfile.clientDataOrganization.postalCode
                   "
                   type="number"
-                  class="mr-2 mt-3"
+                  class=""
                   placeholder="Postal Code"
                 />
+              </div> 
+              <div class="">
+                <p class="text-left">
+                  State
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userClientProfile.clientDataOrganization.state
                   "
                   type="text"
-                  class="mr-2 mt-3"
+                  class=""
                   placeholder="State"
                 />
-
+              </div>
+              <div class="">
+                <p class="text-left">
+             City
+                </p>
                 <a-input
                   v-model:value="
                     invoice.userClientProfile.clientDataOrganization.city
                   "
                   placeholder="City"
                   type="text"
-                  class="mr-2 mt-3"
+                  class=""
                 />
               </div>
+            
             </div>
 
             <hr class="my-4" />

@@ -87,13 +87,15 @@ export const updateClient = async (clientId, updatedData) => {
       body: JSON.stringify(updatedData),
     });
 
+    const responseData = await response.json();
+
     if (!response.ok) {
-      throw new Error("Failed to update Client");
+      throw new Error(responseData.message || 'Failed to Update client.');
     }
 
-    return response.json();
+    return { success: true, data: responseData };
   } catch (error) {
-    throw new Error("Error in updateClientService: " + error.message);
+    return { success: false, error: error.message || 'An error occurred while Updating the client.' };
   }
 };
 export const getSingleClient = async (clientId) => {
@@ -109,15 +111,19 @@ export const getSingleClient = async (clientId) => {
      
     });
 
+    const responseData = await response.json();
+
     if (!response.ok) {
-      throw new Error(`Failed to get single Client ${clientId}`);
+      throw new Error(responseData.message || 'Failed to create client.');
     }
 
-    return response.json();
+    return { success: true, data: responseData };
   } catch (error) {
-    throw new Error("Error in getsingleClientService: " + error.message);
+    return { success: false, error: error.message || 'An error occurred while creating the client.' };
   }
-};export const deleteClient = async (clientId) => {
+};
+
+export const deleteClient = async (clientId) => {
 
   try {
     const token = localStorage.getItem("accessToken");

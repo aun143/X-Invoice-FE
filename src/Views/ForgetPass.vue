@@ -3,11 +3,12 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import Button from "../components/Button.vue";
 import Swal from "sweetalert2";
-
 import { Colors } from "../utils/color";
 import { ForgetUserApi } from "../service/ForgetPassService";
+import { notification } from "ant-design-vue";
 const router = useRouter();
 const showPassword = ref(false);
+const isLoading = ref(false);
 const ForgetPass = ref({
   email: "",
   newPassword: "" // Change 'password' to 'newPassword'
@@ -19,32 +20,55 @@ const togglePasswordVisibility = () => {
 
 const forgetPassUser = async () => {
   try {
-    const response = await ForgetUserApi({
+    isLoading.value=true;
+    const { success, data, error } = await ForgetUserApi({
       email: ForgetPass.value.email,
       newPassword: ForgetPass.value.newPassword, // Use 'newPassword' instead of 'password'
     });
-
-    // Update newPassword if the response contains it
-    if (response.newPassword) {
-      ForgetPass.value.newPassword = response.newPassword;
+if (success) {
+ // Update newPassword if the data contains it
+ if (data.newPassword) {
+      ForgetPass.value.newPassword = data.newPassword;
     }
 
-    // Handle the response as needed
-    //console.log(response);
+    // Handle the data as needed
+    //console.log(data);
 
     // Clear form fields
     ForgetPass.value.email = "";
     ForgetPass.value.newPassword = "";
     router.push("/login")
-    Swal.fire({
-      icon: "success",
-      title: " Forget Password  ",
-      text: " Password has been Changed successfully.",
-    });
-  } catch (error) {
-    // Handle errors
-    console.error("Error during ForgetPass:", error);
+  Swal.fire({
+    icon: "success",
+    title: "Client Created",
+    text: data.message || "Client has been Created successfully.",
+  });
+} else {
+  console.error("Error During Client organization:", error);
+  Swal.fire({
+    icon: "error",
+    title: "Error During Client creation",
+    text: error || "An error occurred while creating the client.",
+  });
+  if (error === "Your subscription plan has expired. Please update your plan.") {
+    router.push("/subscription");
+  } else {
+    openNotificationWithIcon("error", error);
   }
+}
+} catch (error) {
+console.error("Error During Client organization:", error);
+openNotificationWithIcon("error", "An error occurred while creating the client.");
+} finally {
+isLoading.value = false;
+}
+};
+const openNotificationWithIcon = (type, message) => {
+  notification[type]({
+    message: type === "success" ? "Success" : "Error",
+    description: message,
+    duration: 3,
+  });
 };
 </script>
 
@@ -166,7 +190,10 @@ const forgetPassUser = async () => {
                 <div class="flex flex-col ">
                 
               <div class="text-center mx-10 my-4">
-                <Button
+                <div v-if="isLoading"> <a-space class="w-full">
+                    <a-spin size="smal" />
+                  </a-space></div>
+                <Button v-else
                 :bgColor="Colors.orange"
                 :textColor="Colors.white"
                 :class="computedClasses"

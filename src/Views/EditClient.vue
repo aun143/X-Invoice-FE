@@ -35,7 +35,7 @@ const handleSaveDraftButtonClick = async () => {
  }
   try {
     let dataToUpdate = null;
-
+isLoading.value=true;
     // Check the profile type selected
     if (invoice.userClientProfile.clientDataindividual.clientType === "individual") {
       // Validate the individual form
@@ -54,23 +54,35 @@ const handleSaveDraftButtonClick = async () => {
       // Call the action to update organization profile
       invoice.updateOrganizationProfile(dataToUpdate);
     }
-
-    // Update the client data
-    const response = await updateClient(clientId, dataToUpdate);
-    invoice.userClientProfile.clientDataindividual = {};
-    // invoice.userClientProfile.clientDataOrganization = {};
-    console.log("response",response)
+    const { success, data, error } = await updateClient(clientId, dataToUpdate);
+    if (success) {
+      invoice.userClientProfile.clientDataindividual = {};
     router.push("/AllClients");
-    Swal.fire({
-      icon: "success",
-      title: "Client Updated ",
-      text: "Client has been Updated successfully.",
-    });
+      Swal.fire({
+        icon: "success",
+        title: "Client Created",
+        text: data.message || "Client has been Created successfully.",
+      });
+    } else {
+      console.error("Error During Client organization:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error During Client creation",
+        text: error || "An error occurred while creating the client.",
+      });
+      if (error === "Your subscription plan has expired. Please update your plan.") {
+        router.push("/subscription");
+      } else {
+        openNotificationWithIcon("error", error);
+      }
+    }
   } catch (error) {
-    console.error("Error during client update:", error);
+    console.error("Error During Client organization:", error);
+    openNotificationWithIcon("error", "An error occurred while creating the client.");
+  } finally {
+    isLoading.value = false;
   }
 };
-
 
 const openNotificationWithIcon = (type, message) => {
   notification[type]({
@@ -149,29 +161,42 @@ const validateFormInd = () => {
 const fetchclientDetails = async () => {
   try {
     isLoading.value = true;
-    
-    const response = await getSingleClient(clientId);
-    const clientDetails = response;
-    invoice.userClientProfile.clientDataindividual = {};
-    invoice.userClientProfile.clientDataOrganization = {};
-    if (selectedField.value === "individual") {
-    // Update individual data
-    invoice.userClientProfile.clientDataindividual = {
-        ...clientDetails,
-    };
+        //console.log("Client details fetched successfully:", clientDetails);
+    const { success, data, error } = await getSingleClient(clientId);
+
+if (success) {
+  const clientDetails = data;
+
+if (selectedField.value === "individual") {
+// Update individual data
+invoice.userClientProfile.clientDataindividual = {
+    ...clientDetails,
+};
 } else if (selectedField.value === "organization") {
-    // Update organization data
-    invoice.userClientProfile.clientDataOrganization = {
-        ...clientDetails,
-    };
+// Update organization data
+invoice.userClientProfile.clientDataOrganization = {
+    ...clientDetails,
+};
 }
-displayImage(logoInputRef.value);
-    //console.log("Client details fetched successfully:", clientDetails);
-  } catch (error) {
-    console.error("Error fetching client details:", error);
-  } finally {
-    isLoading.value = false;
+} else {
+  console.error("Error During Client Get:", error);
+  Swal.fire({
+    icon: "error",
+    title: "Error During Client Get",
+    text: error || "An error occurred while gettting the client.",
+  });
+  if (error === "Your subscription plan has expired. Please update your plan.") {
+    router.push("/subscription");
+  } else {
+    openNotificationWithIcon("error", error);
   }
+}
+} catch (error) {
+console.error("Error During Client Get:", error);
+openNotificationWithIcon("error", "An error occurred while Getting the client.");
+} finally {
+isLoading.value = false;
+}
 };
 const displayImage = (input, imageUrl) => {
   const file = input.files[0];
@@ -336,7 +361,7 @@ const fontSize = "12px";
           <br />
 
           <div v-if="selectedField === 'individual' || invoice.userClientProfile.clientDataindividual.clientType === 'individual'" :key="1">
-            <div class="mb-4">
+            <div class="">
               <hr class="mb-4" />
               <div v-if="invoice.userClientProfile.clientDataindividual.clientType === 'organization'">
                 <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Organization Name</p>
@@ -347,7 +372,7 @@ const fontSize = "12px";
                   class="w-full border p-2"
                 />
               </div>
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-2 gap-4 mt-2">
                 <div>
                   <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>First Name</p>
                   <a-input
@@ -367,14 +392,14 @@ const fontSize = "12px";
                   />
                 </div>
               </div>
-              <hr class="mb-2 mt-8" />
+              <hr class="mb-2 mt-4" />
             </div>
-            <div>
+            <div class="grid grid-cols-2 gap-4 mt-2">
               <div>
-                <p class="text-left ml-4">Currency</p>
-                <a-select style="text-align: left;"
+                <p class="text-left ml-2">Currency</p>
+                <a-select
                   v-model:value="invoice.userClientProfile.clientDataindividual.currency"
-                  class="ml-2 w-full"
+                  class="w-full text-left"
                 >
                   <a-select-option
                     v-for="currency in invoice.currencyOptions"
@@ -385,12 +410,12 @@ const fontSize = "12px";
                   </a-select-option>
                 </a-select>
               </div>
-              <hr class="mb-2 mt-8" />
+              
               <div class="">
-                <p class="text-left ml-4">Language</p>
-                <a-select style="text-align: left;"
+                <p class="text-left ml-2">Language</p>
+                <a-select 
                   v-model:value="invoice.userClientProfile.clientDataindividual.language"
-                  class="ml-2 w-full"
+                  class=" w-full text-left"
                 >
                   <a-select-option
                     v-for="language in invoice.languageOptions"
@@ -402,7 +427,7 @@ const fontSize = "12px";
                 </a-select>
               </div>
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="mb-2 mt-4" />
             <div>
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Email Address</p>
               <a-input
@@ -412,17 +437,17 @@ const fontSize = "12px";
                 class="w-full border p-2"
               />
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="mb-2 mt-4" />
             <div>
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Phone Number</p>
               <a-input
                 v-model:value="invoice.userClientProfile.clientDataindividual.phone"
-                type="number"
+                type="string"
                 placeholder="Phone Number"
                 class="w-full border p-2"
               />
             </div>
-            <hr class="mb-2 mt-8" />
+            <hr class="mb-2 mt-4" />
             <div>
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Address(Line 1)</p>
               <a-input
@@ -439,32 +464,16 @@ const fontSize = "12px";
                 class="w-full mt-2 border p-2"
               />
             </div>
-            <div class="">
-              <div class="mt-2 ">
-                <a-input
-                  v-model:value="invoice.userClientProfile.clientDataindividual.city"
-                  placeholder="City"
-                  type="text"
-                  class="mr-2 w-[30%]"
-                />
-                <a-input
-                  v-model:value="invoice.userClientProfile.clientDataindividual.state"
-                  type="text"
-                  class="mr-2 w-[30%]"
-                  placeholder="State"
-                />
-                <a-input
-                  v-model:value="invoice.userClientProfile.clientDataindividual.postalCode"
-                  type="number"
-                  class="mr-2 w-[30%]"
-                  placeholder="Postal Code"
-                />
-              </div>
+            <div class="flex justify-between items-center mt-3 gap-2">
               <div class="">
-                <p class="text-left ml-4"><span class="text-[#ff0000]">*</span>Country</p>
-                <a-select style="text-align: left;"
-                  v-model:value="invoice.userClientProfile.clientDataindividual.country"
-                  class="ml-2 w-full"
+                <p class="text-left">
+                  <span class="text-[#ff0000]">*</span>Country
+                </p>
+                <a-select
+                  v-model:value="
+                    invoice.userClientProfile.clientDataindividual.country
+                  "
+                  class=""
                 >
                   <a-select-option
                     v-for="country in invoice.countryOptions"
@@ -475,8 +484,48 @@ const fontSize = "12px";
                   </a-select-option>
                 </a-select>
               </div>
+              <div class="">
+                <p class="text-left">
+                  Postal Code
+                </p>
+                <a-input
+                  v-model:value="
+                    invoice.userClientProfile.clientDataindividual.postalCode
+                  "
+                  type="number"
+                  class=""
+                  placeholder="Postal Code"
+                />
+              </div> 
+              <div class="">
+                <p class="text-left">
+                  State
+                </p>
+                <a-input
+                  v-model:value="
+                    invoice.userClientProfile.clientDataindividual.state
+                  "
+                  type="text"
+                  class=""
+                  placeholder="State"
+                />
+              </div>
+              <div class="">
+                <p class="text-left">
+             City
+                </p>
+                <a-input
+                  v-model:value="
+                    invoice.userClientProfile.clientDataindividual.city
+                  "
+                  placeholder="City"
+                  type="text"
+                  class=""
+                />
+              </div>
+            
             </div>
-            <hr class="mb-4 mt-4" />
+            <hr class="my-4" />
 
             <div>
               <div>
@@ -487,16 +536,16 @@ const fontSize = "12px";
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-8" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Website URL</p>
                 <a-input
                   v-model:value="invoice.userClientProfile.clientDataindividual.websiteURL"
-                  type="text"
+                  type="number"
                   class="w-full border p-2"
                 />
               </div>
-              <hr clas="mb-4 " />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Notes</p>
                 <a-textarea
@@ -506,7 +555,7 @@ const fontSize = "12px";
                   class="w-full border p-2"
                 />
 
-                <hr class="mb-4" />
+                <hr class="mt-4" />
                 <!-- <div class="grid grid-cols-2 gap-4 mt-6">
                   <div class="">
                     <p class="justify-start">Custom Field</p>
@@ -616,7 +665,7 @@ const fontSize = "12px";
               <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Phone Number</p>
               <a-input
                 v-model:value="invoice.userClientProfile.clientDataindividual.phone"
-                type="number"
+                type="string"
                 placeholder="Phone Number"
                 class="w-full border p-2"
               />
@@ -675,7 +724,7 @@ const fontSize = "12px";
                 </a-select>
               </div>
             </div>
-            <hr class="mb-4 mt-4" />
+            <hr class="my-4" />
 
             <div>
               <div>
@@ -686,7 +735,7 @@ const fontSize = "12px";
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-4" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Fax Number</p>
                 <a-input
@@ -695,7 +744,7 @@ const fontSize = "12px";
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-4" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Website URL</p>
                 <a-input
@@ -704,7 +753,7 @@ const fontSize = "12px";
                   class="w-full border p-2"
                 />
               </div>
-              <hr class="mb-4 mt-4" />
+              <hr class="my-4" />
               <div>
                 <p class="justify-start flex">Notes</p>
                 <a-textarea
@@ -742,7 +791,8 @@ const fontSize = "12px";
           </div>
         </div>
       </div>
-    </div></div>
+    </div>
+    </div>
 </template>
 
 <style scoped></style>
