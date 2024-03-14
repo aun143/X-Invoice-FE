@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted,watch  } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { getUserDetailsApi } from "../service/LoginService";
 import Swal from "sweetalert2";
@@ -8,107 +8,145 @@ import { updateSignUpData } from "../service/SignUpService";
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
 const router = useRouter();
-async function updateBasic() {
+
+async function updateFree() {
   const result = await Swal.fire({
-    title: 'Basic Plan',
-    text: 'Are you sure you want to Choose Basic Plan',
-    icon: 'success',
+    title: "Free Plan",
+    text: "Are you sure you want to Choose Free Plan",
+    icon: "success",
     showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Choose Basic Plan',
-  }); if (result.isConfirmed) {
-  try {
-    //console.log("Stored id:", invoice.signupData.data._id);
-    const userid = localStorage.getItem("UserId");
-    const body = { userId: userid, planeName : "Basic", };
-    const response = await updateSignUpData(body);
-    invoice.updateUserData(response.data);
-    Swal.fire({
-      icon: "success",
-      title: " Plan Changed",
-      text: " Plan has been Changed Successfully.",
-    });
-    router.push("/");
-  }catch(error){
-    console.log("error",error);
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Plan Change:", error),
-      footer: "Please try again ",
-    });
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Choose Free Plan",
+  });
+  if (result.isConfirmed) {
+    try {
+      //console.log("Stored id:", invoice.signupData.data._id);
+      const userid = localStorage.getItem("UserId");
+      const body = { userId: userid, planeName: "Free" };
+      const response = await updateSignUpData(body);
+      invoice.updateUserData(response.data);
+      Swal.fire({
+        icon: "success",
+        title: " Plan Updated",
+        text: " Plan has been Updated Successfully.",
+      });
+      router.push("/");
+    } catch (error) {
+      console.log("error", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: ("Error During Plan Change:", error),
+        footer: "Please try again ",
+      });
+    }
   }
 }
+async function updateBasic() {
+  const result = await Swal.fire({
+    title: "Basic Plan",
+    text: "Are you sure you want to Choose Basic Plan",
+    icon: "success",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Choose Basic Plan",
+  });
+  if (result.isConfirmed) {
+    try {
+      //console.log("Stored id:", invoice.signupData.data._id);
+      const userid = localStorage.getItem("UserId");
+      const body = { userId: userid, planeName: "Basic" };
+      const response = await updateSignUpData(body);
+      invoice.updateUserData(response.data);
+      Swal.fire({
+        icon: "success",
+        title: " Plan Updated",
+        text: " Plan has been Updated Successfully.",
+      });
+      router.push("/");
+    } catch (error) {
+      console.log("error", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: ("Error During Plan Change:", error),
+        footer: "Please try again ",
+      });
+    }
+  }
 }
 
 async function updateStandard() {
   const result = await Swal.fire({
-    title: 'Basic Plan',
-    text: 'Are you sure you want to Choose Standard Plan',
-    icon: 'success',
+    title: "Standard Plan",
+    text: "Are you sure you want to Choose Standard Plan",
+    icon: "success",
     showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Choose Standard Plan',
-  }); if (result.isConfirmed) {
-  try {
-    //console.log("Stored id:", invoice.signupData.data._id);
-    const userid = localStorage.getItem("UserId");
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Choose Standard Plan",
+  });
+  if (result.isConfirmed) {
+    try {
+      //console.log("Stored id:", invoice.signupData.data._id);
+      const userid = localStorage.getItem("UserId");
 
-const body = { userId: userid, planeName : "Standard", };
-    const response = await updateSignUpData(body);
-    invoice.updateUserData(response.data);
-    Swal.fire({
-      icon: "success",
-      title: " Plan Changed",
-      text: " Plan has been Changed Successfully.",
-    });
-    router.push("/");
-  }catch(error){
-    console.log("error",error);
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Plan Change:", error),
-      footer: "Please try again ",
-    });
+      const body = { userId: userid, planeName: "Standard" };
+      const response = await updateSignUpData(body);
+      invoice.updateUserData(response.data);
+      Swal.fire({
+        icon: "success",
+        title: " Plan Updated",
+        text: " Plan has been Updated Successfully.",
+      });
+      router.push("/");
+    } catch (error) {
+      console.log("error", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: ("Error During Plan Change:", error),
+        footer: "Please try again ",
+      });
+    }
   }
-}
 }
 async function updatePremium() {
   const result = await Swal.fire({
-    title: 'Basic Plan',
-    text: 'Are you sure you want to Choose Premium Plan',
-    icon: 'success',
+    title: "Premium Plan",
+    text: "Are you sure you want to Choose Premium Plan",
+    icon: "success",
     showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Choose Premium Plan',
-  }); if (result.isConfirmed) {
-  try {
-    //console.log("Stored id:", invoice.signupData.data._id);
-    const userid = localStorage.getItem("UserId");
-    
-const body = { userId: userid, planeName : "Premium", };
-    const response = await updateSignUpData(body);
-    invoice.updateUserData(response.data);
-    Swal.fire({
-      icon: "success",
-      title: " Plan Changed",
-      text: " Plan has been Changed Successfully.",
-    });
-    router.push("/");
-  }catch(error){
-    console.log("error",error);
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Plan Change:", error),
-      footer: "Please try again ",
-    });
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Choose Premium Plan",
+  });
+  if (result.isConfirmed) {
+    try {
+      //console.log("Stored id:", invoice.signupData.data._id);
+      const userid = localStorage.getItem("UserId");
+
+      const body = { userId: userid, planeName: "Premium" };
+      const response = await updateSignUpData(body);
+      invoice.updateUserData(response.data);
+      Swal.fire({
+        icon: "success",
+        title: " Plan Updated",
+        text: " Plan has been Updated Successfully.",
+      });
+      router.push("/");
+    } catch (error) {
+      console.log("error", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: ("Error During Plan Change:", error),
+        footer: "Please try again ",
+      });
+    }
   }
-}
 }
 // Define functions to handle plan selection
 function handleSelectPlan(planName) {
@@ -118,6 +156,8 @@ function handleSelectPlan(planName) {
     updateStandard();
   } else if (planName === "Premium") {
     updatePremium();
+  } else if (planName === "Free") {
+    updateFree();
   }
 }
 
@@ -128,6 +168,8 @@ function handleSelectUpgrade(planName) {
     updateStandard();
   } else if (planName === "Premium") {
     updatePremium();
+  } else if (planName === "Free") {
+    updateFree();
   }
 }
 
@@ -138,6 +180,8 @@ function handleSelectDowngrade(planName) {
     updateStandard();
   } else if (planName === "Premium") {
     updatePremium();
+  } else if (planName === "Free") {
+    updateFree();
   }
 }
 const userRole = ref();
@@ -153,8 +197,7 @@ onMounted(async () => {
     } else {
       router.push("/login");
     }
-      showPopup();
-    
+    showPopup();
   } catch (error) {
     Swal.fire({
       icon: "error",
@@ -168,8 +211,12 @@ onMounted(async () => {
   }
 });
 async function showPopup() {
-  if (userRole.value === "user" || userRole.value === undefined || userRole.value === "") {
-    console.log("userRole.value",userRole.value)
+  if (
+    userRole.value === "user" ||
+    userRole.value === undefined ||
+    userRole.value === ""
+  ) {
+    console.log("userRole.value", userRole.value);
     await Swal.fire({
       title: "Free Mode",
       text: "Can Create up to 3 Clients & 3 Invoices",
@@ -183,7 +230,7 @@ const plans = [
     name: "Free",
     description:
       "Ideal for individuals that need a custom solution with custom tools.",
-    price: "30",
+    price: "0",
     timeSpan: "/month",
     gradientClass: "bg-gradient-to-tr from-[#10C0CB] to-[#4AA7AD]",
     included: [
@@ -192,7 +239,8 @@ const plans = [
       "Generate 3 Pdf ",
       "Send 3 Emails",
     ],
-  },  {
+  },
+  {
     name: "Basic",
     description:
       "Ideal for individuals that need a custom solution with custom tools.",
@@ -215,7 +263,7 @@ const plans = [
 
     gradientClass: "bg-gradient-to-tr from-blue-500 to-blue-300",
     included: [
-    "Create 100 Clients",
+      "Create 100 Clients",
       "Create 100 Invoices",
       "Generate 100 Pdf ",
       "Send 100 Emails",
@@ -230,7 +278,7 @@ const plans = [
 
     gradientClass: "bg-gradient-to-tr from-[#10C0CB] to-indigo-300",
     included: [
-    "Create Unlimited Clients",
+      "Create Unlimited Clients",
       "Create Unlimited Invoices",
       "Generate Unlimited Pdf ",
       "Send Unlimited Emails",
@@ -247,16 +295,24 @@ function setPlansBasedOnRole(userRole) {
 
   if (userRole === "Admin") {
     plans.find((plan) => plan.name === "Basic").active = true;
+    plans.find((plan) => plan.name === "Free").downgrade = true;
     plans.find((plan) => plan.name === "Standard").upgrade = true;
     plans.find((plan) => plan.name === "Premium").upgrade = true;
   } else if (userRole === "superAdmin") {
     plans.find((plan) => plan.name === "Standard").active = true;
+    plans.find((plan) => plan.name === "Free").downgrade = true;
     plans.find((plan) => plan.name === "Basic").downgrade = true;
     plans.find((plan) => plan.name === "Premium").upgrade = true;
   } else if (userRole === "iSuperAdmin") {
     plans.find((plan) => plan.name === "Premium").active = true;
+    plans.find((plan) => plan.name === "Free").downgrade = true;
     plans.find((plan) => plan.name === "Basic").downgrade = true;
     plans.find((plan) => plan.name === "Standard").downgrade = true;
+  } else if (userRole === "User") {
+    plans.find((plan) => plan.name === "Free").active = true;
+    plans.find((plan) => plan.name === "Premium").upgrade = true;
+    plans.find((plan) => plan.name === "Basic").upgrade = true;
+    plans.find((plan) => plan.name === "Standard").upgrade = true;
   }
 }
 
@@ -286,7 +342,7 @@ watch(userRole, (newValue) => {
           <div
             v-for="(plan, index) in plans"
             :key="index"
-            :class="`relative col-span-full md:col-span-4 bg-white shadow-md rounded-sm border border-gray-200 ${
+            :class="`relative col-span-full md:col-span-3 bg-white shadow-md rounded-sm border border-gray-200 ${
               plan.active ? 'border-[#10C0CB]' : ''
             }`"
           >
@@ -372,7 +428,7 @@ watch(userRole, (newValue) => {
                   :key="i"
                   class="flex items-center py-1"
                 >
-                <svg
+                  <svg
                     class="w-3 h-3 flex-shrink-0 fill-current text-green-500 mr-2"
                     viewBox="0 0 12 12"
                   >

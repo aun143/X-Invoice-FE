@@ -49,55 +49,98 @@ const submitclientDataOrganization = async () => {
 };
 
 const submitclietDataindividual = async () => {
-  if(isLoadingImg.value){
-  openNotificationWithIcon("error", "Please Wait To upload Image First");
-  return;
- }
+  if (isLoadingImg.value) {
+    openNotificationWithIcon("error", "Please Wait To upload Image First");
+    return;
+  }
+
   try {
-    isLoading.value=true
+    isLoading.value = true;
     if (!validateFormInd()) return;
     const clientData = {
       ...invoice.userClientProfile.clientDataindividual,
       clientType: "individual",
     };
-    const response = await clientApi(clientData);
-    if (response) {
+    const { success, data, error } = await clientApi(clientData);
+
+    if (success) {
       router.push("/AllClients");
       Swal.fire({
-      icon: "success",
-      title: "Client Created ",
-      text: "Client has been Created successfully.",
-    });
-    }
-
-    else{
-      console.log("resp" , response);
-      Swal.fire({
-      icon: "error",
-      title: "Error During ",
-      text: response.message,
-    });
-    }
-
-
-  } catch (error) {
-    console.log("error",error)
-    let errorMessage = "An error occurred while creating the client.";
-    if (error.response && error.response.data && error.response.data.message) {
-      errorMessage = error.response.data.message;
-    }
-    if (errorMessage === "Your subscription plan has expired. Please update your plan.") {
-      // Specific handling for subscription expiration error
-      // For example, redirect to subscription page
-      router.push("/subscription");
+        icon: "success",
+        title: "Client Created",
+        text: data.message || "Client has been Created successfully.",
+      });
     } else {
-      openNotificationWithIcon("error", errorMessage);
       console.error("Error During Client organization:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error During Client creation",
+        text: error || "An error occurred while creating the client.",
+      });
+      if (error === "Your subscription plan has expired. Please update your plan.") {
+        router.push("/subscription");
+      } else {
+        openNotificationWithIcon("error", error);
+      }
     }
-  }finally{
-    isLoading.value=false;
+  } catch (error) {
+    console.error("Error During Client organization:", error);
+    openNotificationWithIcon("error", "An error occurred while creating the client.");
+  } finally {
+    isLoading.value = false;
   }
 };
+
+// const submitclietDataindividual = async () => {
+//   if(isLoadingImg.value){
+//   openNotificationWithIcon("error", "Please Wait To upload Image First");
+//   return;
+//  }
+//   try {
+//     isLoading.value=true
+//     if (!validateFormInd()) return;
+//     const clientData = {
+//       ...invoice.userClientProfile.clientDataindividual,
+//       clientType: "individual",
+//     };
+//     const response = await clientApi(clientData);
+//     if (response) {
+//       router.push("/AllClients");
+//       Swal.fire({
+//       icon: "success",
+//       title: "Client Created ",
+//       text: "Client has been Created successfully.",
+//     });
+//     }
+
+//     else{
+//       console.log("resp" , response);
+//       Swal.fire({
+//       icon: "error",
+//       title: "Error During ",
+//       text: response.message,
+//     });
+//     }
+
+
+//   } catch (error) {
+//     console.log("error",error)
+//     let errorMessage = "An error occurred while creating the client.";
+//     if (error.response && error.response.data && error.response.data.message) {
+//       errorMessage = error.response.data.message;
+//     }
+//     if (errorMessage === "Your subscription plan has expired. Please update your plan.") {
+//       // Specific handling for subscription expiration error
+//       // For example, redirect to subscription page
+//       router.push("/subscription");
+//     } else {
+//       openNotificationWithIcon("error", errorMessage);
+//       console.error("Error During Client organization:", error);
+//     }
+//   }finally{
+//     isLoading.value=false;
+//   }
+// };
 const invoice = useInvoiceStore();
 const validateFormOrg = () => {
   const emptyFields = [];
@@ -459,7 +502,7 @@ onMounted(() => {
                 v-model:value="
                   invoice.userClientProfile.clientDataindividual.phone
                 "
-                type="number"
+                type="string"
                 placeholder="Phone Number"
                 class="w-full border p-2"
               />
@@ -674,7 +717,7 @@ onMounted(() => {
                 v-model:value="
                   invoice.userClientProfile.clientDataOrganization.phone
                 "
-                type="number"
+                type="string"
                 placeholder="Phone Number"
                 class="w-full border p-2"
               />
