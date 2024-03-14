@@ -492,7 +492,7 @@ onMounted(() => {
                 <p class="text-left">
                   <span class="text-[#ff0000]">*</span>Country
                 </p>
-                <a-select  style="text-align: left;"
+                <a-select style="text-align: left;" 
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.country
                   "
@@ -618,7 +618,7 @@ onMounted(() => {
               <div>
                 <div>
                   <p class="text-left ml-4">Currency</p>
-                  <a-select  style="text-align: left;"
+                  <a-select
                     v-model:value="
                       invoice.userClientProfile.clientDataOrganization.currency
                     "
@@ -636,7 +636,7 @@ onMounted(() => {
                 <hr class="my-4" />
                 <div class="">
                   <p class="text-left ml-4">Language</p>
-                  <a-select style="text-align: left;"
+                  <a-select
                     v-model:value="
                       invoice.userClientProfile.clientDataOrganization.language
                     "
@@ -707,7 +707,7 @@ onMounted(() => {
                 <p class="text-left">
                   <span class="text-[#ff0000]">*</span>Country
                 </p>
-                <a-select style="text-align: left;"
+                <a-select
                   v-model:value="
                     invoice.userClientProfile.clientDataOrganization.country
                   "
