@@ -157,7 +157,7 @@ const filteredClients = computed(() => {
     />
   </div>
 
-  <div class="content-center">
+  <div class="content-center px-6 mt-2">
     <div class="flex-col m-auto flex p-4 max-w-full ml-60 lg:ml-60 md:ml-48">
       <div class="flex flex-col ">
         <span class="meta" style="display: inline"></span>

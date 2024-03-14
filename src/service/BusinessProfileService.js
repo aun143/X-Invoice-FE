@@ -1,5 +1,6 @@
  import {BASE_URL} from "../utils/config";
 export const PostBusinessProfilerIndiviualApi = async (data) => {
+  try{
   const token = localStorage.getItem("accessToken");
 
     const response = await fetch(`${BASE_URL}/business/postbusinessProfile`, {
@@ -12,12 +13,17 @@ export const PostBusinessProfilerIndiviualApi = async (data) => {
       body: JSON.stringify(data),
     });
   
+    const responseData = await response.json();
+
     if (!response.ok) {
-      throw new Error('Failed to Post Business Profile Indiviual');
+      throw new Error(responseData.message || 'Failed to create client.');
     }
-  
-    return response.json();
-  };
+
+    return { success: true, data: responseData };
+  } catch (error) {
+    return { success: false, error: error.message || 'An error occurred while creating the client.' };
+  }
+};
   export const getBusinessProfileIndividualApi = async (data) => {
     const response = await fetch(`${BASE_URL}/business/getBusinessProfile/${individualId}`, {
       method: 'GET',
@@ -63,6 +69,7 @@ export const PostBusinessProfilerIndiviualApi = async (data) => {
     return response.json();
   }; 
   export const PatchBusinessProfilerIndiviualApi = async (individualId,data) => {
+    try{
     const token = localStorage.getItem("accessToken");
 
 
@@ -76,14 +83,20 @@ export const PostBusinessProfilerIndiviualApi = async (data) => {
       body: JSON.stringify(data),
     });
   
+    
+    const responseData = await response.json();
+
     if (!response.ok) {
-      throw new Error('Failed to Put Business Profile Indiviual');
+      throw new Error(responseData.message || 'Failed to create client.');
     }
-  
-    return response.json();
-  };
-  
+
+    return { success: true, data: responseData };
+  } catch (error) {
+    return { success: false, error: error.message || 'An error occurred while creating the client.' };
+  }
+};
   export const PatchBusinessProfilerOrganizationApi = async (organizationId,data) => {
+    try{
     const token = localStorage.getItem("accessToken");
 
     const response = await fetch(`${BASE_URL}/business/updatebusinessProfile/${organizationId}`, {
@@ -95,11 +108,15 @@ export const PostBusinessProfilerIndiviualApi = async (data) => {
       },
       body: JSON.stringify(data),
     });
-  
+ 
+    const responseData = await response.json();
+
     if (!response.ok) {
-      throw new Error('Failed to Put Business Profile organization');
+      throw new Error(responseData.message || 'Failed to create client.');
     }
-  
-    return response.json();
-  };
-  
+
+    return { success: true, data: responseData };
+  } catch (error) {
+    return { success: false, error: error.message || 'An error occurred while creating the client.' };
+  }
+};

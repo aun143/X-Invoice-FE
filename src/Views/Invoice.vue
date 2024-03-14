@@ -28,16 +28,16 @@ const router = useRouter();
 const invoiceId = route.params.id;
 const invoice = useInvoiceStore();
 const isLoadingImg = ref(false);
-watchEffect(() => {
-  const unwatch = watch(invoice.formData, (newValue, oldValue) => {
-    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      invoice.updateFormData(newValue);
-    }
-  }, { deep: true });
+// watchEffect(() => {
+//   const unwatch = watch(invoice.formData, (newValue, oldValue) => {
+//     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+//       invoice.updateFormData(newValue);
+//     }
+//   }, { deep: true });
 
-  // Cleanup function to stop watching when component is unmounted
-  // onUnmounted(unwatch);
-});
+//   // Cleanup function to stop watching when component is unmounted
+//   // onUnmounted(unwatch);
+// });
 
 const invoiceSubmit = async () => {
   if (isLoadingImg.value) {
@@ -51,27 +51,35 @@ const invoiceSubmit = async () => {
     if (!validateDueDate()) {
       return;
     }
-    const response = await invoiceSer.postInvoiceData(invoice.formData);
+    const { success, data, error } = await invoiceSer.postInvoiceData(invoice.formData);
 
-    //console.log('Invoice submitted successfully:', response);
-    router.push("/");
+if (success) {
+  router.push("/");
     invoice.resetFormData();
-    Swal.fire({
-      icon: "success",
-      title: " Invoice Created ",
-      text: " Invoice has been Created successfully.",
-    });
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Account:", error),
-      footer: "Please try again ",
-    });
-    console.error("Error During Account:", error);
-  } finally {
-    isLoading.value = false;
+  Swal.fire({
+    icon: "success",
+    title: "Invoice Created",
+    text: data.message || "Invoice has been Created successfully.",
+  });
+} else {
+  console.error("Error During Invoice Creation:", error);
+  Swal.fire({
+    icon: "error",
+    title: "Error During Invoice Creation",
+    text: error || "An error occurred while Creating the Invoice.",
+  });
+  if (error === "Your subscription plan has expired. Please update your plan.") {
+    router.push("/subscription");
+  } else {
+    openNotificationWithIcon("error", error);
   }
+}
+} catch (error) {
+console.error("Error During Invoice Creation:", error);
+openNotificationWithIcon("error", "An error occurred while Creating the Invoice.");
+} finally {
+isLoading.value = false;
+}
 };
 const open = ref(false);
 const showModal = () => {
@@ -459,7 +467,7 @@ const switchProfileType = (type) => {
         :showBackButton="false"
       />
     </div>
-{{ invoice.formData }}
+
     <!-- <form @submit.prevent class="container mt-6 ml-6 bg-white max-w-[1000px]  p-6"> -->
     <form
       @submit.prevent

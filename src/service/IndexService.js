@@ -14,12 +14,15 @@ export const getAllInvoice = async () => {
         },
       });
   
+      const responseData = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to fetch all invoices');
+        throw new Error(responseData.message || 'Failed get invoices.');
       }
   
-      return response.json();
+      return { success: true, data: responseData };
     } catch (error) {
-      throw new Error('Error in getAllInvoice service: ' + error.message);
-    }
+      return { success: false, error: error.message || 'An error occurred while getting the invoices.' };
+    }
   };
+  

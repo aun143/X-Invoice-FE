@@ -115,25 +115,38 @@ const submit = async () => {
 
     
     const body = { userId: userid, profileBody: invoice.userProfileData };
-    const response = await PostBusinessProfilerIndiviualApi(body);
-    invoice.updateUser(response);
+const { success, data, error } = await PostBusinessProfilerIndiviualApi(body);
+
+if (success) {
+  invoice.updateUser(data);
     router.push("/Subscription");
-    openNotificationWithIcon("success", "Profiles Created Successfully");
-    Swal.fire({
-      icon: "success",
-      title: " Account Created ",
-      text: " Account has been Created successfully.",
-    });
-  } catch (error) {
-    let errorMessage =
-    "An Error Occurred During Profile Creation ";
-    if (error.response && error.response.data && error.response.data.message) {
-      errorMessage = error.response.data.message;
-    }
-    openNotificationWithIcon("error");
-    //console.error("Error During Account:", error);
+  invoice.updateUserProfileAndBusinessProfile(data.data);
+
+  Swal.fire({
+    icon: "success",
+    title: "Profile Created",
+    text: data.message || "Profile has been Created successfully.",
+  });
+} else {
+  console.error("Error During Profile Creation:", error);
+  Swal.fire({
+    icon: "error",
+    title: "Error During Profile creation",
+    text: error || "An error occurred while creating the Profile.",
+  });
+  if (error === "Your subscription plan has expired. Please update your plan.") {
+    router.push("/subscription");
+  } else {
+    openNotificationWithIcon("error", error);
   }
-}; 
+}
+} catch (error) {
+console.error("Error During Profile creation:", error);
+openNotificationWithIcon("error", "An error occurred while creating the Profile.");
+} finally {
+isLoading.value = false;
+}
+};
 const openNotificationWithIcon = (type, message) => {
   notification[type]({
     message: type === "success" ? "Success" : "Error",

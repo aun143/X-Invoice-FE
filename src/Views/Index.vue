@@ -6,6 +6,8 @@ import Header from "../components/Header.vue";
 import { getSingleClient } from "../service/ClientService";
 import { getAllInvoice } from "../service/IndexService";
 import { useInvoiceStore } from "../stores/index.js";
+import { notification } from "ant-design-vue";
+import Swal from "sweetalert2";
 const invoice=useInvoiceStore();
 const filterStatus = ref("All");
 const invoices = ref();
@@ -38,17 +40,47 @@ const handleSaveDraftButtonClick = () => {
 onMounted(async () => {
   try {
     isLoading.value = true;
-    const result = await getAllInvoice();
-
-    const invoicesWithReceiverNames = await Promise.all(result.map(async (invoice) => {
-      const receiverDetails = await getSingleClient(invoice.receiver);
-  
+   
+    const { success, data, error } = await getAllInvoice();
+    const invoicesWithReceiverNames = await Promise.all(data.map(async (invoice) => {
+      const reciever = await getSingleClient(invoice.receiver);
+      const receiverDetails=reciever.data;
       const receiverName = receiverDetails.firstName + " " + receiverDetails.lastName;
-  return { ...invoice, receiverName };
+      return { ...invoice, receiverName };
     }));
     invoices.value = invoicesWithReceiverNames;
+
+    if (success) {
+      if (Array.isArray(data)) {
+        Swal.fire({
+          icon: "success",
+          title: "All Invoices Get",
+          text: data.message || "All Invoices Get Successfully.",
+        });
+      } else {
+        console.error("Data received is not an array:", data);
+        Swal.fire({
+          icon: "error",
+          title: "Error During Invoice get",
+          text: "Unexpected data format received from the server.",
+        });
+      }
+    } else {
+      console.error("Error During Invoice get:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error During Invoice get",
+        text: error || "An error occurred while getting the Invoice.",
+      });
+      if (error === "Your subscription plan has expired. Please update your plan.") {
+        router.push("/subscription");
+      } else {
+        openNotificationWithIcon("error", error);
+      }
+    }
   } catch (error) {
-    console.error("Error fetching all invoices:", error.message);
+    console.error("Error During Invoice getting:", error);
+    openNotificationWithIcon("error", "An error occurred while getting the Invoice.");
   } finally {
     isLoading.value = false;
   }
@@ -226,8 +258,8 @@ watch(filterStatus, (newFilterStatus) => {
       :onSaveDraftButtonClick="handleSaveDraftButtonClick"
       :showDropdown="true"
       :onDropdownItemClick="handleDropdownItemClickParent"
-    />
-    <div class="content-center mt-6">
+    />{{  }}
+    <div class="content-center mt-6 px-6">
       <div class="flex-col m-auto flex max-w-full p-2">
         <div class="flex flex-col max-w-[100%]">
           <span class="meta" style="display: inline"></span>

@@ -26,11 +26,11 @@ const handleItemClick = (item) => {
     </div>
   
     <transition name="fade" appear>
-      <div class="sub-menu  " v-if="isOpen">
+      <div class="sub-menu border-[#10C0CB] border " v-if="isOpen">
         <div
           v-for="(item, i) in items"
           :key="i"
-          class="menu-item  bg-white w-full pb-[4x] "
+          class="menu-item bg-white w-full pb-[4x] "
         >
           <div @click="() => handleItemClick(item)" class="cursor-pointer mx-1 rounded text-[12px] text-[#10C0CB] hover:text-black mt-1">
             {{ item.title }}

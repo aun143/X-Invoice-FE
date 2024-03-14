@@ -3,7 +3,7 @@ export const ForgetUserApi = async (data) => {
   try{
   const token = localStorage.getItem("accessToken");
 
-  const response = await fetch(`${BASE_URL}/user/userforgotpassword`, {
+  const response = await fetch(`${BASE_URL}/user/forgotpassword`, {
 
     method: 'POST',
     headers: {

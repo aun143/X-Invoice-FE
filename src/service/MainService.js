@@ -5,8 +5,40 @@ export const useInvoiceService = defineStore("InvoiceService", {
   state: () => ({}),
 
   actions: {
+    // async postInvoiceData(data) {
+    //   const token = localStorage.getItem("accessToken");
+    //   try {
+    //     const response = await fetch(
+    //       `${BASE_URL}/invoice/createInvoice`,
+    //       {
+    //         method: "POST",
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //           Authorization: `Bearer ${token}`,
+    //         },
+    //         body: JSON.stringify(data),
+    //       }
+    //     );
+
+    //     if (!response.ok) {
+    //       const errorData = await response.json().catch(() => ({})); // Try to parse error response
+    //       console.error("Error Data:", errorData);
+    //       throw new Error(
+    //         `Failed to post data to the API. ${response.status}: ${
+    //           errorData.message || "Unknown error"
+    //         }`
+    //       );
+    //     }
+
+    //     const responseData = await response.json();
+    //     console.log("API Response:", responseData);
+    //     return responseData;
+    //   } catch (error) {
+    //     console.error("Error posting data to the API:", error);
+    //     throw error;
+    //   }
+    // },
     async postInvoiceData(data) {
-      const token = localStorage.getItem("accessToken");
       try {
         const response = await fetch(
           `${BASE_URL}/invoice/createInvoice`,
@@ -19,23 +51,16 @@ export const useInvoiceService = defineStore("InvoiceService", {
             body: JSON.stringify(data),
           }
         );
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({})); // Try to parse error response
-          console.error("Error Data:", errorData);
-          throw new Error(
-            `Failed to post data to the API. ${response.status}: ${
-              errorData.message || "Unknown error"
-            }`
-          );
-        }
-
+    
         const responseData = await response.json();
-        console.log("API Response:", responseData);
-        return responseData;
+    
+        if (!response.ok) {
+          throw new Error(responseData.message || 'Failed to create client.');
+        }
+    
+        return { success: true, data: responseData };
       } catch (error) {
-        console.error("Error posting data to the API:", error);
-        throw error;
+        return { success: false, error: error.message || 'An error occurred while creating the client.' };
       }
     },
 

@@ -85,26 +85,39 @@ const submitbusinessProfileDataOrganization = async (id) => {
     return;
   }
   try {
-    const response = await PatchBusinessProfilerOrganizationApi(
+
+    const { success, data, error } = await PatchBusinessProfilerOrganizationApi(
       invoice.userProfileData.organizationProfile._id,
       invoice.userProfileData.organizationProfile
     );
-    router.push("/");
-    //console.log(response);
-    invoice.updateUserProfileAndBusinessProfile(response.data);
-    Swal.fire({
-      icon: "success",
-      title: "Business Profile Updated ",
-      text: "Business Profile has been Updated successfully.",
-    });
+
+    if (success) {
+      router.push("/");
+    invoice.updateUserProfileAndBusinessProfile(data.data);
+
+      Swal.fire({
+        icon: "success",
+        title: "Profile Updated",
+        text: data.message || "Profile has been Updated successfully.",
+      });
+    } else {
+      console.error("Error During Profile Updation:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error During Profile Updation",
+        text: error || "An error occurred while Updating the Profile.",
+      });
+      if (error === "Your subscription plan has expired. Please update your plan.") {
+        router.push("/subscription");
+      } else {
+        openNotificationWithIcon("error", error);
+      }
+    }
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Data Submit:", error),
-      footer: "Please try again ",
-    });
-    console.error("Error During Data Submit:", error);
+    console.error("Error During Profile Updation:", error);
+    openNotificationWithIcon("error", "An error occurred while Updating the Profile.");
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -114,28 +127,42 @@ const submitbusinessProfileDataindividual = async (Id) => {
     return;
   }
   try {
-    const response = await PatchBusinessProfilerIndiviualApi(
+
+const { success, data, error } = await PatchBusinessProfilerIndiviualApi(
       invoice.userProfileData.individualProfile._id,
       invoice.userProfileData.individualProfile
     );
-    router.push("/");
-    //console.log(response);
-    invoice.updateUserProfileAndBusinessProfile(response.data);
-    Swal.fire({
-      icon: "success",
-      title: "Business Profile Updated ",
-      text: "Business Profile has been Updated successfully.",
-    });
-  } catch (error) {
-    console.error("Error during data submit organization:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Data Submit:", error),
-      footer: "Please try again ",
-    });
+
+if (success) {
+  router.push("/");
+  invoice.updateUserProfileAndBusinessProfile(data.data);
+
+  Swal.fire({
+    icon: "success",
+    title: "Profile Updated",
+    text: data.message || "Profile has been Updated successfully.",
+  });
+} else {
+  console.error("Error During Profile organization:", error);
+  Swal.fire({
+    icon: "error",
+    title: "Error During Profile Updation",
+    text: error || "An error occurred while Updating the Profile.",
+  });
+  if (error === "Your subscription plan has expired. Please update your plan.") {
+    router.push("/subscription");
+  } else {
+    openNotificationWithIcon("error", error);
   }
+}
+} catch (error) {
+console.error("Error During Profile organization:", error);
+openNotificationWithIcon("error", "An error occurred while Updating the Profile.");
+} finally {
+isLoading.value = false;
+}
 };
+
 
 onMounted(async () => {
   try {

@@ -31,36 +31,36 @@ const handleSaveDraftButtonClick = async (Id) => {
     try {
      if (!validateForm()) return;
       isLoading.value=true;
-      const response = await InvoiceService.updateInvoiceData(invoiceId, invoice.formData);
-//console.log("response",response);
-router.push("/")
-      if (response) {
-        Swal.fire({
-      icon: "success",
-      title: " Invoice Updated ",
-      text: " Invoice has been Updated successfully.",
-    });
-      } else {
-        // alert('Error updating invoice. Please check the console for details.');
-        Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: ("Error updating invoice. Please check the console for details.", error),
-      footer: 'Please try again '
-    });
-      }
-    } catch (error) {
-      console.error('Error updating invoice:', error);
-      Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: ("Error During Account:", error),
-      footer: 'Please try again '
-    });
-    }finally{
-      isLoading.value=false;
-    }
-  };
+      const { success, data, error } = await InvoiceService.updateInvoiceData(invoiceId, invoice.formData);
+
+if (success) {
+  router.push("/");
+    invoice.resetFormData();
+  Swal.fire({
+    icon: "success",
+    title: "Invoice Created",
+    text: data.message || "Invoice has been Created successfully.",
+  });
+} else {
+  console.error("Error During Invoice Creation:", error);
+  Swal.fire({
+    icon: "error",
+    title: "Error During Invoice creation",
+    text: error || "An error occurred while creating the Invoice.",
+  });
+  if (error === "Your subscription plan has expired. Please update your plan.") {
+    router.push("/subscription");
+  } else {
+    openNotificationWithIcon("error", error);
+  }
+}
+} catch (error) {
+console.error("Error During Invoice creation:", error);
+openNotificationWithIcon("error", "An error occurred while creating the Invoice.");
+} finally {
+isLoading.value = false;
+}
+};
 const open =ref(false);
 const showModal = () => {
   open.value = true;
