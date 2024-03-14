@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import { computed } from "vue";
 import { Colors } from "./utils/color";
 const menuItems = [
+  { link: "/dashBoard", name: "DashBoard", icon: "bxs-user-account"},
   { link: "/Index", name: "Invoices",  icon: "bxs-inbox" },
   { link: "/AllClients", name: "All Clients",  icon: "bxs-user-detail" },
   { link: "/businessProfile", name: "Business", icon: "bxs-user-account"},
@@ -47,6 +48,8 @@ const componentsWithSidebar = [
   "EditClient",
   "SendInvoice",
   "Subscription",
+  "DashBoard",
+
 ];
 
 const route = useRoute();
@@ -119,7 +122,9 @@ const upgradeAccount = () => {
   transition: background-color 0.3s ease;
 }
 
-
+#btn{
+  display: none;
+}
 
 .float-button:hover {
   background-color: #388d94;

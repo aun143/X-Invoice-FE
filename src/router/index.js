@@ -15,10 +15,16 @@ import EditClient from "../Views/EditClient.vue";
 import EditInvoice from "../Views/EditInvoice.vue";
 import SendInvoice from "../Views/SendInvoice.vue";
 import Subscription from "../Views/Subscription.vue";
+import DashBoard from "../Views/DashBoard.vue";
 
 const routes = [
   { path: "/", redirect: "/Index" },
-  { name: "Invoice", path: "/New", component: Invoice, meta: { public: false } },
+  {
+    name: "Invoice",
+    path: "/New",
+    component: Invoice,
+    meta: { public: false },
+  },
   { name: "Index", path: "/Index", component: Index, meta: { public: false } },
   {
     name: "Client",
@@ -30,6 +36,12 @@ const routes = [
     name: "AllClients",
     path: "/AllClients",
     component: AllClients,
+    meta: { public: false },
+  },
+  {
+    name: "DashBoard",
+    path: "/DashBoard",
+    component: DashBoard,
     meta: { public: false },
   },
   {
@@ -131,7 +143,7 @@ router.beforeEach((to, from, next) => {
       if (
         to.path === "/login" ||
         to.path === "/signup" ||
-        to.path === "/ForgetPass" 
+        to.path === "/ForgetPass"
         // to.path === "/accounts"
       ) {
         next({ name: "Index" });
@@ -145,6 +157,5 @@ router.beforeEach((to, from, next) => {
     }
   }
 });
-
 
 export default router;

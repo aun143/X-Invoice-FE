@@ -1,6 +1,27 @@
 import {BASE_URL} from "../utils/config";
-export const clientApi = async (data) => {
+// export const clientApi = async (data) => {
 
+//   try {
+//     const token = localStorage.getItem("accessToken");
+
+//     const response = await fetch(`${BASE_URL}/client/createClient`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization": `Bearer ${token}`,
+//       },
+//       body: JSON.stringify(data),
+//     });
+   
+//     return response.json();
+//   } catch (error) {
+//     return Error
+//   }
+
+
+// };
+
+export const clientApi = async (data) => {
   try {
     const token = localStorage.getItem("accessToken");
 
@@ -12,14 +33,19 @@ export const clientApi = async (data) => {
       },
       body: JSON.stringify(data),
     });
-   
-    return response.json();
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      throw new Error(responseData.message || 'Failed to create client.');
+    }
+
+    return { success: true, data: responseData };
   } catch (error) {
-    return Error
+    return { success: false, error: error.message || 'An error occurred while creating the client.' };
   }
-
-
 };
+
 
 export const getAllClient = async () => {
   try {
