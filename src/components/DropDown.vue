@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, defineEmits } from "vue";
+import { ref } from "vue";
 
 const isOpen = ref(false);
 const { title, items } = defineProps(["title", "items"]);

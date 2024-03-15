@@ -170,9 +170,6 @@ const validateFormOrg = () => {
   ) {
     emptyFields.push("Email must be valid and contain '@'.");
   }
-  if (!invoice.userClientProfile.clientDataOrganization.state) {
-    emptyFields.push(" State must be Alphabetic");
-  }
   if (!invoice.userClientProfile.clientDataOrganization.city) {
     emptyFields.push(" City must be Alphaetic");
   }
@@ -212,9 +209,6 @@ const validateFormInd = () => {
     !/.+\@.+\..+/.test(invoice.userClientProfile.clientDataindividual.email)
   ) {
     emptyFields.push("Email must be valid and contain '@'.");
-  }
-  if (!invoice.userClientProfile.clientDataindividual.state) {
-    emptyFields.push(" State must be Alphabetic");
   }
   if (!invoice.userClientProfile.clientDataindividual.city) {
     emptyFields.push(" City must be Alphabetic");
@@ -456,7 +450,7 @@ onMounted(() => {
                 <a-select 
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.currency
-                  "
+                  " size="large"
                   class=" w-full text-left"
                 >
                   <a-select-option
@@ -474,7 +468,7 @@ onMounted(() => {
                 <a-select 
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.language
-                  "
+                  " size="large"
                   class=" w-full text-left"
                 >
                   <a-select-option
@@ -510,7 +504,7 @@ onMounted(() => {
                 v-model:value="
                   invoice.userClientProfile.clientDataindividual.phone
                 "
-                type="string"
+                type="text"
                 placeholder="Phone Number"
                 class="w-full border p-2"
               />
@@ -546,7 +540,7 @@ onMounted(() => {
                 <a-select
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.country
-                  "
+                  " size="medium"
                   class=""
                 >
                   <a-select-option
@@ -559,7 +553,7 @@ onMounted(() => {
                 </a-select>
               </div>
               <div class="">
-                <p class="text-left">
+                <p class="text-left ml-2">
                   Postal Code
                 </p>
                 <a-input
@@ -572,7 +566,7 @@ onMounted(() => {
                 />
               </div> 
               <div class="">
-                <p class="text-left">
+                <p class="text-left ml-2">
                   State
                 </p>
                 <a-input
@@ -585,7 +579,7 @@ onMounted(() => {
                 />
               </div>
               <div class="">
-                <p class="text-left">
+                <p class="text-left ml-2">
              City
                 </p>
                 <a-input
@@ -624,8 +618,6 @@ onMounted(() => {
                   class="w-full border p-2 mb-4"
                 />
               </div>
-              <hr clas="mt-4" />
-              <div class="mt-4"></div>
             </div>
             <div class="flex justify-between items-center"></div>
           </div>
@@ -645,7 +637,7 @@ onMounted(() => {
                   class="border p-2"
                 />
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-4 mt-2">
                   <div>
                     <p class="justify-start flex">
                       <span class="text-[#ff0000]">*</span>First Name
@@ -685,7 +677,7 @@ onMounted(() => {
                   <a-select
                     v-model:value="
                       invoice.userClientProfile.clientDataOrganization.currency
-                    "
+                    " size="large"
                     class=" w-full text-left"
                   >
                     <a-select-option
@@ -703,7 +695,7 @@ onMounted(() => {
                   <a-select
                     v-model:value="
                       invoice.userClientProfile.clientDataOrganization.language
-                    "
+                    " size="large"
                     class=" w-full text-left"
                   >
                     <a-select-option
@@ -738,7 +730,7 @@ onMounted(() => {
                 v-model:value="
                   invoice.userClientProfile.clientDataOrganization.phone
                 "
-                type="string"
+                type="text"
                 placeholder="Phone Number"
                 class="w-full border p-2"
               />
@@ -774,7 +766,7 @@ onMounted(() => {
                 <a-select
                   v-model:value="
                     invoice.userClientProfile.clientDataOrganization.country
-                  "
+                  " size="medium"
                   class=""
                 >
                   <a-select-option
@@ -787,7 +779,7 @@ onMounted(() => {
                 </a-select>
               </div>
               <div class="">
-                <p class="text-left">
+                <p class="text-left ml-2">
                   Postal Code
                 </p>
                 <a-input
@@ -800,7 +792,7 @@ onMounted(() => {
                 />
               </div> 
               <div class="">
-                <p class="text-left">
+                <p class="text-left ml-2">
                   State
                 </p>
                 <a-input
@@ -813,7 +805,7 @@ onMounted(() => {
                 />
               </div>
               <div class="">
-                <p class="text-left">
+                <p class="text-left ml-2">
              City
                 </p>
                 <a-input
@@ -870,12 +862,9 @@ onMounted(() => {
                   v-model:value="
                     invoice.userClientProfile.clientDataOrganization.notes
                   "
-                  rows=4
                   type="text"
                   class="w-full border p-2"
                 />
-
-                <hr class="my-4" />
                 <!-- <div class="grid grid-cols-2 gap-4 mt-6">
                   <div>
                     <p class="justify-start flex">Custom Field</p>

@@ -143,31 +143,29 @@ const filteredClients = computed(() => {
 </script>
 
 <template>
-  <div class="ml-60 lg:ml-60 md:ml-44">
+  <div>
+  <div class="">
     <Header
       :showBackButton="true"
       headerTitle="Clients"
       :dropdownTitle="dropdownTitle"
       :showDraftButton="true"
       :dropdownItems="dropdownItems"
-      :saveDraftButtonColor="white"
-      :onSaveDraftButtonClick="handleSaveDraftButtonClick"
       :showDropdown="true"
       :onDropdownItemClick="handleDropdownItemClickParent"
     />
   </div>
 
   <div class="content-center px-6 mt-2">
-    <div class="flex-col m-auto flex p-4 max-w-full ml-60 lg:ml-60 md:ml-48">
+    <div class="flex-col m-auto flex p-4 max-w-full ">
       <div class="flex flex-col ">
-        <span class="meta" style="display: inline"></span>
+        <span class="" style="display: inline"></span>
         <div class="">
           <div class="flex justify-end">
             <a-input
               v-model:value="searchQuery"
               placeholder="Search clients..."
               class="w-[150px] my-4"
-             
             />
             <!-- <a-button type="primary" @click="handleSearch" class="ml-2 bg-[#10C0CB]">
               Filter
@@ -199,4 +197,5 @@ const filteredClients = computed(() => {
       </div>
     </div>
   </div>
+</div>
 </template>

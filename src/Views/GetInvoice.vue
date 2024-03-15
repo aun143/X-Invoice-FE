@@ -181,7 +181,6 @@ const formatDate = (dateString) => {
         :onDropdownItemClick="handleDropdownItemClickParent"
       />
     </div>
-
     <section class="w-[100%] 2xl:w-[50%] md:w-[93%] lg:w-[85%] xl:w-[63%] pt-4 px-4 ">
       <form @submit.prevent class="p-4 bg-white">
         <div class="grid grid-cols-2 items-center">
@@ -208,7 +207,7 @@ const formatDate = (dateString) => {
             </div>
           </div>
           
-            <div class=" w-24 mt-4 lg:ml-[35%] md:ml-[20%] 2xl:ml-[20%] h-auto flex  justify-end items-end ">
+            <div class=" w-32 mt-4  lg:ml-[40%] md:ml-[20%] 2xl:ml-[30%] h-auto flex  justify-end items-end ">
     <img :src="imageUrl" alt="Logo" />
   </div>
 
@@ -218,12 +217,40 @@ const formatDate = (dateString) => {
           <div class="flex flex-col  mb-2">
             <p class="font-semibold">From:</p>
             <div class="text-left">
-              <!-- <span class="ml-2">{{ invoice.formData.sender._id }}</span> -->
-             {{ invoice.formData.sender.firstName }}
-              {{ invoice.formData.sender.lastName }}<br>
-              {{ invoice.formData.sender.state }}<br>
-            {{ invoice.formData.sender.address1 }}<br>
-             {{ invoice.formData.sender.address2 }}<br>
+              <p class="">
+                    <span class="">
+                      Selected Profile Type:
+                      {{ invoice.formData.sender.profileType }} </span
+                    ><br />
+                    <span v-if="invoice.formData.sender.firstName"
+                      >{{ invoice.formData.sender.firstName }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.lastName">{{
+                      invoice.formData.sender.lastName
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.sender.address1"
+                      >{{ invoice.formData.sender.address1 }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.address2">{{
+                      invoice.formData.sender.address2
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.sender.postalCode"
+                      >{{ invoice.formData.sender.postalCode }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.city">{{
+                      invoice.formData.sender.city
+                    }}</span>
+                    <span v-if="invoice.formData.sender.state">{{
+                      invoice.formData.sender.state
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.sender.email">{{
+                      invoice.formData.sender.email
+                    }}</span
+                    ><br />
+                  </p>
             </div>
 <br>
             <p class="font-semibold">To:</p>
@@ -242,7 +269,7 @@ const formatDate = (dateString) => {
             
             </div>
           </div>
-          <div class="flex flex-col ml-[45%] mt-4">
+          <div class="flex flex-col md:ml-[10%] lg:ml-[30%] xl:ml-[38%] 2xl:ml-[45%] mt-4">
             <div>
               <p class="font-semibold">Invoice No</p>
               <div class="text-left">{{ invoice.formData.invoiceNumber }}</div>
@@ -272,7 +299,6 @@ const formatDate = (dateString) => {
               :key="index"
               disabled
               cols="50"
-              rows=2
               class="flex"
               v-model="item.description"
             ></textarea>
@@ -284,7 +310,6 @@ const formatDate = (dateString) => {
               :key="index"
               disabled
               cols="60"
-              rows=6
               class="flex mb-8"
               v-model="item.quantity"
             />
@@ -296,7 +321,6 @@ const formatDate = (dateString) => {
               :key="index"
               disabled
               cols="60"
-              rows=6
               class="flex mb-8"
               v-model="item.rate"
             />
@@ -313,7 +337,6 @@ const formatDate = (dateString) => {
               :key="index"
               disabled
               cols="60"
-              rows=6
               class="flex mb-8"
               v-model="item.amount"
             />
@@ -339,8 +362,8 @@ const formatDate = (dateString) => {
                 />
               </div>
               <hr /> -->
-  <div class=" flex flex-col max-w-full items-end">
-          <div class="flex justify-between w-[80%] 2xl:w-[100%] items-end">
+  <div class=" flex flex-col max-w-full items-end xl:mr-20 2xl:mr-60" >
+          <div class="flex justify-between xl:w-[70%] md:w-[75%] 2xl:w-[65%] items-end">
             <div class="text-black flex">
               <span class="px-[4px] py-[10px] font-semibold border-black text-[12px] rounded"> SubTotal </span>
             </div>
@@ -354,7 +377,7 @@ const formatDate = (dateString) => {
             <!-- :value="getSubtotal()" -->
           </div>
 
-          <div class="flex justify-between w-[80%] 2xl:w-[100%] items-end">
+          <div class="flex justify-between xl:w-[70%] md:w-[75%] 2xl:w-[65%] items-end">
            <div class="">
               <span
                 class="px-[6px] font-semibold py-[10px] border-black text-[12px] rounded"
@@ -370,7 +393,7 @@ const formatDate = (dateString) => {
               </span>
             </div>
             <div class="pt-2 mr-8">
-              {{ invoice.formData.total }} {{ invoice.formData.currency }}
+              {{ invoice.formData.subtotal }} {{ invoice.formData.currency }}
             </div>
             <!-- lg:w-[53vw] 2xl:w-[53vw]  md:w-32 -->
           </div>

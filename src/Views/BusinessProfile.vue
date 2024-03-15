@@ -14,7 +14,7 @@ import { getUserDetailsApi } from "../service/LoginService";
 // import Modal from "../components/Modal.vue";
 import { BASE_URL } from "../utils/config";
 import { uploadImage } from "../service/UploadImage";
-
+import { notification } from "ant-design-vue";
 const isLoading = ref(false);
 const isLoadingImg = ref(false);
 const route = useRoute();
@@ -78,7 +78,13 @@ const validateForm = (profileType) => {
 
   return true;
 };
-
+const openNotificationWithIcon = (type, message) => {
+  notification[type]({
+    message: type === "success" ? "Success" : "Error",
+    description: message,
+    duration: 3,
+  });
+};
 const submitbusinessProfileDataOrganization = async (id) => {
   if (isLoadingImg.value) {
     openNotificationWithIcon("error", "Please Wait To upload Image First");
@@ -566,11 +572,11 @@ const displayImage = (input, imageUrl) => {
                     <p class="justify-start flex">
                       <span class="text-[#ff0000]">*</span>Country
                     </p>
-                    <a-select
-                      v-model:value="
+                    <a-select v-model:value="
                         invoice.userProfileData.individualProfile.country
                       "
-                      class="w-full text-left"
+                      size="large"
+                      class="w-full  text-left"
                     >
                       <a-select-option
                         v-for="country in invoice.countryOptions"
@@ -600,7 +606,7 @@ const displayImage = (input, imageUrl) => {
                   v-model:value="
                     invoice.userProfileData.individualProfile.phone
                   "
-                  type="number"
+                  type="text"
                   class="w-full border p-2"
                 />
               </div>
@@ -630,7 +636,6 @@ const displayImage = (input, imageUrl) => {
                   v-model:value="
                     invoice.userProfileData.individualProfile.notes
                   "
-                  rows="1"
                   type="text"
                   class="w-full p-2"
                 />
@@ -830,7 +835,7 @@ const displayImage = (input, imageUrl) => {
                       style="text-align: left"
                       v-model:value="
                         invoice.userProfileData.organizationProfile.country
-                      "
+                      " size="large"
                       class="w-full"
                     >
                       <a-select-option
@@ -861,7 +866,7 @@ const displayImage = (input, imageUrl) => {
                 v-model:value="
                   invoice.userProfileData.organizationProfile.phone
                 "
-                type="number"
+                type="text"
                 class="w-full p-2"
               />
             </div>
@@ -891,7 +896,7 @@ const displayImage = (input, imageUrl) => {
                 v-model:value="
                   invoice.userProfileData.organizationProfile.notes
                 "
-                rows="1"
+             
                 type="text"
                 class="w-full p-2"
               />
@@ -948,4 +953,7 @@ const displayImage = (input, imageUrl) => {
 .fade-leave-to {
   opacity: 0;
 } */
+.ant-select-selection {
+  background-color: green;
+}
 </style>

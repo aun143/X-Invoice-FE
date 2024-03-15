@@ -9,13 +9,13 @@ export const useInvoiceStore = defineStore("invoice", {
       purchaseOrderNumber: "",
       invoiceNumber: "",
       invoiceName: "INV",
-      date:"",
-      invoiceDueDate: "",
+      date: new Date(),
+      invoiceDueDate: new Date(),
       file: "",
       url:"",
       invoiceDue: "",
-      sender:"",
-      receiver:"",
+      sender: {},
+      receiver:{},
       items: [
         {
           description: "",
@@ -225,13 +225,12 @@ userClientProfile :{
     //     console.error("Error fetching business profile data:", error.message);
     //   }
     // },
-  }),
-  // getters: {
-  //   clonedFormData() {
-  //     // Return a deep clone of the formData object
-  //     return JSON.parse(JSON.stringify(this.formData));
-  //   },
-  // },
+  }),getters: {
+    clonedFormData() {
+      // Return a deep clone of the formData object
+      return JSON.parse(JSON.stringify(this.formData));
+    },
+  },
   actions: {
     // updateFormData(newFormData) {
     //   // Update the formData object
@@ -263,7 +262,7 @@ userClientProfile :{
     },
 
     updateFormData(newData) {
-      this.formData = { ...this.formData, ...newData };
+      this.formData = { ...this.formData };
     },
     updateOrganizationProfile(clientData) {
       this.userClientProfile.clientType = "organization";

@@ -12,7 +12,7 @@ import { getAllClient } from "../service/ClientService";
 import { getUserDetailsApi } from "../service/LoginService";
 import Swal from "sweetalert2";
 import { notification } from "ant-design-vue";
-import { useInvoiceService } from "../service/MainService";
+import { postInvoiceData } from "../service/MainService";
 import { BASE_URL } from "../utils/config";
 import { uploadImage } from "../service/UploadImage";
 // import {  Input } from "ant-design-vue";
@@ -51,7 +51,7 @@ const invoiceSubmit = async () => {
     if (!validateDueDate()) {
       return;
     }
-    const { success, data, error } = await invoiceSer.postInvoiceData(invoice.formData);
+    const { success, data, error } = await postInvoiceData(invoice.formData);
 
 if (success) {
   router.push("/");
@@ -133,7 +133,6 @@ const calculateAmount = (item) => {
 // const toggleModal = () => {
 //   modalActive.value = !modalActive.value;
 // };
-const invoiceSer = useInvoiceService();
 //console.log("invoice",invoice)
 const dropdownTitle = "Save";
 const dropdownItems = [
@@ -213,7 +212,8 @@ const currentDate = computed(() => {
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  console.log("date", `${month}/${day}/${year}`);
+  return `${month}/${day}/${year}`;
 });
 
 const displayImage = (input, imageUrl) => {
@@ -365,8 +365,9 @@ const ClientProfile=async ()=>{
   }
 }
 onMounted(async () => {
-  // BusinessProfile();
-  // ClientProfile();
+  invoice.formData.date = currentDate.value;
+  BusinessProfile();
+  ClientProfile();
 });
 
 const invoiceName = ref("");
@@ -472,113 +473,11 @@ const switchProfileType = (type) => {
     <!-- <form @submit.prevent class="container mt-6 ml-6 bg-white max-w-[1000px]  p-6"> -->
     <form
       @submit.prevent
-      class="container mt-6 ml-6 bg-white w-[50%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] p-6"
+      class=""
     >
-      <div class="container">
-        <div class="flex justify-between">
-          <div class="flex flex-col space-y-5 w-1/2s sm:flex sm:space-x-4">
-            <div class=" ">
-              <div class="mt-2 text-2xl ml-2 text-left flex">
-                <span
-                  class="mr-6 bg-[#bababa] text-[12px] h-8 text-white px-3 rounded"
-                  >Draft</span
-                >
-                <a-input
-                  v-model:value="invoice.formData.invoiceName"
-                  class="w-[250px] h-12 text-left text-[15px]"
-                  type="text"
-                  placeholder="Invoice Name"
-                />
-              </div>
-            </div>
-            <div>
-              <div class="flex">
-                <span class="text-[#ff0000] mr-2">*</span>
-                <a-textarea
-                  v-model:value="invoice.formData.description"
-                  placeholder="Enter Description"
-                  name=""
-                  id=""
-                  cols="60"
-             
-                ></a-textarea>
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-col w-1/2 items-end">
-            <label for="logoInput" class="">
-              <div
-                class="logo-placeholder hover:border-dashed border-none cursor-pointer rounded md:w-28 lg:w-48 h-32 border-2 grid place-items-center text-slate-500 text-5xl"
-              >
-                <!-- <div v-if="isLoadingImg"><a-spin size="large"/></div> -->
-                <img
-                  id="imagePreview"
-                  src="https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png"
-                  class="logo w-32 rounded"
-                  alt="Logo"
-                />
-              </div>
-              <input
-                id="logoInput"
-                type="file"
-                accept="image/*"
-                class=""
-                style="display: none"
-                @change="handleFileInputChange"
-                ref="logoInputRef"
-              />
-            </label>
-          </div>
-        </div>
-        <div class="mt-10 lg:mt-10 md:mt-2 flex w-full">
-          <div class="">
-            <p class="ml-auto mr-6">
-              <span class="text-[#ff0000]">*</span>Invoice No.
-            </p>
-            <a-input-number
-              required
-              type="number"
-              v-model:value="invoice.formData.invoiceNumber"
-              class="ml-2 w-[100px]"
-            />
-          </div>
-          <div class="flex items-end justify-end w-full">
-            <div class="">
-              <p class="text-left ml-4">Language</p>
-              <a-select
-                v-model:value="invoice.formData.language"
-                class="ml-2 lg:w-[200px] w-[150px] md:w-[130px] " style="text-align: left;"
-              >
-                <a-select-option
-                  v-for="language in invoice.languageOptions"
-                  :key="language.value"
-                >
-                  {{ language.label }}
-                </a-select-option>
-              </a-select>
-            </div>
-            <div>
-              <p class="text-left ml-4">Currency</p>
-              <a-select
-                v-model:value="invoice.formData.currency"
-                class="ml-2 lg:w-[200px] w-[200px] md:w-[170px]" style="text-align: left;"
-              >
-                <a-select-option
-                  v-for="currency in invoice.currencyOptions"
-                  :key="currency.value"
-                  :value="currency.value"
-                >
-                  {{ currency.label }}
-                </a-select-option>
-              </a-select>
-            </div>
-          </div>
-        </div>
-        <br />
-        <hr />
-      </div>
-      <div class="container flex">
-        <div class="flex-left w-[45%] justify-center">
+     
+      <div class="container ">
+        <div class="">
           <div class="mt-4 text-left">
             <div
               v-if="isLoading"
@@ -695,40 +594,6 @@ const switchProfileType = (type) => {
                 </div>
               </div>
             </div>
-            <div class="flex mt-2">
-              <p class="text-right ml-2">
-                <span class="text-[#ff0000]">*</span>To:
-              </p>
-              <div class="justify-end flex w-full text-left">
-                <!-- <div  @click="toggleModal" class="">New Client</div> -->
-                <div type="primary"
-                  class="text-[#10C0CB] cursor-pointer"
-                  @click="showModal"
-                >
-                  New Client
-                </div>
-                <div class="home">
-                  <!-- <Modal @close="toggleModal" :modalActive="modalActive">
-                </Modal> -->
-                  <a-modal v-model:open="open">
-                    <Client />
-                  </a-modal>
-                </div>
-              </div>
-            </div>
-
-            <a-select
-              v-model:value="invoice.formData.receiver"
-              class="ml-2 w-[100%]"
-              :loading="isLoading" style="text-align: left;"
-            >
-              <a-select-option
-                v-for="client in filteredClients"
-                :key="client._id"
-              >
-                {{ client.firstName }} {{ client.lastName }}
-              </a-select-option>
-            </a-select>
           </div>
         </div>
         <div class="flex flex-col items-end mt-4 ml-auto">
@@ -752,15 +617,6 @@ const switchProfileType = (type) => {
                 v-model:value="invoice.formData.invoiceDueDate"
                 class="ml-2 w-[200px]"
               />
-
-              <!-- <a-select v-model:value="invoice.formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate">
-        
-              <a-select-option value="07">After 07 days</a-select-option>
-              <a-select-option value="15">After 15 days</a-select-option>
-              <a-select-option value="30">After 30 days</a-select-option>
-              <a-select-option value="45">After 45 days</a-select-option>
-              <a-select-option value="60">After 60 days</a-select-option>
-            </a-select> -->
             </div>
           </div>
 
@@ -778,178 +634,6 @@ const switchProfileType = (type) => {
       </div>
       <br />
       <hr />
-      <div class="">
-        <table class="table-auto w-full">
-          <tr class="text-left text-black">
-            <th class="align-top md:hidden lg:block"></th>
-            <th class="p-2 w-1/2 align-top">Description</th>
-            <th class="p-2 align-top">Quantity</th>
-            <th class="p-2 align-top"><span class="ml-4">Rate</span></th>
-            <th class="p-2 w-[150px] text-right pr-5 align-top">
-              <span class="ml-4">Amount</span>
-            </th>
-            <th class="p-2 w-[30px] text-right pr-5 align-top">Options</th>
-          </tr>
-
-          <tr
-            v-for="(item, index) in invoice.formData.items"
-            :key="index"
-            draggable="true"
-            :ButtonColor="Colors.orange"
-            @dragstart="handleDragStart(index)"
-            @dragover="handleDragOver(index)"
-            @drop="handleDrop(index)"
-            @dragend="handleDragEnd"
-            class=""
-          >
-            <td class="align-top md:hidden lg:block">
-              <div class=""></div>
-              <svg
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="cursor-move"
-                style="width: 20px; height: 20px; margin-right: 10px"
-              >
-                <path
-                  d="M5 3H3v2h2V3zm14 4h2v6h-2V9H9v10h4v2H7V7h12zM7 3h2v2H7V3zM5 7H3v2h2V7zm-2 4h2v2H3v-2zm2 4H3v2h2v-2zm6-12h2v2h-2V3zm6 0h-2v2h2V3zm-2 14v-2h6v2h-2v2h-2v2h-2v-4zm4 2v2h2v-2h-2z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-
-            <td class="align-top">
-              <a-textarea
-                v-model:value="item.description"
-                name=""
-                id=""
-                cols="70"
-              
-              ></a-textarea>
-            </td>
-            <td class="align-top">
-              <a-input-number
-                v-model:value="item.quantity"
-                class="w-full mx-2"
-                type="number"
-                placeholder="0"
-              />
-            </td>
-            <td class="align-top flex flex-col">
-              <a-input-number
-                v-model:value="item.rate"
-                class="w-full ml-4"
-                type="number"
-                placeholder="0"
-              />
-              <a-select
-                v-model:value="item.unit"
-                class="mt-1 mb-2 flex ml-6"
-                @change="() => handleUnitChange(index, item.unit)" style="text-align: left;"
-              >
-                <a-select-option
-                  v-for="unit in invoice.unitOptions"
-                  :key="unit.value"
-                  :value="unit.value"
-                  class="w-12"
-                >
-                  {{ unit.value }}
-                </a-select-option>
-              </a-select>
-            </td>
-            <td class="align-top">
-              <!-- <a-textarea v-model:value="item.amount" readonly class="" cols="10"  placeholder="Amount" >{{ item.quantity * item.rate }}</a-textarea> -->
-              <div readonly class="ml-12 xl:ml-12 md:ml-8 text-left">
-                {{ calculateAmount(item) }}
-              </div>
-              <!-- <div readonly class=" ml-12" >{{ item.quantity * item.rate }}</div> -->
-            </td>
-            <td class="align-top">
-              <a-button
-                @click="deleteItem(index)"
-                class="border relative border-gray-300 bg-[#f3f3f4]"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <g>
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path
-                      d="M20 7v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7H2V5h20v2h-2zM6 7v13h12V7H6zm5 2h2v2h-2V9zm0 3h2v2h-2v-2zm0 3h2v2h-2v-2zM7 2h10v2H7V2z"
-                    />
-                  </g>
-                </svg>
-              </a-button>
-              <!-- <ul v-if="dropdownOpen[index]" class="absolute flex justify-center flex-col bg-white gap-5 p-2 border items-center">
-        <li @click="deleteItem(index)" class="cursor-pointer">Delete</li>
-        <li @click="saveItem(index)" class="cursor-pointer">Save Item</li>
-      </ul> -->
-            </td>
-          </tr>
-        </table>
-        <hr class="mb-2" />
-
-        <div style="text-align: left; margin-left: 10px" class="w-[50%]">
-          <Button
-            :bgColor="Colors.addMore"
-            :textColor="Colors.white"
-            :fontSize="fontSize"
-            buttonText="New Line"
-            class=""
-            @click="addMoreItem()"
-          />
-        </div>
-        <div class="flex justify-between items-center">
-          <div class="flex-y-5 text-right space-y-3 w-full">
-            <p>
-              <span>SubTotal</span>
-              <a-input
-                :value="getSubtotal()"
-                readonly
-                class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 border-0 2xl:w-[440px] xl:w-[350px] lg:w-[230px] md:w-[200px]"
-                placeholder="Subtotal"
-              />
-            </p>
-
-            <p>
-              <span>Total</span>
-              <a-input
-                :value="getTotal()"
-                readonly
-                class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 border-0 2xl:w-[470px] xl:w-[370px] lg:w-[250px] md:w-[220px]"
-                placeholder="Total"
-              />
-            </p>
-          </div>
-        </div>
-      </div>
-      <br />
-      <div class="container flex">
-        <div class="flex-left">
-          <div class="mt-10 lg:mt-10 md:mt-4 text-left space-y-3">
-            <div>
-              <div class="flex w-full">
-                <p>Invoice Notes<a href="#">(Default Note)</a></p>
-              </div>
-              <a-textarea
-                class="border-none"
-                cols="60"
-         
-                v-model:value="invoice.formData.notes"
-              ></a-textarea>
-            </div>
-          </div>
-        </div>
-      </div>
     </form>
   </div>
 </template>
-
-<style>
-.ant-modal-footer {
-  display: none !important;
-}
-</style>

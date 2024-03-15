@@ -309,9 +309,10 @@ const computedClasses = {
             </div>
              <div>{{  }}
               <p class="justify-start flex text-md font-medium"> <span class="text-[#ff0000]">*</span>Country:</p>
-              <a-select style="text-align: left;"
+              <a-select 
+              size="large"
                 v-model:value="invoice.userProfileData.country"
-                class="w-full "
+                class="w-full text-left"
               >
                 <a-select-option
                   v-for="country in invoice.countryOptions"

@@ -1,5 +1,6 @@
 import {BASE_URL} from "../utils/config";
 export const signUpUserApi = async (data) => {
+  try{
   const response = await fetch(`${BASE_URL}/user/create`, {
     method: 'POST',
     headers: {
@@ -8,11 +9,17 @@ export const signUpUserApi = async (data) => {
     body: JSON.stringify(data),
   });
 
+ 
+  const responseData = await response.json();
+
   if (!response.ok) {
-    throw new Error('Failed to SignUp');
+    throw new Error(responseData.message || 'Failed to create client.');
   }
 
-  return response.json();
+  return { success: true, data: responseData };
+} catch (error) {
+  return { success: false, error: error.message || 'An error occurred while creating the client.' };
+}
 };
 export const getSignUpUser = async (data) => {
   const response = await fetch(`${BASE_URL}/user/getLoginUser`, {

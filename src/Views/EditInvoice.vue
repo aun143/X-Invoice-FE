@@ -8,18 +8,18 @@ import Button from "../components/Button.vue";
 import Client from "./Client.vue";
 import { getAllClient } from "../service/ClientService";
 import { Colors } from "../utils/color";
-import { useInvoiceService } from '../service/MainService';
+import { updateInvoiceData } from '../service/MainService';
 import {getSingleInvoice} from "../service/invoiceService";
 import {BASE_URL} from "../utils/config";
 import Swal  from "sweetalert2";
 import { notification } from "ant-design-vue";
 import {uploadImage} from "../service/UploadImage"
+import { getUserDetailsApi } from "../service/LoginService";
 
 // import {  Input } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
 const invoiceId = route.params._id;
-const InvoiceService = useInvoiceService();
 const invoice = useInvoiceStore();
 const isLoading=ref(false);
 const clientId=ref("");
@@ -31,11 +31,11 @@ const handleSaveDraftButtonClick = async (Id) => {
     try {
      if (!validateForm()) return;
       isLoading.value=true;
-      const { success, data, error } = await InvoiceService.updateInvoiceData(invoiceId, invoice.formData);
+      const { success, data, error } = await updateInvoiceData(invoiceId, invoice.formData);
 
 if (success) {
   router.push("/");
-    invoice.resetFormData();
+    invoice.formData.$reset;
   Swal.fire({
     icon: "success",
     title: "Invoice Created",
@@ -202,8 +202,7 @@ const deleteItem = (index) => {
   }
 };
 const clients=ref();
-onMounted(async()=>{
-  try {
+const ClientProfile = async () => { try {
     isLoading.value = true;
   const result = await getAllClient(); 
   if (result && result.data) {
@@ -221,8 +220,8 @@ onMounted(async()=>{
   });
 }finally {
     isLoading.value = false; // Set isLoading back to false after fetching data
-  };
-  try {
+  };}
+  const InvoiceData = async () => {try {
     isLoading.value = true;
     const response = await getSingleInvoice(invoiceId);
      invoice.formData = response;
@@ -233,19 +232,79 @@ onMounted(async()=>{
     console.error("Error fetching invoice details:", error);
   } finally {
     isLoading.value = false;
-  }
+  }}
+onMounted(async()=>{
+  InvoiceData();
+  ClientProfile();
 })
 
 const addMoreItem = () => {
   invoice.addMoreItem();
 };
 
-const getSubtotal = () => {
-  return invoice.getSubtotal();
-};
+const SubTotal = computed(() => {
+  let sub = 0;
+  invoice.formData.items.forEach((item) => {
+    sub += item.amount;
+  });
+  return sub;
+});
 
-const getTotal = () => {
-  return invoice.getTotal();
+watch(SubTotal, (newSubtotal, oldSubtotal) => {
+  invoice.formData.subtotal = newSubtotal;
+});
+const Total = computed(() => {
+  let totalAmount = 0;
+  invoice.formData.items.forEach((item) => {
+    totalAmount += item.amount;
+  });
+  return totalAmount;
+});
+
+watch(SubTotal, (newSubtotal, oldSubtotal) => {
+  invoice.formData.subtotal = newSubtotal;
+});
+const BusinessProfile = async () => {
+  try {
+    invoice.resetFormData();
+    // const invoice=useInvoiceStore();
+    const UserId = localStorage.getItem("UserId");
+    
+    if (UserId) {
+      const userProfileData = await getUserDetailsApi(UserId);
+      //console.log("userProfileType >>>", invoice.selectedProfileType);
+      if (invoice.selectedProfileType === "individual") {
+        const individualData = userProfileData.individualProfile;
+        // Update specific fields of sender without overwriting it
+        Object.assign(invoice.formData.sender, individualData);
+        //console.log("individualData<", individualData);
+      } else if (invoice.selectedProfileType === "organization") {
+        const organizationData = userProfileData.organizationProfile;
+        // Update specific fields of sender without overwriting it
+        Object.assign(invoice.formData.sender, organizationData);
+        //console.log("invoice sender<><><", organizationData);
+      }
+    } else {
+      router.push("/login");
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: ("Error Submitting Invoice:", error),
+      footer: "Please try again ",
+    });
+    console.error("Error getting account in Invoice", error);
+  } finally {
+  };
+}
+const profileType = ref(invoice.selectedProfileType);
+const switchProfileType = (type) => {
+  invoice.selectProfileType(type);
+  profileType.value = type;
+  BusinessProfile();
+  InvoiceData();
+  ClientProfile();
 };
 const calculateUpcomingDueDate = () => {
   const selectedDueDate = invoice.formData.invoiceDueDate;
@@ -275,8 +334,7 @@ const calculateUpcomingDueDate = () => {
     headerTitle="New Invoice"
     backButtonText=" &nbsp &lt Invoices &nbsp  &nbsp"
     backRoute="Index"
-    :dropdownItems="dropdownItems"
-    :dropdownTitle="dropdownTitle"
+    :dropdownTitle="false"
     saveButtonText="&nbsp;&nbsp; Save &nbsp;&nbsp;"
     saveDraftButtonText="&nbsp; Save Changes"
     :saveDraftButtonColor="Colors.orange"
@@ -313,14 +371,11 @@ const calculateUpcomingDueDate = () => {
   /></div>
             </div>
           </div><div class="flex"><span class="text-[#ff0000] mr-2">*</span>
-          <a-textarea
-          v-model:value="invoice.formData.description"
-            placeholder="Enter Description"
-            name=""
-            id=""
-            cols="60"
-            rows=2
-          ></a-textarea></div>
+            <a-textarea
+              class="border-none"
+              cols="60"
+              v-model:value="invoice.formData.description"
+            ></a-textarea></div>
         </div>
         <div class="flex flex-col w-1/2 items-end">
           <label for="logoInput" class="" >
@@ -360,7 +415,7 @@ const calculateUpcomingDueDate = () => {
         <div class="flex items-end justify-end w-full">
           <div class="">
             <p class="text-left ml-4 ">Language</p>
-            <a-select  v-model:value="invoice.formData.language" class="ml-2 lg:w-[150px] w-[150px] md:w-[130px]"  style="text-align: left;">
+            <a-select  v-model:value="invoice.formData.language" class="ml-2  text-left lg:w-[150px] w-[150px] md:w-[130px]"   size="large">
               <a-select-option
                 v-for="language in invoice.languageOptions"
                 :key="language.value"
@@ -371,7 +426,7 @@ const calculateUpcomingDueDate = () => {
           </div>
           <div>
             <p class="text-left ml-3">Currency</p>
-            <a-select  v-model:value="invoice.formData.currency" class="ml-2 lg:w-[200px] w-[200px] md:w-[170px]" style="text-align: left;">
+            <a-select  v-model:value="invoice.formData.currency" class="ml-2 text-left  lg:w-[200px] w-[200px] md:w-[170px]"  size="large">
               <a-select-option
                 v-for="currency in invoice.currencyOptions"
                 :key="currency.value"
@@ -396,47 +451,112 @@ const calculateUpcomingDueDate = () => {
       </a-space>
     </div>
     <div v-else>
-            <div class="flex w-full">
-              <p> <span class="text-[#ff0000]">*</span>From:</p>
-              
-              <p class="justify-end flex w-full text-left">
-                <router-link to="/businessProfile" class="text-[#10C0CB]" >Business Profile</router-link>
-              </p>
+              <div class="flex w-full">
+                <p><span class="text-[#ff0000] ml-2">*</span>From:</p>
+                <p class="justify-end flex w-full text-left">
+                  <button
+                    @click="switchProfileType('individual')"
+                    v-if="profileType === 'organization'"
+                    class="text-[#10C0CB]"
+                  >
+                    Switch to Individual
+                  </button>
+                  <button
+                    @click="switchProfileType('organization')"
+                    v-if="profileType === 'individual'"
+                    class="text-[#10C0CB]"
+                  >
+                    Switch to Organization
+                  </button>
+                </p>
+              </div>
+              <div class="ml-2 border rounded-lg">
+                <div
+                  v-if="invoice.selectedProfileType === 'individual'"
+                  class=" pl-2 border-gray-100 rounded-2"
+                >
+                  <!-- <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br> -->
+                  <p class="">
+                    <span class="">
+                      Selected Profile Type:
+                      {{ invoice.formData.sender.profileType }} </span
+                    ><br />
+                    <span v-if="invoice.formData.sender.firstName"
+                      >{{ invoice.formData.sender.firstName }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.lastName">{{
+                      invoice.formData.sender.lastName
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.sender.address1"
+                      >{{ invoice.formData.sender.address1 }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.address2">{{
+                      invoice.formData.sender.address2
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.sender.postalCode"
+                      >{{ invoice.formData.sender.postalCode }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.city">{{
+                      invoice.formData.sender.city
+                    }}</span>
+                    <span v-if="invoice.formData.sender.state">{{
+                      invoice.formData.sender.state
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.sender.email">{{
+                      invoice.formData.sender.email
+                    }}</span
+                    ><br />
+                  </p>
+                </div>
+                <div
+                  v-if="invoice.selectedProfileType === 'organization'"
+                  class=" pl-2 border-gray-300 rounded-2"
+                >
+                  <p class="">
+                    <span class="">
+                      Selected Profile Type:
+                      {{ invoice.formData.sender.profileType }} </span
+                    ><br />
+
+                    <span v-if="invoice.formData.sender.organizationName"
+                      >{{
+                        invoice.formData.sender.organizationName
+                      }}<br></span
+                    >
+                    <span v-if="invoice.formData.sender.firstName"
+                      >{{ invoice.formData.sender.firstName }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.lastName">{{
+                      invoice.formData.sender.lastName
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.sender.address1"
+                      >{{ invoice.formData.sender.address1 }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.address2">{{
+                      invoice.formData.sender.address2
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.sender.postalCode"
+                      >{{ invoice.formData.sender.postalCode }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.sender.city">{{
+                      invoice.formData.sender.city
+                    }}&nbsp;</span>
+                    <span v-if="invoice.formData.sender.state">{{
+                      invoice.formData.sender.state
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.sender.email">{{
+                      invoice.formData.sender.email
+                    }}</span>
+                  </p>
+                </div>
+              </div>
             </div>
-                                  <div class="ml-2">
-                        <div v-if="invoice.selectedProfileType === 'individual'" class=" border-2 pl-2 border-gray-100 rounded-2" >
-                          <!-- <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br> -->
-                          <p class="">
-                          <span class="">Selected Profile Type: {{ invoice.formData.sender.profileType }}</span><br>
-                        <span class="">{{ invoice.formData.sender.firstName }}</span>&nbsp;
-                        <span class="">{{invoice.formData.sender.lastName }}</span><br>
-                        <span class="">{{ invoice.formData.sender.address1 }}</span>&nbsp;
-                        <span class="">{{ invoice.formData.sender.address2 }}</span><br> 
-                        <span class="">{{ invoice.formData.sender.postalCode }}</span> 
-                        <span class="">{{ invoice.formData.sender.city }}</span><br>
-                        <span class="">{{ invoice.formData.sender.state }}</span><br>
-                        <span class="">{{ invoice.formData.sender.email }}</span><br></p>
-                        </div> 
-                        <div v-if="invoice.selectedProfileType === 'organization'" class=" border-2 pl-2 border-gray-300  rounded-2" >
-                          <p class="">
-                          <span class="">Selected Profile Type: {{ invoice.formData.sender.profileType }}:</span><br>
-                        <span class="">{{ invoice.formData.sender.organizationName }}</span><br>
-                        <span class="">{{ invoice.formData.sender.firstName }}</span>&nbsp;
-                        <span class="">{{invoice.formData.sender.lastName }}</span><br>
-                        <span class="">{{ invoice.formData.sender.address1 }}</span>&nbsp;
-                        <span class="">{{ invoice.formData.sender.address2 }}</span><br> 
-                        <span class="">{{ invoice.formData.sender.postalCode }}</span> 
-                        <span class="">{{ invoice.formData.sender.city }}</span><br>
-                        <span class="">{{ invoice.formData.sender.state }}</span><br>
-                        <span class="">{{ invoice.formData.sender.email }}</span><br>
-                        </p>
-                        </div>
-
-
-
- 
-           </div>
-          </div>
           <div class="flex mt-2">
             <p class="text-right ml-3"> <span class="text-[#ff0000]">*</span>To</p>
             <div class="justify-end flex w-full text-left">
@@ -445,14 +565,14 @@ const calculateUpcomingDueDate = () => {
               <div class="home">
                 <!-- <Modal @close="toggleModal" :modalActive="modalActive">
                 </Modal> -->
-                <a-modal v-model:open="open" @ok="handleOk"  >
+                <a-modal v-model:open="open"   >
                   <Client/> 
     </a-modal>
   </div>
 </div>
           </div>
           
-          <a-select  v-model:value="invoice.formData.receiver" class="ml-2 w-[100%]"   :loading="isLoading" style="text-align: left;">
+          <a-select  v-model:value="invoice.formData.receiver" class="ml-2 w-[100%] tex-left"  size="large"  :loading="isLoading" >
               <a-select-option
               v-for="client in filteredClients" :key="client._id" >  {{ client.firstName }} {{ client.lastName }}
               </a-select-option>
@@ -475,7 +595,7 @@ const calculateUpcomingDueDate = () => {
         <div class="flex items-end mb-2">
           <div>
             <p class="w-4/5 ml-3 text-start" ml-2 text-start>Invoice Due</p>
-            <a-select v-model:value="invoice.formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate" style="text-align: left;">
+            <a-select v-model:value="invoice.formData.invoiceDueDate"  size="large" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate" style="text-align: left;">
         
               <a-select-option value="07">After 07 days</a-select-option>
               <a-select-option value="15">After 15 days</a-select-option>
@@ -529,14 +649,14 @@ const calculateUpcomingDueDate = () => {
     </td>
 
     <td class="align-top">
-      <a-textarea v-model:value="item.description" name="" id="" cols="70" rows=2></a-textarea>
+      <a-textarea v-model:value="item.description" name="" id="" cols="70" ></a-textarea>
     </td>
     <td class="align-top">
       <a-input-number v-model:value="item.quantity" class="w-full mx-2" type="number" placeholder="Quantity" />
     </td>
     <td class="align-top">
       <a-input-number v-model:value="item.rate" class="w-full ml-4" type="number" placeholder="Rate" />
-      <a-select v-model:value="item.unit" class="ml-2 mt-1 mb-2 w-[60px]" @change="() => handleUnitChange(index, item.unit)" style="text-align: left;">
+      <a-select v-model:value="item.unit" class="ml-2 mt-1 mb-2 w-[60px]" @change="() => handleUnitChange(index, item.unit)" style="text-align: left;" size="large">
         <a-select-option v-for="unit in invoice.unitOptions" :key="unit.value" :value="unit.value">
           {{ unit.value }}
 
@@ -544,7 +664,7 @@ const calculateUpcomingDueDate = () => {
       </a-select>
     </td>
     <td class="align-top">
-      <!-- <a-textarea v-model:value="item.amount" readonly class="" cols="10" rows=1 placeholder="Amount" >{{ item.quantity * item.rate }}</a-textarea> -->
+      <!-- <a-textarea v-model:value="item.amount" readonly class="" cols="10"  placeholder="Amount" >{{ item.quantity * item.rate }}</a-textarea> -->
       <div readonly class=" ml-12">{{ calculateAmount(item) }}</div>
       <!-- <div readonly class=" ml-12" >{{ item.quantity * item.rate }}</div> -->
     </td>
@@ -579,7 +699,7 @@ const calculateUpcomingDueDate = () => {
           <p>
             <span>SubTotal</span>
             <a-input
-              :value="getSubtotal()"
+              v-model:value="SubTotal"
               readonly
               class=" focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4  border-0 2xl:w-[450px] xl:w-[350px] lg:w-[230px] md:w-[200px]"
               placeholder="Subtotal"
@@ -589,7 +709,7 @@ const calculateUpcomingDueDate = () => {
           <p>
             <span>Total</span>
             <a-input
-              :value="getTotal()"
+              v-model:value="Total"
               readonly
               class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 border-0 2xl:w-[470px] xl:w-[370px] lg:w-[250px]  md:w-[220px] "
               placeholder="Total"
@@ -610,7 +730,6 @@ const calculateUpcomingDueDate = () => {
             <a-textarea
               class="border-none"
               cols="60"
-              rows=2
               v-model:value="invoice.formData.notes"
             ></a-textarea>
           </div>

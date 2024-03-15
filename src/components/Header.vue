@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineEmits } from "vue";
+import { ref, } from "vue";
 import { RouterLink } from "vue-router";
 import { Colors } from "../utils/color";
 import Button from "../components/Button.vue";

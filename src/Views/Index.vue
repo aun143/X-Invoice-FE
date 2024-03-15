@@ -126,7 +126,7 @@ const dropdownItems = [{ title: "Create Invoice" }, { title: "Create Client" }];
 
 const handleDropdownItemClickParent = (clickedItem) => {
   if (clickedItem.title === "Create Invoice") {
-    invoice.formData.$reset;
+    // invoice.formData.$reset;
     router.push("/new");
   } else if (clickedItem.title === "Create Client") {
     router.push("/Client");
@@ -177,7 +177,7 @@ const columns = computed(() => {
     },
     {
       title: "Total",
-      dataIndex: "total",
+      dataIndex: "subtotal",
       key: "total",
       // sorter: true,
       onHeaderCell: (column) => ({
@@ -251,7 +251,7 @@ watch(filterStatus, (newFilterStatus) => {
       :onSaveDraftButtonClick="handleSaveDraftButtonClick"
       :showDropdown="true"
       :onDropdownItemClick="handleDropdownItemClickParent"
-    />{{  }}
+    />
     <div class="content-center mt-6 px-6">
       <div class="flex-col m-auto flex max-w-full p-2">
         <div class="flex flex-col max-w-[100%]">

@@ -1,6 +1,6 @@
 
 <script setup>
-import { ref, defineEmits } from "vue";
+import { ref, } from "vue";
 import { useRouter } from "vue-router";
 import Button from "../components/Button.vue";
 import { Colors } from "../utils/color";
@@ -61,19 +61,17 @@ const logInUser = async () => {
       return;
     }
 
-    const response = await loginUserApi({
+    const { success, data, error } = await loginUserApi({
       email: loginData.value.email,
       password: loginData.value.password,
     });
-    
-    console.log(response); // Log the entire response
-
-    if (response.data && response.data.access_token && response.data._id) {
-      localStorage.setItem("accessToken", response.data.access_token);
-      localStorage.setItem("UserId", response.data._id);
+    if (success) {
+    if (data.data && data.data.access_token && data.data._id) {
+      localStorage.setItem("accessToken", data.data.access_token);
+      localStorage.setItem("UserId", data.data._id);
       console.log(
         "Access token and UserId set successfully:",
-        response.data.access_token
+        data.data.access_token
       );
       openNotificationWithIcon("success", "Login successful");
       router.push({ name: "Index" });
@@ -83,8 +81,21 @@ const logInUser = async () => {
       text: "Login successfully.",
     });
     } else {
-      console.log("Access token not found in the response:", response.data);
+      console.log("Access token not found in the data:", data.data);
       openNotificationWithIcon("error", "Error during login");
+    }}else {
+      // Handle signup failure
+      console.error("Error During Profile Creation:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error During Profile creation",
+        text: error || "An error occurred while creating the Profile.",
+      });
+      if (error === "Your subscription plan has expired. Please update your plan.") {
+        router.push("/subscription");
+      } else {
+        openNotificationWithIcon("error", error);
+      }
     }
   } catch (error) {
     // Handle errors

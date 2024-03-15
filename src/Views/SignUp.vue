@@ -82,7 +82,6 @@ const validateFields = () => {
 };
 
 const signUpUser = async () => {
-  // signUpClicked.value = true; 
   resetErrors();
 
   // Validate fields before proceeding
@@ -91,52 +90,50 @@ const signUpUser = async () => {
   }
 
   try {
-    const response = await signUpUserApi(invoice.signupData);
-    invoice.updateUserData(response.data);
-    localStorage.setItem("UserId", response.data.data._id);
-    if (response.data && response.data.access_token && response.data.data._id) {
-      localStorage.setItem("accessToken", response.data.access_token);
-      localStorage.setItem("UserId", response.data.data._id);
-      // console.log(
-      //   "Access token and UserId set successfully:",
-      //   response.data.access_token
-      // );
-      invoice.signupData.username="";
-      invoice.signupData.email="";
-      invoice.signupData.password="";
-      router.push({ name: "Index" });
-      Swal.fire({
-      icon: "success",
-      title: " SignUp ",
-      text: " SignUp successfully.",
-    });
+    const { success, data, error } = await signUpUserApi(invoice.signupData);
+    if (success) {
+      invoice.updateUserData(data);
+  localStorage.setItem("UserId", data.data.data_id);
+      // Handle successful signup
+
+      if (data.data && data.data.access_token && data.data.data._id) {
+        localStorage.setItem("accessToken", data.data.access_token);
+        localStorage.setItem("UserId", data.data.data._id);
+        invoice.signupData.$reset;
+        router.push({ name: "Accounts" });
+        Swal.fire({
+          icon: "success",
+          title: "Profile Created",
+          text: data.message || "Profile has been Created successfully.",
+        });
+      } else {
+        console.error("Incomplete response data:", data);
+        openNotificationWithIcon("error", "Incomplete response data received.");
+      }
     } else {
-      console.log("Access token not found in the response:", response.data.access_token);
+      // Handle signup failure
+      console.error("Error During Profile Creation:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error During Profile creation",
+        text: error || "An error occurred while creating the Profile.",
+      });
+      if (error === "Your subscription plan has expired. Please update your plan.") {
+        router.push("/subscription");
+      } else {
+        openNotificationWithIcon("error", error);
+      }
     }
-    router.push("/accounts");
-    //console.log("SignUp successful. User data:", response.data);
-
-    // Show success notification
-    openNotificationWithIcon("success", "Sign up successful");
   } catch (error) {
-    console.error("Error during SignUp:", error);
-    let errorMessage =
-      "An error occurred during signUp ";
-    if (error.response && error.response.data && error.response.data.message) {
-      errorMessage = error.response.data.message;
-    }
-    openNotificationWithIcon("error", errorMessage);
-    // Swal.fire({
-    //   icon: "error",
-    //   title: "Error",
-    //   text: errorMessage,
-    // });
-
-    // Show error notification
+    // Handle unexpected errors
+    console.error("Error During Profile creation:", error);
+    openNotificationWithIcon("error", "An error occurred while creating the Profile.");
+  } finally {
+    isLoading.value = false;
   }
 };
 
-// Function to open notification with icon
+
 const openNotificationWithIcon = (type, message) => {
   notification[type]({
     message: type === "success" ? "Success" : "Error",
@@ -144,6 +141,7 @@ const openNotificationWithIcon = (type, message) => {
     duration: 3, 
   });
 };
+
 </script>
 
 

@@ -399,7 +399,7 @@ const fontSize = "12px";
                 <p class="text-left ml-2">Currency</p>
                 <a-select
                   v-model:value="invoice.userClientProfile.clientDataindividual.currency"
-                  class="w-full text-left"
+                  class="w-full text-left" size="large"
                 >
                   <a-select-option
                     v-for="currency in invoice.currencyOptions"
@@ -415,7 +415,7 @@ const fontSize = "12px";
                 <p class="text-left ml-2">Language</p>
                 <a-select 
                   v-model:value="invoice.userClientProfile.clientDataindividual.language"
-                  class=" w-full text-left"
+                  class=" w-full text-left" size="large"
                 >
                   <a-select-option
                     v-for="language in invoice.languageOptions"
@@ -472,7 +472,7 @@ const fontSize = "12px";
                 <a-select
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.country
-                  "
+                  " size="large"
                   class=""
                 >
                   <a-select-option
@@ -550,7 +550,6 @@ const fontSize = "12px";
                 <p class="justify-start flex">Notes</p>
                 <a-textarea
                   v-model:value="invoice.userClientProfile.clientDataindividual.notes"
-                  rows=4
                   type="text"
                   class="w-full border p-2"
                 />
@@ -621,9 +620,9 @@ const fontSize = "12px";
               <div>
                 <div>
                   <p class="text-left ml-4">Currency</p>
-                  <a-select style="text-align: left;"
+                  <a-select 
                     v-model:value="invoice.userClientProfile.clientDataindividual.currency"
-                    class="ml-2 w-full"
+                    class="ml-2 w-full text-left" size="large"
                   >
                     <a-select-option
                       v-for="currency in invoice.currencyOptions"
@@ -637,9 +636,9 @@ const fontSize = "12px";
                 <hr class="mb-2 mt-8" />
                 <div class="">
                   <p class="text-left ml-4">Language</p>
-                  <a-select style="text-align: left;"
+                  <a-select 
                     v-model:value="invoice.userClientProfile.clientDataindividual.language"
-                    class="ml-2 w-full"
+                    class="ml-2 w-full text-left" size="large"
                   >
                     <a-select-option
                       v-for="language in invoice.languageOptions"
@@ -710,9 +709,9 @@ const fontSize = "12px";
               </div>
               <div class="">
                 <p class="text-left ml-4"><span class="text-[#ff0000]">*</span>Country</p>
-                <a-select style="text-align: left;"
+                <a-select 
                   v-model:value="invoice.userClientProfile.clientDataindividual.country"
-                  class="ml-2 w-full"
+                  class="ml-2 w-full text-left" size="large"
                 >
                   <a-select-option
                     v-for="country in invoice.countryOptions"
@@ -758,7 +757,6 @@ const fontSize = "12px";
                 <p class="justify-start flex">Notes</p>
                 <a-textarea
                   v-model:value="invoice.userClientProfile.clientDataindividual.notes"
-                  rows=4
                   type="text"
                   class="w-full border p-2"
                 />

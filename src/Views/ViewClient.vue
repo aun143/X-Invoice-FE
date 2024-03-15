@@ -125,7 +125,7 @@ const fontSize = "12px";
     :onDropdownItemClick="handleDropdownItemClickParent"
   />
 </div>
-  <div class="modal-content max-h-full flex max-w-[800px] px-4 pt-4 justify-start">
+  <div class="modal-content max-h-full flex max-w-[100%] px-4 pt-4 justify-start">
       <div class="flex">
         <div class="w-full p-8 lg:w-[70%] 2xl:w-[100%] xl:w-[80%] bg-white">
           <div class="flex"><div class="logo-placeholder mb-4 border-none cursor-pointer  border-2 grid ">
@@ -149,7 +149,7 @@ const fontSize = "12px";
                 <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Organization Name</p>
               <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.organizationName }}</span></div>
               </div>
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-2 gap-4 mt-2">
                 <div>
                   <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>First Name</p>
                   <div class="border rounded-lg text-left py-2 "><span class="ml-2">{{ invoice.userClientProfile.clientDataindividual.firstName }}</span></div>
@@ -242,8 +242,6 @@ const fontSize = "12px";
                 <p class="justify-start flex mt-4">Notes</p>
                 <div class="border rounded-lg text-left py-2 "><span class="ml-2 ">{{ invoice.userClientProfile.clientDataindividual.notes }}</span></div>
 
-
-                <hr class="mt-4" />
                 
               </div>
             </div>
@@ -289,7 +287,7 @@ const fontSize = "12px";
               <div>
                 <div>
                   <p class="text-left ml-4">Currency</p>
-                  <a-select readonly  style="text-align: left;"
+                  <a-select readonly  style="text-align: left;" size="large"
                     v-model:value="invoice.userClientProfile.clientDataOrganization.currency"
                     class="ml-2 w-full"
                   >
@@ -352,9 +350,9 @@ const fontSize = "12px";
             <div class="flex justify-between items-center mt-3">
               <div class="">
     <p class="text-left"> <span class="text-[#ff0000]">*</span>Country</p>
-    <a-select style="text-align: left;" readonly
+    <a-select  readonly size="large"
       v-model:value="invoice.userClientProfile.clientDataOrganization.country"
-      class="mr-2 "
+      class="mr-2 text-left "
     >
       <a-select-option
         v-for="country in invoice.countryOptions"
@@ -425,7 +423,6 @@ const fontSize = "12px";
                 <p class="justify-start flex">Notes</p>
                 <a-textarea readonly
                   v-model:value="invoice.userClientProfile.clientDataOrganization.notes"
-                  rows= 4
                   type="text"
                   class="w-full border p-2"
                   style="resize: none;" 

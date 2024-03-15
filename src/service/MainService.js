@@ -1,44 +1,11 @@
-import { defineStore } from "pinia";
 import {BASE_URL} from "../utils/config";
 
-export const useInvoiceService = defineStore("InvoiceService", {
-  state: () => ({}),
+// export const useInvoiceService = defineStore("InvoiceService", {
+  // state: () => ({}),
 
-  actions: {
-    async postInvoiceData(data) {
-      const token = localStorage.getItem("accessToken");
-      try {
-        const response = await fetch(
-          `${BASE_URL}/invoice/createInvoice`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(data),
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({})); // Try to parse error response
-          console.error("Error Data:", errorData);
-          throw new Error(
-            `Failed to post data to the API. ${response.status}: ${
-              errorData.message || "Unknown error"
-            }`
-          );
-        }
-
-        const responseData = await response.json();
-        console.log("API Response:", responseData);
-        return responseData;
-      } catch (error) {
-        console.error("Error posting data to the API:", error);
-        throw error;
-      }
-    },
+  // actions: {
     // async postInvoiceData(data) {
+    //   const token = localStorage.getItem("accessToken");
     //   try {
     //     const response = await fetch(
     //       `${BASE_URL}/invoice/createInvoice`,
@@ -51,57 +18,77 @@ export const useInvoiceService = defineStore("InvoiceService", {
     //         body: JSON.stringify(data),
     //       }
     //     );
-    
-    //     const responseData = await response.json();
-    
+
     //     if (!response.ok) {
-    //       throw new Error(responseData.message || 'Failed to create client.');
+    //       const errorData = await response.json().catch(() => ({})); // Try to parse error response
+    //       console.error("Error Data:", errorData);
+    //       throw new Error(
+    //         `Failed to post data to the API. ${response.status}: ${
+    //           errorData.message || "Unknown error"
+    //         }`
+    //       );
     //     }
-    
-    //     return { success: true, data: responseData };
+
+    //     const responseData = await response.json();
+    //     console.log("API Response:", responseData);
+    //     return responseData;
     //   } catch (error) {
-    //     return { success: false, error: error.message || 'An error occurred while creating the client.' };
+    //     console.error("Error posting data to the API:", error);
+    //     throw error;
     //   }
     // },
-
-    async updateInvoiceData(Id, updatedData) {
+    export const postInvoiceData = async (data) => {
       try {
-        // const token = localStorage.getItem("accessToken");
-
-        // console.log("accessTokeniS tHIS><><", accessToken);
-        // console.log("Id is This", Id);
+        const token = localStorage.getItem("accessToken");
+        const response = await fetch(
+          `${BASE_URL}/invoice/createInvoice`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        
+        const responseData = await response.json();
+        
+        if (!response.ok) {
+          return { success: false, error: responseData.message || 'Failed to create invoice.' };
+        }
+        
+        return { success: true, data: responseData };
+      } catch (error) {
+        return { success: false, error: error.message || 'A error occurred while creating the invoice.' };
+      }
+    };
+    export const updateInvoiceData = async (Id, updatedData) => {
+      try {
         const response = await fetch(
           `${BASE_URL}/invoice/updateInvoice/${Id}`,
           {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
-              // Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(updatedData),
           }
         );
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          console.error("Error Data:", errorData);
-          throw new Error(
-            `Failed to update invoice. ${response.status}: ${
-              errorData.message || "Unknown error"
-            }`
-          );
-        }
-
+    
         const responseData = await response.json();
-        console.log("API Response:", responseData);
-        return responseData;
+    
+        if (!response.ok) {
+          throw new Error(responseData.message || 'Failed to update invoice.');
+        }
+    
+        return { success: true, data: responseData };
       } catch (error) {
-        console.error("Error updating invoice:", error);
-        throw error;
+        return { success: false, error: error.message || 'An error occurred while updating the invoice.' };
       }
-    },
-  },
-});
+    };
+    
+
 
 // BusinessProfileService.js
 
