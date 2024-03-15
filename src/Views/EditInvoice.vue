@@ -259,9 +259,9 @@ const calculateUpcomingDueDate = () => {
     invoice.formData.invoiceDueDate = null;
   }
 };
-watch(invoice.formData, (newValue) => {
- invoice.updateFormData(newValue);
-});
+// watch(invoice.formData, (newValue) => {
+//  invoice.updateFormData(newValue);
+// });
  </script>
 <template>
 <div v-if="isLoading">

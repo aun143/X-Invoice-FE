@@ -51,22 +51,9 @@ onMounted(async () => {
     invoices.value = invoicesWithReceiverNames;
 
     if (success) {
-      if (Array.isArray(data)) {
-        Swal.fire({
-          icon: "success",
-          title: "All Invoices Get",
-          text: data.message || "All Invoices Get Successfully.",
-        });
-      } else {
-        console.error("Data received is not an array:", data);
-        Swal.fire({
-          icon: "error",
-          title: "Error During Invoice get",
-          text: "Unexpected data format received from the server.",
-        });
-      }
+    
+      console.log("Success During Invoice get:", success);
     } else {
-      console.error("Error During Invoice get:", error);
       Swal.fire({
         icon: "error",
         title: "Error During Invoice get",
@@ -85,7 +72,13 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
-
+const openNotificationWithIcon = (type, message) => {
+  notification[type]({
+    message: type === "success" ? "Success" : "Error",
+    description: message,
+    duration: 3, 
+  });
+};
 const sortedInvoices = computed(() => {
   if (!invoices.value) {
     return [];
@@ -133,7 +126,7 @@ const dropdownItems = [{ title: "Create Invoice" }, { title: "Create Client" }];
 
 const handleDropdownItemClickParent = (clickedItem) => {
   if (clickedItem.title === "Create Invoice") {
-    invoice.resetFormData();
+    invoice.formData.$reset;
     router.push("/new");
   } else if (clickedItem.title === "Create Client") {
     router.push("/Client");

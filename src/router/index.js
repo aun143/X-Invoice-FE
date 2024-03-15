@@ -16,6 +16,7 @@ import EditInvoice from "../Views/EditInvoice.vue";
 import SendInvoice from "../Views/SendInvoice.vue";
 import Subscription from "../Views/Subscription.vue";
 import DashBoard from "../Views/DashBoard.vue";
+import CreateInvoice from "../Views/CreateInvoice.vue";
 
 const routes = [
   { path: "/", redirect: "/Index" },
@@ -60,6 +61,11 @@ const routes = [
     name: "BusinessProfile",
     path: "/BusinessProfile",
     component: BusinessProfile,
+    meta: { public: false },
+  },{
+    name: "CreateInvoice",
+    path: "/CreateInvoice",
+    component: CreateInvoice,
     meta: { public: false },
   },
   {
