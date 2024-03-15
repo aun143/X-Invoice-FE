@@ -166,7 +166,6 @@ const formatDate = (dateString) => {
   </div>
 
   <div class="bg-gray-200 h-[max-content]" v-else>
-    {{ invoice.formData }}
 
     <div class="bg-white">
       <Header
@@ -279,11 +278,11 @@ const formatDate = (dateString) => {
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Date</p>
-              <div class="text-left">{{ invoice.formData.date }}</div>
+              <div class="text-left">{{ invoice.formData.date .toLocaleDateString() }}</div>
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Invoice Due</p>
-              <div class="text-left">{{ invoice.formData.invoiceDueDate }}</div>
+              <div class="text-left">{{ invoice.formData.invoiceDueDate .toLocaleDateString() }}</div>
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Purchase order Number</p>
