@@ -28,16 +28,16 @@ const router = useRouter();
 const invoiceId = route.params.id;
 const invoice = useInvoiceStore();
 const isLoadingImg = ref(false);
-// watchEffect(() => {
-//   const unwatch = watch(invoice.formData, (newValue, oldValue) => {
-//     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-//       invoice.updateFormData(newValue);
-//     }
-//   }, { deep: true });
+watchEffect(() => {
+  const unwatch = watch(invoice.formData, (newValue, oldValue) => {
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      invoice.updateFormData(newValue);
+    }
+  }, { deep: true });
 
-//   // Cleanup function to stop watching when component is unmounted
-//   // onUnmounted(unwatch);
-// });
+  // Cleanup function to stop watching when component is unmounted
+  // onUnmounted(unwatch);
+});
 
 const invoiceSubmit = async () => {
   if (isLoadingImg.value) {

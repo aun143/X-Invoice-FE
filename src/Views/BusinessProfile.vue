@@ -416,12 +416,12 @@ const displayImage = (input, imageUrl) => {
           Looking to Change your account Logo and Branding?
           <a @click="logo" class="cursor-pointer"> Account Customization</a>
         </div> -->
-        <hr class="mb-4 mt-4" />
+        <hr class="my-4" />
         <br />
         <!-- <transition name="fade" mode="out-in"> -->
         <div v-if="profileType === 'individual'" :key="1">
           <div class="mb-4">
-            <div class="bg-[lightgray] pt-2 pb-2">
+            <div class="bg-[lightgray] py-2">
               <label class="flex font-bold mb-2 ml-4 mt-2 c"
                 >Personal Information
               </label>
@@ -487,11 +487,10 @@ const displayImage = (input, imageUrl) => {
             </div>
           </div>
 
-          <div class="mb-12 mt-10 flex flex-col">
+          <div class="">
             <div class="bg-[lightgray] pt-2 pb-2">
               <label class="flex font-bold mb-2 ml-4 mt-2 c"> Address</label>
             </div>
-            <br /><br />
             <div class="grid grid-cols-2 gap-4">
               <div class="col-span-2">
                 <div class="flex">
@@ -587,9 +586,9 @@ const displayImage = (input, imageUrl) => {
             </div>
           </div>
 
-          <div class="mb-">
+          <div class="my-4 flex flex-col">
             <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-2 c">
+              <label class="flex font-bold mb-2 ml-4 mt-2 ">
                 Additional Information
               </label>
             </div>
@@ -671,9 +670,9 @@ const displayImage = (input, imageUrl) => {
         </div>
 
         <div v-else-if="profileType === 'organization'" :key="2">
-          <div class="mb-4">
-            <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-2 c">
+          <div class="">
+            <div class="bg-[lightgray] py-2">
+              <label class="flex font-bold ml-4 my-2 c">
                 Personal Information
               </label>
             </div>
@@ -749,7 +748,7 @@ const displayImage = (input, imageUrl) => {
             </div>
           </div>
 
-          <div class="mb-12 mt-10 flex flex-col">
+          <div class="my-4 flex flex-col">
             <div class="bg-[lightgray] pt-2 pb-2">
               <label class="flex font-bold mb-2 ml-4 mt-2 c"> Address</label>
             </div>
@@ -847,7 +846,7 @@ const displayImage = (input, imageUrl) => {
               </div>
             </div>
           </div>
-        </div>
+       
 
         <div class="mb-">
           <div class="bg-[lightgray] pt-2 pb-2">
@@ -933,7 +932,8 @@ const displayImage = (input, imageUrl) => {
               @click="addNewLine()"
             />
           </div> -->
-      </div>
+      </div> 
+    </div>
       <!-- </transition> -->
       <!-- <button class="bg-orange-500 text-white py-2 px-4 rounded">Submit</button> -->
     </div>

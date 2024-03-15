@@ -105,7 +105,7 @@ onMounted(async () => {
     businessId.value = invoiceDetails.sender._id;
     clientId.value = invoiceDetails.receiver;
     const clientResponse = await getSingleClient(clientId.value);
-    clientDetails.value = clientResponse; 
+    clientDetails.value = clientResponse.data; 
   
     
     // Update the client name in the form data
@@ -208,7 +208,7 @@ const formatDate = (dateString) => {
             </div>
           </div>
           
-            <div class=" w-48 mt-4 lg:ml-[35%] md:ml-[20%] 2xl:ml-[20%] h-auto flex  justify-end items-end ">
+            <div class=" w-24 mt-4 lg:ml-[35%] md:ml-[20%] 2xl:ml-[20%] h-auto flex  justify-end items-end ">
     <img :src="imageUrl" alt="Logo" />
   </div>
 
@@ -264,7 +264,7 @@ const formatDate = (dateString) => {
           </div>
         </div>
 <br><hr><br>
-        <div class="flex max-w-[70%] lg:flex-row 2xl:flex-row xl:flex-row flex-col">
+        <div class="flex max-w-[55%] lg:flex-row 2xl:flex-row xl:flex-row flex-col px-4">
           <div class="w-full md:w-[50%]">
             <div class="text-left w-full font-semibold">Description</div>
             <textarea
@@ -340,11 +340,11 @@ const formatDate = (dateString) => {
               </div>
               <hr /> -->
   <div class=" flex flex-col max-w-full items-end">
-          <div class="flex justify-around w-[80%] 2xl:w-[100%] items-end">
+          <div class="flex justify-between w-[80%] 2xl:w-[100%] items-end">
             <div class="text-black flex">
               <span class="px-[4px] py-[10px] font-semibold border-black text-[12px] rounded"> SubTotal </span>
             </div>
-            <div class="pb-2 pt-4">
+            <div class="pb-2 pt-4 mr-8">
               {{ invoice.formData.subtotal }} {{ invoice.formData.currency }}
             </div>
             <!-- <div class="text-black">
@@ -354,7 +354,7 @@ const formatDate = (dateString) => {
             <!-- :value="getSubtotal()" -->
           </div>
 
-          <div class="flex justify-around w-[80%] 2xl:w-[100%] items-end">
+          <div class="flex justify-between w-[80%] 2xl:w-[100%] items-end">
            <div class="">
               <span
                 class="px-[6px] font-semibold py-[10px] border-black text-[12px] rounded"
@@ -369,13 +369,15 @@ const formatDate = (dateString) => {
                 Balance
               </span>
             </div>
-            <div class="pt-2">
+            <div class="pt-2 mr-8">
               {{ invoice.formData.total }} {{ invoice.formData.currency }}
             </div>
             <!-- lg:w-[53vw] 2xl:w-[53vw]  md:w-32 -->
           </div>
         </div>
+        
         <br />
+
 
         <div class="container flex">
           <div class="flex-left">
