@@ -30,8 +30,10 @@ async function updateFree() {
         icon: "success",
         title: " Plan Updated",
         text: " Plan has been Updated Successfully.",
+      }).then(() => {
+        // Fetch updated user data after plan update
+        getUserDetailsAndRedirect();
       });
-      router.push("/");
     } catch (error) {
       console.log("error", error);
       Swal.fire({
@@ -64,8 +66,10 @@ async function updateBasic() {
         icon: "success",
         title: " Plan Updated",
         text: " Plan has been Updated Successfully.",
+      }).then(() => {
+        // Fetch updated user data after plan update
+        getUserDetailsAndRedirect();
       });
-      router.push("/");
     } catch (error) {
       console.log("error", error);
       Swal.fire({
@@ -100,8 +104,10 @@ async function updateStandard() {
         icon: "success",
         title: " Plan Updated",
         text: " Plan has been Updated Successfully.",
+      }).then(() => {
+        // Fetch updated user data after plan update
+        getUserDetailsAndRedirect();
       });
-      router.push("/");
     } catch (error) {
       console.log("error", error);
       Swal.fire({
@@ -135,8 +141,10 @@ async function updatePremium() {
         icon: "success",
         title: " Plan Updated",
         text: " Plan has been Updated Successfully.",
+      }).then(() => {
+        // Fetch updated user data after plan update
+        getUserDetailsAndRedirect();
       });
-      router.push("/");
     } catch (error) {
       console.log("error", error);
       Swal.fire({
@@ -146,6 +154,25 @@ async function updatePremium() {
         footer: "Please try again ",
       });
     }
+  }
+}
+async function getUserDetailsAndRedirect() {
+  try {
+    const userId = localStorage.getItem("UserId");
+    const userProfileData = await getUserDetailsApi(userId);
+
+    // Update the user profile data with the fetched data
+    invoice.userProfileData.userRole = userProfileData;
+
+    // After updating user data, navigate to the root route ("/")
+    router.push("/");
+  } catch (error) {
+    console.error("Error Fetching User Details:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Error Fetching User Details. Please try again.",
+    });
   }
 }
 // Define functions to handle plan selection

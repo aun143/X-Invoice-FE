@@ -10,6 +10,7 @@ import { useInvoiceStore } from "../stores/index";
 import Swal from "sweetalert2";
 
 const showPassword = ref(false);
+const isLoading = ref(false);
 
 const invoice = useInvoiceStore();
 const computedClasses = {
@@ -38,6 +39,7 @@ const loginButtonClicked = ref(false);
 
 const logInUser = async () => {
   try {
+    isLoading.value=true;
       resetErrors();
     loginButtonClicked.value = true;
     if (!loginData.value.email.trim()) {
@@ -111,6 +113,8 @@ const logInUser = async () => {
     } else {
       errorMessage = error.message || "An error occurred during login";
     }
+  }finally{
+    isLoading = false;
   }
 };
 
@@ -273,7 +277,9 @@ const computedStyle = {
                   ><span class="text-blue-500"> Forgot Password?</span></router-link
                 >
               </div>
-            <div class="text-center mx-10 my-4">
+              <div v-if="isLoading"><a-spin size="large"></a-spin></div>
+            <div class="text-center mx-10 my-4"
+             v-else>
               <Button
                 :bgColor="Colors.orange"
                 :textColor="Colors.white"

@@ -7,7 +7,7 @@ import { Colors } from "../utils/color";
 import { signUpUserApi } from "../service/SignUpService";
 import Swal from "sweetalert2";
 import { useInvoiceStore } from "../stores/index";
-
+const isLoading =ref(false);
 const router = useRouter();
 const invoice = useInvoiceStore();
 const showPassword = ref(false);
@@ -90,6 +90,7 @@ const signUpUser = async () => {
   }
 
   try {
+    isLoading.value=true;
     const { success, data, error } = await signUpUserApi(invoice.signupData);
     if (success) {
       invoice.updateUserData(data);
@@ -294,8 +295,8 @@ const openNotificationWithIcon = (type, message) => {
           </div>
          
               <div class="flex flex-col ">
-                
-              <div class="text-center mx-10 my-4">
+                <div v-if="isLoading"><a-spin size="large"></a-spin></div>
+              <div class="text-center mx-10 my-4" v-else>
                 <Button
                 :bgColor="Colors.orange"
                 :textColor="Colors.white"

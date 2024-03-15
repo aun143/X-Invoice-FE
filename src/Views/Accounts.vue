@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 
 const invoice = useInvoiceStore();
 const proceedClicked = ref(false);
+const isLoading  = ref(false);
 const router = useRouter();
 const errors = {
   firstName: null,
@@ -110,6 +111,7 @@ const submit = async () => {
     return; 
   }
   try {
+    isLoading.value = true;
     //console.log("Stored id:", invoice.signupData.data._id);
     const userid = localStorage.getItem("UserId");
 
@@ -310,7 +312,7 @@ const computedClasses = {
              <div>{{  }}
               <p class="justify-start flex text-md font-medium"> <span class="text-[#ff0000]">*</span>Country:</p>
               <a-select 
-              size="large"
+              size="medium"
                 v-model:value="invoice.userProfileData.country"
                 class="w-full text-left"
               >
@@ -381,9 +383,9 @@ const computedClasses = {
 
            
           </div>
-
+<div v-if="isLoading "><a-spin size="large"></a-spin></div>
           <!-- <RouterLink to="/"> -->
-          <div class="text-xl mb-4">
+          <div class="text-xl mb-4" v-else>
             <Button
               :bgColor="Colors.orange"
               :textColor="Colors.white"

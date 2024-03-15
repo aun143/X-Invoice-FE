@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed, onMounted, watchEffect,onUnmounted } from "vue";
+import { ref, watch, computed, onMounted, watchEffect, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
@@ -29,11 +29,15 @@ const invoiceId = route.params.id;
 const invoice = useInvoiceStore();
 const isLoadingImg = ref(false);
 watchEffect(() => {
-  const unwatch = watch(invoice.formData, (newValue, oldValue) => {
-    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      invoice.updateFormData(newValue);
-    }
-  }, { deep: true });
+  const unwatch = watch(
+    invoice.formData,
+    (newValue, oldValue) => {
+      if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+        invoice.updateFormData(newValue);
+      }
+    },
+    { deep: true }
+  );
 
   // Cleanup function to stop watching when component is unmounted
   // onUnmounted(unwatch);
@@ -316,7 +320,7 @@ const BusinessProfile = async () => {
     // const invoice=useInvoiceStore();
     isLoading.value = true;
     const UserId = localStorage.getItem("UserId");
-    
+
     if (UserId) {
       const userProfileData = await getUserDetailsApi(UserId);
       //console.log("userProfileType >>>", invoice.selectedProfileType);
@@ -344,9 +348,9 @@ const BusinessProfile = async () => {
     console.error("Error getting account in Invoice", error);
   } finally {
     isLoading.value = false;
-  };
-}
-const ClientProfile=async ()=>{
+  }
+};
+const ClientProfile = async () => {
   try {
     invoice.resetFormData();
 
@@ -368,7 +372,7 @@ const ClientProfile=async ()=>{
   } finally {
     isLoading.value = false; // Set isLoading back to false after fetching data
   }
-}
+};
 onMounted(async () => {
   BusinessProfile();
   ClientProfile();
@@ -447,7 +451,6 @@ const validateDueDate = () => {
 // };
 const profileType = ref(invoice.selectedProfileType);
 
-
 const switchProfileType = (type) => {
   invoice.selectProfileType(type);
   profileType.value = type;
@@ -501,7 +504,7 @@ const switchProfileType = (type) => {
                   name=""
                   id=""
                   cols="60"
-                  row=2
+                  row="2"
                 ></a-textarea>
               </div>
             </div>
@@ -511,8 +514,9 @@ const switchProfileType = (type) => {
               <div
                 class="logo-placeholder hover:border-dashed border-none cursor-pointer rounded md:w-28 lg:w-48 h-32 border-2 grid place-items-center text-slate-500 text-5xl"
               >
-                <div v-if="isLoadingImg"><a-spin size="large"/></div>
-                <img v-else
+                <div v-if="isLoadingImg"><a-spin size="large" /></div>
+                <img
+                  v-else
                   id="imagePreview"
                   src="https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png"
                   class="logo w-32 rounded"
@@ -546,9 +550,11 @@ const switchProfileType = (type) => {
           <div class="flex items-end justify-end w-full">
             <div class="">
               <p class="text-left ml-4">Language</p>
-              <a-select size="medium"
+              <a-select
+                size="medium"
                 v-model:value="invoice.formData.language"
-                class="ml-2 lg:w-[200px] w-[150px] md:w-[130px] " style="text-align: left;"
+                class="ml-2 lg:w-[200px] w-[150px] md:w-[130px]"
+                style="text-align: left"
               >
                 <a-select-option
                   v-for="language in invoice.languageOptions"
@@ -560,9 +566,11 @@ const switchProfileType = (type) => {
             </div>
             <div>
               <p class="text-left ml-4">Currency</p>
-              <a-select size="medium"
+              <a-select
+                size="medium"
                 v-model:value="invoice.formData.currency"
-                class="ml-2 lg:w-[200px] w-[200px] md:w-[170px]" style="text-align: left;"
+                class="ml-2 lg:w-[200px] w-[200px] md:w-[170px]"
+                style="text-align: left"
               >
                 <a-select-option
                   v-for="currency in invoice.currencyOptions"
@@ -612,7 +620,7 @@ const switchProfileType = (type) => {
               <div class="ml-2 border rounded-lg">
                 <div
                   v-if="invoice.selectedProfileType === 'individual'"
-                  class=" pl-2 border-gray-100 rounded-2"
+                  class="pl-2 border-gray-100 rounded-2"
                 >
                   <!-- <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br> -->
                   <p class="">
@@ -652,7 +660,7 @@ const switchProfileType = (type) => {
                 </div>
                 <div
                   v-if="invoice.selectedProfileType === 'organization'"
-                  class=" pl-2 border-gray-300 rounded-2"
+                  class="pl-2 border-gray-300 rounded-2"
                 >
                   <p class="">
                     <span class="">
@@ -661,10 +669,8 @@ const switchProfileType = (type) => {
                     ><br />
 
                     <span v-if="invoice.formData.sender.organizationName"
-                      >{{
-                        invoice.formData.sender.organizationName
-                      }}<br></span
-                    >
+                      >{{ invoice.formData.sender.organizationName }}<br
+                    /></span>
                     <span v-if="invoice.formData.sender.firstName"
                       >{{ invoice.formData.sender.firstName }}&nbsp;</span
                     >
@@ -682,9 +688,9 @@ const switchProfileType = (type) => {
                     <span v-if="invoice.formData.sender.postalCode"
                       >{{ invoice.formData.sender.postalCode }}&nbsp;</span
                     >
-                    <span v-if="invoice.formData.sender.city">{{
-                      invoice.formData.sender.city
-                    }}&nbsp;</span>
+                    <span v-if="invoice.formData.sender.city"
+                      >{{ invoice.formData.sender.city }}&nbsp;</span
+                    >
                     <span v-if="invoice.formData.sender.state">{{
                       invoice.formData.sender.state
                     }}</span
@@ -702,7 +708,8 @@ const switchProfileType = (type) => {
               </p>
               <div class="justify-end flex w-full text-left">
                 <!-- <div  @click="toggleModal" class="">New Client</div> -->
-                <div type="primary"
+                <div
+                  type="primary"
                   class="text-[#10C0CB] cursor-pointer"
                   @click="showModal"
                 >
@@ -718,10 +725,12 @@ const switchProfileType = (type) => {
               </div>
             </div>
 
-            <a-select size="medium"
+            <a-select
+              size="medium"
               v-model:value="invoice.formData.receiver"
               class="ml-2 w-[100%]"
-              :loading="isLoading" style="text-align: left;"
+              :loading="isLoading"
+              style="text-align: left"
             >
               <a-select-option
                 v-for="client in filteredClients"
@@ -735,7 +744,9 @@ const switchProfileType = (type) => {
         <div class="flex flex-col items-end mt-4 ml-auto">
           <div class="flex items-end mb-2">
             <div>
-              <p class="w-4/5 mb-0 ml-1 text-start"><span class="text-[#ff0000]">*</span>Date</p>
+              <p class="w-4/5 mb-0 ml-1 text-start">
+                <span class="text-[#ff0000]">*</span>Date
+              </p>
               <a-input
                 type="Date"
                 v-model:value="invoice.formData.date"
@@ -842,10 +853,12 @@ const switchProfileType = (type) => {
                 type="number"
                 placeholder="0"
               />
-              <a-select size="large"
+              <a-select
+                size="large"
                 v-model:value="item.unit"
                 class="mt-1 mb-2 flex ml-6"
-                @change="() => handleUnitChange(index, item.unit)" style="text-align: left;"
+                @change="() => handleUnitChange(index, item.unit)"
+                style="text-align: left"
               >
                 <a-select-option
                   v-for="unit in invoice.unitOptions"
@@ -932,7 +945,7 @@ const switchProfileType = (type) => {
           <div class="text-left space-y-3">
             <div>
               <div class="flex w-full">
-                <p class="ml-1"> Invoice Notes<a href="#">(Default Note)</a></p>
+                <p class="ml-1">Invoice Notes<a href="#">(Default Note)</a></p>
               </div>
               <a-textarea
                 class="border-none"

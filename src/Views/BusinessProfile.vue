@@ -16,6 +16,7 @@ import { BASE_URL } from "../utils/config";
 import { uploadImage } from "../service/UploadImage";
 import { notification } from "ant-design-vue";
 const isLoading = ref(false);
+const isLoader = ref(false);
 const isLoadingImg = ref(false);
 const route = useRoute();
 const router = useRouter();
@@ -91,7 +92,7 @@ const submitbusinessProfileDataOrganization = async (id) => {
     return;
   }
   try {
-
+    isLoader.value = true;
     const { success, data, error } = await PatchBusinessProfilerOrganizationApi(
       invoice.userProfileData.organizationProfile._id,
       invoice.userProfileData.organizationProfile
@@ -99,7 +100,7 @@ const submitbusinessProfileDataOrganization = async (id) => {
 
     if (success) {
       router.push("/");
-    invoice.updateUserProfileAndBusinessProfile(data.data);
+      invoice.updateUserProfileAndBusinessProfile(data.data);
 
       Swal.fire({
         icon: "success",
@@ -113,7 +114,9 @@ const submitbusinessProfileDataOrganization = async (id) => {
         title: "Error During Profile Updation",
         text: error || "An error occurred while Updating the Profile.",
       });
-      if (error === "Your subscription plan has expired. Please update your plan.") {
+      if (
+        error === "Your subscription plan has expired. Please update your plan."
+      ) {
         router.push("/subscription");
       } else {
         openNotificationWithIcon("error", error);
@@ -121,9 +124,12 @@ const submitbusinessProfileDataOrganization = async (id) => {
     }
   } catch (error) {
     console.error("Error During Profile Updation:", error);
-    openNotificationWithIcon("error", "An error occurred while Updating the Profile.");
+    openNotificationWithIcon(
+      "error",
+      "An error occurred while Updating the Profile."
+    );
   } finally {
-    isLoading.value = false;
+    isLoader.value = false;
   }
 };
 
@@ -133,42 +139,45 @@ const submitbusinessProfileDataindividual = async (Id) => {
     return;
   }
   try {
-
-const { success, data, error } = await PatchBusinessProfilerIndiviualApi(
+    const { success, data, error } = await PatchBusinessProfilerIndiviualApi(
       invoice.userProfileData.individualProfile._id,
       invoice.userProfileData.individualProfile
     );
 
-if (success) {
-  router.push("/");
-  invoice.updateUserProfileAndBusinessProfile(data.data);
+    if (success) {
+      router.push("/");
+      invoice.updateUserProfileAndBusinessProfile(data.data);
 
-  Swal.fire({
-    icon: "success",
-    title: "Profile Updated",
-    text: data.message || "Profile has been Updated successfully.",
-  });
-} else {
-  console.error("Error During Profile organization:", error);
-  Swal.fire({
-    icon: "error",
-    title: "Error During Profile Updation",
-    text: error || "An error occurred while Updating the Profile.",
-  });
-  if (error === "Your subscription plan has expired. Please update your plan.") {
-    router.push("/subscription");
-  } else {
-    openNotificationWithIcon("error", error);
+      Swal.fire({
+        icon: "success",
+        title: "Profile Updated",
+        text: data.message || "Profile has been Updated successfully.",
+      });
+    } else {
+      console.error("Error During Profile organization:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error During Profile Updation",
+        text: error || "An error occurred while Updating the Profile.",
+      });
+      if (
+        error === "Your subscription plan has expired. Please update your plan."
+      ) {
+        router.push("/subscription");
+      } else {
+        openNotificationWithIcon("error", error);
+      }
+    }
+  } catch (error) {
+    console.error("Error During Profile organization:", error);
+    openNotificationWithIcon(
+      "error",
+      "An error occurred while Updating the Profile."
+    );
+  } finally {
+    isLoading.value = false;
   }
-}
-} catch (error) {
-console.error("Error During Profile organization:", error);
-openNotificationWithIcon("error", "An error occurred while Updating the Profile.");
-} finally {
-isLoading.value = false;
-}
 };
-
 
 onMounted(async () => {
   try {
@@ -317,6 +326,7 @@ const displayImage = (input, imageUrl) => {
   <div v-else class="bg-gray-200 h-[max-content]">
     <div class="bg-white">
       <Header
+        :isLoader="isLoader"
         headerTitle="Business Profile"
         backButtonText="&nbsp &lt Back &nbsp  &nbsp"
         backRoute="Invoice"
@@ -572,11 +582,12 @@ const displayImage = (input, imageUrl) => {
                     <p class="justify-start flex">
                       <span class="text-[#ff0000]">*</span>Country
                     </p>
-                    <a-select v-model:value="
+                    <a-select
+                      v-model:value="
                         invoice.userProfileData.individualProfile.country
                       "
                       size="large"
-                      class="w-full  text-left"
+                      class="w-full text-left"
                     >
                       <a-select-option
                         v-for="country in invoice.countryOptions"
@@ -594,7 +605,7 @@ const displayImage = (input, imageUrl) => {
 
           <div class="my-4 flex flex-col">
             <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-2 ">
+              <label class="flex font-bold mb-2 ml-4 mt-2">
                 Additional Information
               </label>
             </div>
@@ -835,7 +846,8 @@ const displayImage = (input, imageUrl) => {
                       style="text-align: left"
                       v-model:value="
                         invoice.userProfileData.organizationProfile.country
-                      " size="large"
+                      "
+                      size="large"
                       class="w-full"
                     >
                       <a-select-option
@@ -851,83 +863,81 @@ const displayImage = (input, imageUrl) => {
               </div>
             </div>
           </div>
-       
 
-        <div class="mb-">
-          <div class="bg-[lightgray] pt-2 pb-2">
-            <label class="flex font-bold mb-2 ml-4 mt-2 c">
-              Additional Information
-            </label>
+          <div class="mb-">
+            <div class="bg-[lightgray] pt-2 pb-2">
+              <label class="flex font-bold mb-2 ml-4 mt-2 c">
+                Additional Information
+              </label>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-2">
+              <div>
+                <p class="justify-start flex">Phone Number</p>
+                <a-input
+                  v-model:value="
+                    invoice.userProfileData.organizationProfile.phone
+                  "
+                  type="text"
+                  class="w-full p-2"
+                />
+              </div>
+              <div>
+                <p class="justify-start flex">Fax Number</p>
+                <a-input
+                  v-model:value="
+                    invoice.userProfileData.organizationProfile.faxNumber
+                  "
+                  type="number"
+                  class="w-full p-2"
+                />
+              </div>
+              <div>
+                <p class="justify-start flex">Tax Identification Number</p>
+                <a-input
+                  v-model:value="
+                    invoice.userProfileData.organizationProfile.taxId
+                  "
+                  type="number"
+                  class="w-full p-2"
+                />
+              </div>
+              <div>
+                <p class="justify-start flex">Notes</p>
+                <a-textarea
+                  v-model:value="
+                    invoice.userProfileData.organizationProfile.notes
+                  "
+                  type="text"
+                  class="w-full p-2"
+                />
+              </div>
+            </div>
+            <hr clas="" />
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <div>
+                <p class="justify-start flex">Custom Field</p>
+                <a-input
+                  v-model:value="
+                    invoice.userProfileData.organizationProfile.customFieldName
+                  "
+                  type="text"
+                  class="w-full p-2"
+                  placeholder="Custom Field Name"
+                />
+              </div>
+              <div>
+                <a-input
+                  v-model:value="
+                    invoice.userProfileData.organizationProfile.customFieldValue
+                  "
+                  type="text"
+                  class="w-full p-2 mt-5"
+                  placeholder="Custom Field Value"
+                />
+              </div>
+            </div>
           </div>
-          <div class="grid grid-cols-2 gap-4 mb-2">
-            <div>
-              <p class="justify-start flex">Phone Number</p>
-              <a-input
-                v-model:value="
-                  invoice.userProfileData.organizationProfile.phone
-                "
-                type="text"
-                class="w-full p-2"
-              />
-            </div>
-            <div>
-              <p class="justify-start flex">Fax Number</p>
-              <a-input
-                v-model:value="
-                  invoice.userProfileData.organizationProfile.faxNumber
-                "
-                type="number"
-                class="w-full p-2"
-              />
-            </div>
-            <div>
-              <p class="justify-start flex">Tax Identification Number</p>
-              <a-input
-                v-model:value="
-                  invoice.userProfileData.organizationProfile.taxId
-                "
-                type="number"
-                class="w-full p-2"
-              />
-            </div>
-            <div>
-              <p class="justify-start flex">Notes</p>
-              <a-textarea
-                v-model:value="
-                  invoice.userProfileData.organizationProfile.notes
-                "
-             
-                type="text"
-                class="w-full p-2"
-              />
-            </div>
-          </div>
-          <hr clas="" />
-          <div class="grid grid-cols-2 gap-4 mt-2">
-            <div>
-              <p class="justify-start flex">Custom Field</p>
-              <a-input
-                v-model:value="
-                  invoice.userProfileData.organizationProfile.customFieldName
-                "
-                type="text"
-                class="w-full p-2"
-                placeholder="Custom Field Name"
-              />
-            </div>
-            <div>
-              <a-input
-                v-model:value="
-                  invoice.userProfileData.organizationProfile.customFieldValue
-                "
-                type="text"
-                class="w-full p-2 mt-5"
-                placeholder="Custom Field Value"
-              />
-            </div>
-          </div>
-        </div>
-        <!-- <div style="text-align: left; margin-left: 10px; margin-top: 10px">
+          <!-- <div style="text-align: left; margin-left: 10px; margin-top: 10px">
             <Button
               :bgColor="Colors.addMore"
               :textColor="Colors.white"
@@ -937,8 +947,8 @@ const displayImage = (input, imageUrl) => {
               @click="addNewLine()"
             />
           </div> -->
-      </div> 
-    </div>
+        </div>
+      </div>
       <!-- </transition> -->
       <!-- <button class="bg-orange-500 text-white py-2 px-4 rounded">Submit</button> -->
     </div>
