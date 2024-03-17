@@ -31,7 +31,7 @@ const dropdownItems = [
 ];
 
 const isLoading = ref(false);
-const businessId = ref("");
+const business = ref("");
 const clientId = ref("");
 
 const changeStatus = async () => {
@@ -41,16 +41,31 @@ const changeStatus = async () => {
     const updateData = {
       paymentStatus: "Paid",
     };
-    const status = await updateInvoiceStatus(invoiceId, updateData);
-    router.push("/");
-    Swal.fire({
-      icon: "success",
-      title: " Invoice PaymentStatus Updated ",
-      text: " Invoice PaymentStatus has been Updated successfully.",
-    });
-    //console.log("Status updated successfully:", status);
+    const { success, data, error } = await updateInvoiceStatus(invoiceId, updateData);
+
+    if (success) {
+      router.push("/");
+      Swal.fire({
+        icon: "success",
+        title: "Payment Method Updated",
+        text: data.message || "Payment Method has been updated successfully.",
+      });
+    } else {
+      console.error("Error During Payment Method updation:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error During Payment Method Updation",
+        text: error || "An error occurred while updating the Payment Method.",
+      });
+      if (error === "Your subscription plan has expired. Please update your plan.") {
+        router.push("/subscription");
+      } else {
+        openNotificationWithIcon("error", error);
+      }
+    }
   } catch (error) {
-    console.error("Error updating invoice status:", error);
+    console.error("Error During Payment Method Updation:", error);
+    openNotificationWithIcon("error", "An error occurred while updating the Payment Method.");
   } finally {
     isLoading.value = false;
   }
@@ -63,16 +78,31 @@ const changeUnpaidStatus = async () => {
     const updateData = {
       paymentStatus: "Unpaid",
     };
-    const unpaidStatus = await updateUnpaidInvoiceStatus(invoiceId, updateData);
-    router.push("/");
-    Swal.fire({
-      icon: "success",
-      title: " Invoice PaymentStatus Updated ",
-      text: " Invoice PaymentStatus has been Updated successfully.",
-    });
-    //console.log("Status updated successfully:", unpaidStatus);
+    const { success, data, error } = await updateUnpaidInvoiceStatus(invoiceId, updateData);
+
+    if (success) {
+      router.push("/");
+      Swal.fire({
+        icon: "success",
+        title: "Payment Method Updated",
+        text: data.message || "Payment Method has been updated successfully.",
+      });
+    } else {
+      console.error("Error During Payment Method updation:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error During Payment Method Updation",
+        text: error || "An error occurred while updating the Payment Method.",
+      });
+      if (error === "Your subscription plan has expired. Please update your plan.") {
+        router.push("/subscription");
+      } else {
+        openNotificationWithIcon("error", error);
+      }
+    }
   } catch (error) {
-    console.error("Error updating invoice status:", error);
+    console.error("Error During Payment Method Updation:", error);
+    openNotificationWithIcon("error", "An error occurred while updating the Payment Method.");
   } finally {
     isLoading.value = false;
   }
@@ -93,24 +123,25 @@ const deleteInvoicee = async () => {
     console.error("Error deleting invoice:", error);
   }
 };
+const invoiceDetails = ref("");
 const imageUrl = computed(() => {
-  return invoice.formData.url
-    ? invoice.formData.url
+  return invoiceDetails.value.url
+    ? invoiceDetails.value.url
     : "https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png";
 });
 onMounted(async () => {
   try {
     isLoading.value = true;
     const response = await getSingleInvoice(invoiceId);
-    const invoiceDetails = response;
-    businessId.value = invoiceDetails.sender._id;
-    clientId.value = invoiceDetails.receiver;
+    invoiceDetails.value = response;
+    console.log("response", response);
+    business.value = invoiceDetails.value.sender;
+    // console.log("invoiceDetails.sender._id",invoiceDetails.value.sender._id)
+    clientId.value = invoiceDetails.value.receiver;
     const clientResponse = await getSingleClient(clientId.value);
     clientDetails.value = clientResponse.data;
-
-    // Update the client name in the form data
-    invoice.formData.receiver = clientDetails.value;
-    //console.log("invoice.formData.receiver",clientDetails.value)
+    console.log("clientDetails.value", clientDetails.value);
+    //console.log("invoiceDetails.receiver",clientDetails.value)
     invoice.updateFormData(invoiceDetails);
     logoPreview.value = invoiceDetails.logoPreview;
     //console.log("Invoice details fetched successfully:", invoiceDetails);
@@ -132,7 +163,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
     // url.port = "3010";
     url.pathname = "/api/pdf/X-Invoice";
     url.searchParams.append("clientId", clientId.value);
-    url.searchParams.append("businessId", businessId.value);
+    url.searchParams.append("businessId", business.value._id);
     url.searchParams.append("invoiceId", invoiceId);
     window.open(url.toString(), "_blank");
   } else if (clickedItem.title === "Edit") {
@@ -166,7 +197,6 @@ const formatDate = (dateString) => {
   </div>
 
   <div class="bg-gray-200 h-[max-content]" v-else>
-
     <div class="bg-white">
       <Header
         headerTitle="View Invoice"
@@ -194,20 +224,18 @@ const formatDate = (dateString) => {
                 class="px-[15px] py-[4px] rounded"
                 :class="{
                   'bg-[#10C0CB] text-white text-[12px] ':
-                    invoice.formData.paymentStatus === 'Paid',
+                    invoiceDetails.paymentStatus === 'Paid',
                   'bg-[#FFB74D] text-white text-[12px]':
-                    invoice.formData.paymentStatus === 'Unpaid',
+                    invoiceDetails.paymentStatus === 'Unpaid',
                   'bg-[#bababa] text-white text-[12px]':
-                    invoice.formData.paymentStatus === 'Draft',
+                    invoiceDetails.paymentStatus === 'Draft',
                 }"
               >
-                {{ invoice.formData.paymentStatus }}
+                {{ invoiceDetails.paymentStatus }}
               </span>
             </div>
             <div class="flex mt-2">
-              <strong class="text-xl">{{
-                invoice.formData.invoiceName
-              }}</strong>
+              <strong class="text-xl">{{ invoiceDetails.invoiceName }}</strong>
             </div>
           </div>
 
@@ -224,70 +252,81 @@ const formatDate = (dateString) => {
               <p class="">
                 <span class="">
                   Selected Profile Type:
-                  {{ invoice.formData.sender.profileType }} </span
+
+                  {{ business.profileType }} </span
                 ><br />
-                <span v-if="invoice.formData.sender.firstName"
-                  >{{ invoice.formData.sender.firstName }}&nbsp;</span
+                <span v-if="business.firstName"
+                  >{{ business.firstName }}&nbsp;</span
                 >
-                <span v-if="invoice.formData.sender.lastName">{{
-                  invoice.formData.sender.lastName
-                }}</span
-                ><br />
-                <span v-if="invoice.formData.sender.address1"
-                  >{{ invoice.formData.sender.address1 }}&nbsp;</span
+                <span v-if="business.lastName"
+                  >{{ business.lastName }}<br
+                /></span>
+                <span v-if="business.address1"
+                  >{{ business.address1 }}&nbsp;</span
                 >
-                <span v-if="invoice.formData.sender.address2">{{
-                  invoice.formData.sender.address2
-                }}</span
+                <span v-if="business.address2">{{ business.address2 }}</span
                 ><br />
-                <span v-if="invoice.formData.sender.postalCode"
-                  >{{ invoice.formData.sender.postalCode }}&nbsp;</span
-                >
-                <span v-if="invoice.formData.sender.city">{{
-                  invoice.formData.sender.city
-                }}</span>
-                <span v-if="invoice.formData.sender.state">{{
-                  invoice.formData.sender.state
-                }}</span
+                <span v-if="business.postalCode"
+                  >{{ business.postalCode }}&nbsp;
+                </span>
+                <span v-if="business.city">{{ business.city }}&nbsp;</span>
+                <span v-if="business.state">{{ business.state }}</span
                 ><br />
-                <span v-if="invoice.formData.sender.email">{{
-                  invoice.formData.sender.email
-                }}</span
-                ><br />
+                <span v-if="clientDetails.email"
+                  >{{ clientDetails.email }}<br
+                /></span>
               </p>
             </div>
             <br />
             <p class="font-semibold">To:</p>
 
             <div class="text-left">
-              {{ clientDetails.firstName }}
-              {{ clientDetails.lastName }}<br />
-              {{ clientDetails.address1 }}<br />
-              {{ clientDetails.postalCode }}
-              {{ clientDetails.city }}<br />
-              {{ clientDetails.state }}<br />
-              {{ clientDetails.country }}
+              <p class="">
+                <span v-if="clientDetails.firstName"
+                  >{{ clientDetails.firstName }}&nbsp;</span
+                >
+                <span v-if="clientDetails.lastName"
+                  >{{ clientDetails.lastName }}<br
+                /></span>
+                <span v-if="clientDetails.address1"
+                  >{{ clientDetails.address1 }}&nbsp;</span
+                >
+                <span v-if="clientDetails.address2">{{
+                  clientDetails.address2
+                }}</span
+                ><br />
+                <span v-if="clientDetails.postalCode"
+                  >{{ clientDetails.postalCode }}&nbsp;<br
+                /></span>
+                <span v-if="clientDetails.city"
+                  >{{ clientDetails.city }}&nbsp;</span
+                >
+                <span v-if="clientDetails.state">{{ clientDetails.state }}</span
+                ><br />
+                <span v-if="clientDetails.email">{{ clientDetails.email }}</span
+                ><br />
+              </p>
             </div>
           </div>
           <div
-            class="flex flex-col md:ml-[10%] lg:ml-[30%] xl:ml-[38%] 2xl:ml-[45%] mt-4"
+            class="flex flex-col md:ml-[10%] lg:ml-[30%] xl:ml-[38%] 2xl:ml-[40%] mt-4"
           >
             <div>
               <p class="font-semibold">Invoice No</p>
-              <div class="text-left">{{ invoice.formData.invoiceNumber }}</div>
+              <div class="text-left">{{ invoiceDetails.invoiceNumber }}</div>
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Date</p>
-              <div class="text-left">{{ invoice.formData.date .toLocaleDateString() }}</div>
+              <div class="text-left">{{ invoiceDetails.date }}</div>
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Invoice Due</p>
-              <div class="text-left">{{ invoice.formData.invoiceDueDate .toLocaleDateString() }}</div>
+              <div class="text-left">{{ invoiceDetails.invoiceDueDate }}</div>
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Purchase order Number</p>
               <div class="text-left">
-                {{ invoice.formData.purchaseOrderNumber }}
+                {{ invoiceDetails.purchaseOrderNumber }}
               </div>
             </div>
           </div>
@@ -301,7 +340,7 @@ const formatDate = (dateString) => {
           <div class="w-full md:w-[50%]">
             <div class="text-left w-full font-semibold">Description</div>
             <textarea
-              v-for="(item, index) in invoice.formData.items"
+              v-for="(item, index) in invoiceDetails.items"
               :key="index"
               disabled
               cols="50"
@@ -312,7 +351,7 @@ const formatDate = (dateString) => {
           <div class="w-full">
             <div class="flex w-full font-semibold">Quantity</div>
             <input
-              v-for="(item, index) in invoice.formData.items"
+              v-for="(item, index) in invoiceDetails.items"
               :key="index"
               disabled
               cols="60"
@@ -323,7 +362,7 @@ const formatDate = (dateString) => {
           <div class="w-full">
             <div class="flex w-full font-semibold">Rate</div>
             <input
-              v-for="(item, index) in invoice.formData.items"
+              v-for="(item, index) in invoiceDetails.items"
               :key="index"
               disabled
               cols="60"
@@ -339,7 +378,7 @@ const formatDate = (dateString) => {
           <div class="w-full">
             <div class="flex w-full font-semibold text-left">Amount</div>
             <input
-              v-for="(item, index) in invoice.formData.items"
+              v-for="(item, index) in invoiceDetails.items"
               :key="index"
               disabled
               cols="60"
@@ -367,9 +406,9 @@ const formatDate = (dateString) => {
                 />
               </div>
               <hr /> -->
-        <div class="flex flex-col max-w-full items-end xl:mr-20 2xl:mr-60">
+        <div class="flex flex-col max-w-full items-end xl:mr-20 2xl:mr-32">
           <div
-            class="flex justify-between xl:w-[70%] md:w-[75%] 2xl:w-[65%] items-end"
+            class="flex justify-between xl:w-[70%] md:w-[75%] 2xl:w-[70%] items-end"
           >
             <div class="text-black flex">
               <span
@@ -379,7 +418,7 @@ const formatDate = (dateString) => {
               </span>
             </div>
             <div class="pb-2 pt-4 mr-8">
-              {{ invoice.formData.subtotal }} {{ invoice.formData.currency }}
+              {{ invoiceDetails.subtotal }} {{ invoiceDetails.currency }}
             </div>
             <!-- <div class="text-black">
               <span class=""> Total </span>
@@ -389,25 +428,25 @@ const formatDate = (dateString) => {
           </div>
 
           <div
-            class="flex justify-between xl:w-[70%] md:w-[75%] 2xl:w-[65%] items-end"
+            class="flex justify-between xl:w-[70%] md:w-[75%] 2xl:w-[70%] items-end"
           >
             <div class="">
               <span
                 class="px-[6px] font-semibold py-[10px] border-black text-[12px] rounded"
                 :class="{
                   'bg-[#10C0CB] text-white  ':
-                    invoice.formData.paymentStatus === 'Paid',
+                    invoiceDetails.paymentStatus === 'Paid',
                   'bg-[#FFB74D] text-white':
-                    invoice.formData.paymentStatus === 'Unpaid',
+                    invoiceDetails.paymentStatus === 'Unpaid',
                   'bg-[#bababa] text-white':
-                    invoice.formData.paymentStatus === 'Draft',
+                    invoiceDetails.paymentStatus === 'Draft',
                 }"
               >
                 Balance
               </span>
             </div>
             <div class="pt-2 mr-8">
-              {{ invoice.formData.subtotal }} {{ invoice.formData.currency }}
+              {{ invoiceDetails.subtotal }} {{ invoiceDetails.currency }}
             </div>
             <!-- lg:w-[53vw] 2xl:w-[53vw]  md:w-32 -->
           </div>
@@ -422,8 +461,8 @@ const formatDate = (dateString) => {
                 <div class="flex w-full">
                   <p class="font-semibold">Invoice Notes :</p>
                 </div>
-                <!-- v-model="invoice.formData.notes" -->
-                <div>{{ invoice.formData.notes }}</div>
+                <!-- v-model="invoiceDetails.notes" -->
+                <div>{{ invoiceDetails.notes }}</div>
               </div>
             </div>
           </div>
@@ -431,8 +470,8 @@ const formatDate = (dateString) => {
         <hr class="mt-10" />
         <div class="flex">
           <div class="text-left mt-8 mb-8 font-semibold">Email :</div>
-          <div class="text-left mt-8 mb-8">
-            {{ invoice.formData.sender.email }}
+          <div class="text-left mt-8 mb-8 mx-2">
+            {{ business.email }}
           </div>
         </div>
       </form>

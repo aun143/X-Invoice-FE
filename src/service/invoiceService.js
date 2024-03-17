@@ -49,18 +49,17 @@ export const
       );
       // console.log("invoiveId", invoiceId);
 
-      if (!response.ok) {
-        const errorData = await response.json(); // Parse error response
-        console.error("Error response from server:", errorData);
-        throw new Error(`Failed to update invoice status for ID ${invoiceId}`);
+    const responseData = await response.json();
+        
+        if (!response.ok) {
+          return { success: false, error: responseData.message || 'Failed to create invoice.' };
+        }
+        
+        return { success: true, data: responseData };
+      } catch (error) {
+        return { success: false, error: error.message || 'A error occurred while creating the invoice.' };
       }
-
-      return response.json();
-    } catch (error) {
-      console.error("Error in updateInvoiceStatus service:", error);
-      throw new Error(`Error in updateInvoiceStatus service: ${error.message}`);
-    }
-  };
+    };
 
 export const updateUnpaidInvoiceStatus= async (invoiceId, updateData) => {
     try {
@@ -78,22 +77,17 @@ export const updateUnpaidInvoiceStatus= async (invoiceId, updateData) => {
         }
       );
 
-      if (!response.ok) {
-        const errorData = await response.json(); // Parse error response
-        console.error("Error response from server:", errorData);
-        throw new Error(
-          `Failed to updateUnpaidInvoiceStatus status for ID ${invoiceId}`
-        );
+      const responseData = await response.json();
+        
+        if (!response.ok) {
+          return { success: false, error: responseData.message || 'Failed to create invoice.' };
+        }
+        
+        return { success: true, data: responseData };
+      } catch (error) {
+        return { success: false, error: error.message || 'A error occurred while creating the invoice.' };
       }
-
-      return response.json();
-    } catch (error) {
-      console.error("Error in updateUnpaidInvoiceStatus service:", error);
-      throw new Error(
-        `Error in updateUnpaidInvoiceStatus service: ${error.message}`
-      );
-    }
-  };
+    };
   export const deleteInvoice= async (invoiceId, updateData) => {
     try {
       const token = localStorage.getItem("accessToken");

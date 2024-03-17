@@ -114,7 +114,7 @@ const logInUser = async () => {
       errorMessage = error.message || "An error occurred during login";
     }
   }finally{
-    isLoading = false;
+    isLoading.value = false;
   }
 };
 
@@ -277,7 +277,7 @@ const computedStyle = {
                   ><span class="text-blue-500"> Forgot Password?</span></router-link
                 >
               </div>
-              <div v-if="isLoading"><a-spin size="large"></a-spin></div>
+              <div v-if="isLoading"><a-spin size="medium"></a-spin></div>
             <div class="text-center mx-10 my-4"
              v-else>
               <Button

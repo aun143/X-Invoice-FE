@@ -190,9 +190,9 @@ const openNotificationWithIcon = (type, message) => {
                 <div class="flex flex-col ">
                 
               <div class="text-center mx-10 my-4">
-                <div v-if="isLoading"> <a-space class="w-full">
-                    <a-spin size="smal" />
-                  </a-space></div>
+                <div v-if="isLoading"> 
+                    <a-spin size="medium" />
+                </div>
                 <Button v-else
                 :bgColor="Colors.orange"
                 :textColor="Colors.white"

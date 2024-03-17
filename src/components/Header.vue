@@ -82,7 +82,7 @@ const computedStyles = {
 
       </div>
       <div
-        class="bg-[#10C0CB] text-[12px] w-24 rounded mr-4"
+        class="bg-[#10C0CB] text-[12px] w-28 rounded mr-4"
         v-if="showDropdown && !isLoader"
       >
         <!-- Check isLoader to hide the dropdown when loading -->
