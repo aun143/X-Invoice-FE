@@ -32,8 +32,8 @@ const handleExitButtonClick = async () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("UserId");
     localStorage.removeItem("userRole");
+    invoice.userProfileData.userRole = "";
     router.push({ name: "Login" });
-    userRole.value = "";
   }
 };
 

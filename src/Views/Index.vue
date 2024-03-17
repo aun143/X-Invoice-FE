@@ -67,7 +67,7 @@ onMounted(async () => {
     }
   } catch (error) {
     console.error("Error During Invoice getting:", error);
-    openNotificationWithIcon("error", "An error occurred while getting the Invoice.");
+    // openNotificationWithIcon("error", "An error occurred while getting the Invoice.");
   } finally {
     isLoading.value = false;
   }
