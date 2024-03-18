@@ -168,5 +168,37 @@ window.addEventListener("offline", () => {
 </template>
 
 <style>
-/* Your styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+@media (max-width: 1023px) {
+  .sidebar {
+    width: 195px !important;
+  }
+}
+@media (max-width: 1023px) {
+  .sidebar div.profile {
+    width: 195px !important;
+  }
+}
+@media (max-width: 1023px) {
+  .sidebar div.profile .job {
+    font-size: 9px !important;
+  }
+}
+.sidebar {
+  transition: none !important;
+}
+.tran {
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+#btn {
+  display: none;
+}
+.float-button:hover {
+  background-color: #388d94;
+}
 </style>

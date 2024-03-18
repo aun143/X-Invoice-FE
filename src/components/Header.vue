@@ -51,7 +51,6 @@ const computedStyles = {
       <div v-if="!showBackButton ">
         <!-- Check isLoader to hide the back button when loading -->
         <Button
-        v-if="!isLoader"
           :bgColor="Colors.orange"
           :textColor="Colors.white"
           :fontSize="computedStyles.fontSize"
@@ -60,7 +59,7 @@ const computedStyles = {
           :buttonText="backButtonText"
           @click="onBackButtonClick"
         />
-        <a-spin v-else size="small" class="mx-2" /> 
+       
       </div>
       <p class="font-bold ml-6 text-black text-[24px]">{{ headerTitle }}</p>
     </div>
@@ -78,7 +77,7 @@ const computedStyles = {
           @click="onSaveDraftButtonClick"
           :style="{ backgroundColor: saveDraftButtonColor }"
         />
-        <a-spin v-else size="small" class="mx-2" /> 
+        <a-spin v-else size="medium" class="mx-2" /> 
 
       </div>
       <div
@@ -92,10 +91,8 @@ const computedStyles = {
           @item-click="handleDropdownItemClick"
         />
       </div>
-      <a-spin v-else-if="isLoader" size="small" class="mx-2" /> 
+    
 
-      <!-- Show loading spinner when isLoader is true -->
-      <a-spin size="large" v-if="isLoader"></a-spin>
     </div>
   </nav>
 </template>

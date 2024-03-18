@@ -30,6 +30,7 @@ const router = useRouter();
 const invoiceId = route.params.id;
 const invoice = useInvoiceStore();
 const isLoadingImg = ref(false);
+const isLoader = ref(false);
 watchEffect(() => {
   const unwatch = watch(
     invoice.formData,
@@ -51,7 +52,7 @@ const invoiceSubmit = async () => {
     return;
   }
   try {
-    isLoading.value = true;
+    isLoader.value = true;
 
     if (!validateForm()) return;
     if (!validateDueDate()) {
@@ -80,7 +81,7 @@ if(success){
     });
     console.error("Error During Invoice creation:", error);
   } finally {
-    isLoading.value = false;
+    isLoader.value = false;
   }
 };
 const open = ref(false);
@@ -379,7 +380,7 @@ const changeStatus = async () => {
         title: "Error During Payment Method Updation",
         text: error || "An error occurred while updating the Payment Method.",
       });
-      if (error === "Your subscription plan has expired. Please update your plan.") {
+      if (error === "Maximum invoices limit reached for the user") {
         router.push("/subscription");
       } else {
         openNotificationWithIcon("error", error);
@@ -547,6 +548,7 @@ const switchProfileType = (type) => {
     <div class="bg-white">
       <Header
         headerTitle="New Invoice"
+        :isLoader="isLoader"
         backButtonText=" &nbsp &lt  Invoices &nbsp  &nbsp "
         backRoute="Index"
         saveButtonText="Save"

@@ -21,7 +21,6 @@ const isLoadingImg = ref(false);
 const route = useRoute();
 const router = useRouter();
 const invoice = useInvoiceStore();
-
 const firstNameError = ref("");
 const lastNameError = ref("");
 const emailError = ref("");
@@ -139,6 +138,7 @@ const submitbusinessProfileDataindividual = async (Id) => {
     return;
   }
   try {
+    isLoader.value = true;
     const { success, data, error } = await PatchBusinessProfilerIndiviualApi(
       invoice.userProfileData.individualProfile._id,
       invoice.userProfileData.individualProfile
@@ -186,6 +186,7 @@ onMounted(async () => {
     const UserId = localStorage.getItem("UserId");
 
     if (UserId) {
+      
       const UserResponse = await getUserDetailsApi(UserId);
       invoice.userProfileData = UserResponse;
       invoice.updateUser(invoice.userProfileData);

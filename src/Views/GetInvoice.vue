@@ -187,6 +187,15 @@ const formatDate = (dateString) => {
   const formattedDate = date.toISOString().split("T")[0];
   return formattedDate;
 };
+const info=()=>{
+  Swal.fire({
+    title: 'Info',
+    html: `Description Item's are Resizeable`, 
+    confirmButtonText: 'Close',
+  });
+
+}
+    
 </script>
 
 <template>
@@ -240,7 +249,7 @@ const formatDate = (dateString) => {
           </div>
 
           <div
-            class="w-32 mt-4 lg:ml-[40%] md:ml-[20%] 2xl:ml-[30%] h-auto flex justify-end items-end"
+            class="w-32 mt-4 lg:ml-[25%] 2xl:ml-[10%] h-auto flex justify-end items-end"
           >
             <img :src="imageUrl" alt="Logo" />
           </div>
@@ -317,7 +326,7 @@ const formatDate = (dateString) => {
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Date</p>
-              <div class="text-left">{{ invoiceDetails.date }}</div>
+              <div class="text-left">{{ (invoiceDetails.date) }}</div>
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Invoice Due</p>
@@ -334,60 +343,42 @@ const formatDate = (dateString) => {
         <br />
         <hr />
         <br />
-        <div
-          class="flex max-w-[55%] lg:flex-row 2xl:flex-row xl:flex-row flex-col px-4"
-        >
-          <div class="w-full md:w-[50%]">
-            <div class="text-left w-full font-semibold">Description</div>
-            <textarea
-              v-for="(item, index) in invoiceDetails.items"
-              :key="index"
-              disabled
-              cols="50"
-              class="flex"
-              v-model="item.description"
-            ></textarea>
-          </div>
-          <div class="w-full">
-            <div class="flex w-full font-semibold">Quantity</div>
-            <input
-              v-for="(item, index) in invoiceDetails.items"
-              :key="index"
-              disabled
-              cols="60"
-              class="flex mb-8"
-              v-model="item.quantity"
-            />
-          </div>
-          <div class="w-full">
-            <div class="flex w-full font-semibold">Rate</div>
-            <input
-              v-for="(item, index) in invoiceDetails.items"
-              :key="index"
-              disabled
-              cols="60"
-              class="flex mb-8"
-              v-model="item.rate"
-            />
-            <!-- <select disabled class="w-16 mt-2">
-              <option v-for="unit in item.unit" :key="unit" :value="unit">
-                {{ unit.name }}
-              </option>
-            </select> -->
-          </div>
-          <div class="w-full">
-            <div class="flex w-full font-semibold text-left">Amount</div>
-            <input
-              v-for="(item, index) in invoiceDetails.items"
-              :key="index"
-              disabled
-              cols="60"
-              class="flex mb-8"
-              v-model="item.amount"
-            />
-            <!-- <div class="flex">{{8100}}</div> -->
-          </div>
-        </div>
+        <div class="flex lg:flex-row 2xl:flex-row xl:flex-row flex-col px-4">
+          <i class="fas fa-info-circle flex" @click="info" id="info-icon"></i>
+  <table class="w-full">
+    <thead>
+      <tr>
+        <th class="text-left font-semibold ">Description</th>
+        <th class="font-semibold text-left">Quantity</th>
+        <th class="font-semibold text-left">Rate</th>
+        <th class="font-semibold text-left">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(item, index) in invoiceDetails.items" :key="index">
+        <td style="width: 25%;">
+          <textarea disabled cols="25" rows=2  v-model="item.description" class="w-full h-full pl-0" style="overflow: hidden;"></textarea>
+        </td>
+        <td style="width: 25%;">
+          <input disabled class="w-full h-full" v-model="item.quantity" />
+        </td>
+        <td style="width: 25%;">
+          <input disabled class="w-full h-full" v-model="item.rate" />
+          <!-- <select disabled class="w-full h-full mt-2">
+            <option v-for="unit in item.unit" :key="unit" :value="unit">
+              {{ unit.name }}
+            </option>
+          </select> -->
+        </td>
+        <td style="width: 25%;">
+          <input disabled class="w-full h-full" v-model="item.amount" />
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
         <br />
         <hr />
 
@@ -493,6 +484,10 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  resize: none;
+
 }
+.resizable-textarea {
+    resize: both;
+    overflow: auto;
+  }
 </style>

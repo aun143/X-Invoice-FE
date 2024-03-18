@@ -22,6 +22,7 @@ const router = useRouter();
 const invoiceId = route.params._id;
 const invoice = useInvoiceStore();
 const isLoading=ref(false);
+const isLoader=ref(false);
 const clientId=ref("");
 const handleSaveDraftButtonClick = async (Id) => {
  if(isLoadingImg.value){
@@ -30,7 +31,7 @@ const handleSaveDraftButtonClick = async (Id) => {
  }
     try {
      if (!validateForm()) return;
-      isLoading.value=true;
+     isLoader.value=true;
       const { success, data, error } = await updateInvoiceData(invoiceId, invoice.formData);
 
 if (success) {
@@ -58,7 +59,7 @@ if (success) {
 console.error("Error During Invoice updation:", error);
 openNotificationWithIcon("error", "An error occurred while updating the Invoice.");
 } finally {
-isLoading.value = false;
+  isLoader.value = false;
 }
 };
 const open =ref(false);
@@ -332,6 +333,7 @@ const calculateUpcomingDueDate = () => {
      <div class="bg-white">
     <Header
     headerTitle="New Invoice"
+    :isLoader="isLoader"
     backButtonText=" &nbsp &lt Invoices &nbsp  &nbsp"
     backRoute="Index"
     :dropdownTitle="false"

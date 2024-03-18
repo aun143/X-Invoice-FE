@@ -10,7 +10,7 @@ import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
 import {BASE_URL} from "../utils/config";
 import {uploadImage} from "../service/UploadImage"
-
+const isLoader = ref(false);
 const router = useRouter();
 const isLoading = ref(false);
 const isLoadingImg = ref(false);
@@ -21,8 +21,8 @@ const submitclientDataOrganization = async () => {
   }
 
   try {
-    isLoading.value = true;
-    // if (!validateFormOrg()) return;
+    isLoader.value = true;
+    if (!validateFormOrg()) return;
     const clientData = {
       ...invoice.userClientProfile.clientDataOrganization,
       clientType: "organization",
@@ -30,7 +30,7 @@ const submitclientDataOrganization = async () => {
     const { success, data, error } = await clientApi(clientData);
 
     if (success) {
-      // router.push("/AllClients");
+      router.push("/AllClients");
       Swal.fire({
         icon: "success",
         title: "Client Created",
@@ -53,7 +53,7 @@ const submitclientDataOrganization = async () => {
     console.error("Error During Client organization:", error);
     openNotificationWithIcon("error", "An error occurred while creating the client.");
   } finally {
-    isLoading.value = false;
+    isLoader.value = false;
   }
 };
 const submitclietDataindividual = async () => {
@@ -63,8 +63,8 @@ const submitclietDataindividual = async () => {
   }
 
   try {
-    isLoading.value = true;
-    // if (!validateFormInd()) return;
+    isLoader.value = true;
+    if (!validateFormInd()) return;
     const clientData = {
       ...invoice.userClientProfile.clientDataindividual,
       clientType: "individual",
@@ -85,7 +85,7 @@ const submitclietDataindividual = async () => {
         title: "Error During Client creation",
         text: error || "An error occurred while creating the client.",
       });
-      if (error === "Your subscription plan has expired. Please update your plan.") {
+      if (error === "Maximum clients limit reached for the user") {
         router.push("/subscription");
       } else {
         openNotificationWithIcon("error", error);
@@ -95,7 +95,7 @@ const submitclietDataindividual = async () => {
     console.error("Error During Client individual:", error);
     openNotificationWithIcon("error", "An error occurred while creating the client.");
   } finally {
-    isLoading.value = false;
+    isLoader.value = false;
   }
 };
 
@@ -311,6 +311,7 @@ onMounted(() => {
   <div class="bg-gray-200 mt-2">
     <div class="bg-white">
       <Header
+      :isLoader="isLoader"
         headerTitle="Client Profile"
         backButtonText="&nbsp &lt Back &nbsp  &nbsp "
         backRoute="Invoice"

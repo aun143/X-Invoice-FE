@@ -127,7 +127,7 @@ const fontSize = "12px";
 </div>
   <div class="modal-content max-h-full flex max-w-[100%] px-4 pt-4 justify-start">
       <div class="flex">
-        <div class="w-full p-8 lg:w-[70%] 2xl:w-[100%] xl:w-[80%] bg-white">
+        <div class="w-full p-8  bg-white">
           <div class="flex"><div class="logo-placeholder mb-4 border-none cursor-pointer  border-2 grid ">
             <img
                     :src="invoice.userClientProfile.clientDataindividual.url ? invoice.userClientProfile.clientDataindividual.url : 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
