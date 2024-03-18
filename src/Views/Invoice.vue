@@ -440,8 +440,8 @@ const ClientProfile = async () => {
 
     isLoading.value = true;
     const result = await getAllClient();
-    if (result && result.data) {
-      clients.value = result.data;
+    if (result && result.data.data) {
+      clients.value = result.data.data;
     } else {
       throw new Error("No data received from server");
     }
