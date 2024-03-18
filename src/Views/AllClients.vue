@@ -61,11 +61,24 @@ const handleDropdownItemClickParent = (clickedItem) => {
 const fetchClients = async () => {
   try {
     isLoading.value = true;
-    const result = await getAllClient();
-    clients.value = result.data;
-    totalItems.value = result.totalItems;
+    const {success,data,error}= await getAllClient();
+    if(success){
+      clients.value = data.data;
+    totalItems.value = data.totalItems;
+    }else{
+      Swal.fire({
+    icon: "error",
+    title: "Error Getting All Clients",
+    text: error || "An error occurred while Getting All Clients.",
+  });
+  if (error === "Your subscription plan has expired. Please update your plan.") {
+    router.push("/subscription");
+  } else {
+  }
+    }
+
   } catch (error) {
-    console.error('Error fetching clients:', error.message);
+    console.error('Error fetching get All Client:', error.message);
   } finally {
     isLoading.value = false;
   }

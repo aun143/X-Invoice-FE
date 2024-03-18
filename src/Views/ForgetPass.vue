@@ -40,15 +40,15 @@ if (success) {
     router.push("/login")
   Swal.fire({
     icon: "success",
-    title: "Client Created",
-    text: data.message || "Client has been Created successfully.",
+    title: "Password Updated",
+    text: data.message || "Password has been Updated successfully.",
   });
 } else {
-  console.error("Error During Client organization:", error);
+  console.error("Error During Password Updation:", error);
   Swal.fire({
     icon: "error",
-    title: "Error During Client creation",
-    text: error || "An error occurred while creating the client.",
+    title: "Error During Password Updation",
+    text: error || "An error occurred while Updating the Password.",
   });
   if (error === "Your subscription plan has expired. Please update your plan.") {
     router.push("/subscription");
@@ -57,8 +57,8 @@ if (success) {
   }
 }
 } catch (error) {
-console.error("Error During Client organization:", error);
-openNotificationWithIcon("error", "An error occurred while creating the client.");
+console.error("Error During Password Updation:", error);
+openNotificationWithIcon("error", "An error occurred while Updatng the Password.");
 } finally {
 isLoading.value = false;
 }

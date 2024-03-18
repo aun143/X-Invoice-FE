@@ -40,7 +40,7 @@ async function getUserDetailsAndRedirect() {
     const userProfileData = await getUserDetailsApi(userId);
 
     // Update the user profile data with the fetched data
-    invoice.userProfileData.userRole = userProfileData;
+    invoice.userProfileData.userRole = userProfileData.userRole;
 
     // After updating user data, navigate to the root route ("/")
     router.push("/");
@@ -91,6 +91,8 @@ const logInUser = async () => {
       );
       getUserDetailsAndRedirect();
       openNotificationWithIcon("success", "Login successful");
+      loginData.email="";
+      loginData.password="";
       router.push({ name: "Index" });
       Swal.fire({
       icon: "success",
@@ -102,11 +104,11 @@ const logInUser = async () => {
       openNotificationWithIcon("error", "Error during login");
     }}else {
       // Handle signup failure
-      console.error("Error During Profile Creation:", error);
+      console.error("Error During Login.", error);
       Swal.fire({
         icon: "error",
-        title: "Error During Profile creation",
-        text: error || "An error occurred while creating the Profile.",
+        title: "Error During Login",
+        text: error || "An error occurred while Login.",
       });
       if (error === "Your subscription plan has expired. Please update your plan.") {
         router.push("/subscription");

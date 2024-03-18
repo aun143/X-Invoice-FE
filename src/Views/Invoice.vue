@@ -6,6 +6,7 @@ import { useInvoiceStore } from "../stores/index";
 import Button from "../components/Button.vue";
 import Client from "./Client.vue";
 import { Colors } from "../utils/color";
+import {updateInvoiceStatus} from "../service/invoiceService";
 // import Modal from "../components/Modal.vue";
 import { getAllClient } from "../service/ClientService";
 // import InvoiceService from "../service/InvoiceService";
@@ -18,6 +19,7 @@ import { uploadImage } from "../service/UploadImage";
 // import {  Input } from "ant-design-vue";
 
 const date = ref("");
+const data = ref("");
 const { getDate, setDate } = useInvoiceStore();
 // watchEffect(() => {
 //   setDate(date.value); // Update the store when the value changes in the component
@@ -55,24 +57,28 @@ const invoiceSubmit = async () => {
     if (!validateDueDate()) {
       return;
     }
-    const response = await postInvoiceData(invoice.formData);
-
+    const {success,data,error} = await postInvoiceData(invoice.formData);
+if(success){
     //console.log('Invoice submitted successfully:', response);
-    router.push("/");
     invoice.resetFormData();
     Swal.fire({
       icon: "success",
       title: " Invoice Created ",
       text: " Invoice has been Created successfully.",
     });
+    return data._id; // Return the ID of the created invoice
+    } else {
+      openNotificationWithIcon("error", error || "An error occurred while creating the invoice");
+      return null; // Return null indicating failure
+    }
   } catch (error) {
     Swal.fire({
       icon: "error",
       title: "Oops...",
-      text: ("Error During Account:", error),
+      text: ("Error During Creating Invoice:", error),
       footer: "Please try again ",
     });
-    console.error("Error During Account:", error);
+    console.error("Error During Invoice creation:", error);
   } finally {
     isLoading.value = false;
   }
@@ -130,7 +136,6 @@ const calculateAmount = (item) => {
 //   modalActive.value = !modalActive.value;
 // };
 //console.log("invoice",invoice)
-const dropdownTitle = "Save";
 const dropdownItems = [
   { title: "Save", link: "/" },
   { title: "Save & Send", link: "#" },
@@ -287,7 +292,10 @@ watch(Total, (newTotal, oldtotal) => {
 
 const handleSaveDraftButtonClick = async () => {
   try {
-    invoiceSubmit();
+    const invoiceId =await invoiceSubmit();
+    if (invoiceId) {
+      router.push("/");
+    }
   } catch (error) {
     Swal.fire({
       icon: "error",
@@ -298,15 +306,90 @@ const handleSaveDraftButtonClick = async () => {
     console.error("Error Submitting Invoice:", error);
   }
 };
-const handleDropdownItemClick = (clickedItem) => {
+const invoiceID=ref("");
+const handleDropdownItemClick = async (clickedItem) => {
   if (clickedItem.title === "Save") {
-    invoiceSubmit();
-    // changeUnpaidStatus(invoiceId);
+    try {
+    const invoiceId =await invoiceSubmit();
+    if (invoiceId) {
+      router.push("/");
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: ("Error Submitting Invoice:", error),
+      footer: "Please try again ",
+    });
+    console.error("Error Submitting Invoice:", error);
+  }
   } else if (clickedItem.title === "Save & Send") {
-    invoiceSubmit();
-    router.push(`/GetInvoice/${invoiceId}/send`);
+    try {
+    const invoiceId =await invoiceSubmit();
+    if (invoiceId) {
+      router.push(`/GetInvoice/${invoiceId}/send`);
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: ("Error Submitting Invoice:", error),
+      footer: "Please try again ",
+    });
+    console.error("Error Submitting Invoice:", error);
+  }
   } else if (clickedItem.title === "Save & Mark Send") {
-    invoiceSubmit();
+    try {
+ invoiceID.value =await invoiceSubmit();
+    console.log("invoiceId",invoiceID.value);
+    if (invoiceID.value) {
+      changeStatus(invoiceID.value);
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: ("Error Submitting Invoice:", error),
+      footer: "Please try again ",
+    });
+    console.error("Error Submitting Invoice:", error);
+  }
+  }
+};
+const changeStatus = async () => {
+  try {
+    isLoading.value = true;
+    //console.log("Changing status for invoiceId:", invoiceId);
+    const updateData = {
+      paymentStatus: "Paid",
+    };
+    const { success, data, error } = await updateInvoiceStatus(invoiceID.value, updateData);
+
+    if (success) {
+      router.push("/");
+      Swal.fire({
+        icon: "success",
+        title: "Payment Method Updated",
+        text: data.message || "Payment Method has been updated successfully.",
+      });
+    } else {
+      console.error("Error During Payment Method updation:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error During Payment Method Updation",
+        text: error || "An error occurred while updating the Payment Method.",
+      });
+      if (error === "Your subscription plan has expired. Please update your plan.") {
+        router.push("/subscription");
+      } else {
+        openNotificationWithIcon("error", error);
+      }
+    }
+  } catch (error) {
+    console.error("Error During Payment Method Updation:", error);
+    openNotificationWithIcon("error", "An error occurred while updating the Payment Method.");
+  } finally {
+    isLoading.value = false;
   }
 };
 const isLoading = ref(false);
@@ -323,6 +406,7 @@ const BusinessProfile = async () => {
 
     if (UserId) {
       const userProfileData = await getUserDetailsApi(UserId);
+      invoice.userProfileData.userRole=userProfileData.userRole;
       //console.log("userProfileType >>>", invoice.selectedProfileType);
       if (invoice.selectedProfileType === "individual") {
         const individualData = userProfileData.individualProfile;
@@ -466,10 +550,13 @@ const switchProfileType = (type) => {
         backButtonText=" &nbsp &lt  Invoices &nbsp  &nbsp "
         backRoute="Index"
         saveButtonText="Save"
+        :dropdownItems="dropdownItems"
+        dropdownTitle="Save"
+        :onDropdownItemClick="handleDropdownItemClick"
         saveDraftButtonText=" Save Draft"
         :saveDraftButtonColor="Colors.orange"
         :onSaveDraftButtonClick="handleSaveDraftButtonClick"
-        :showDropdown="false"
+        :showDropdown="true"
         :showBackButton="false"
       />
     </div>

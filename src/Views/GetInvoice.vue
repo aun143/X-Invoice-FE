@@ -120,7 +120,7 @@ const deleteInvoicee = async () => {
     });
     // console.log("invoice deleted successfully:", status);
   } catch (error) {
-    console.error("Error deleting invoice:", error);
+    console.error("Error deleting invoice Deletion:", error);
   }
 };
 const invoiceDetails = ref("");
@@ -146,7 +146,7 @@ onMounted(async () => {
     logoPreview.value = invoiceDetails.logoPreview;
     //console.log("Invoice details fetched successfully:", invoiceDetails);
   } catch (error) {
-    console.error("Error fetching invoice details:", error);
+    console.error("Error fetching GetInvoice details:", error);
   } finally {
     isLoading.value = false;
   }

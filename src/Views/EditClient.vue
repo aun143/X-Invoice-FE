@@ -61,14 +61,14 @@ isLoading.value=true;
       Swal.fire({
         icon: "success",
         title: "Client Created",
-        text: data.message || "Client has been Created successfully.",
+        text: data.message || "Client has been Updatied successfully.",
       });
     } else {
-      console.error("Error During Client organization:", error);
+      console.error("Error During Client Updation:", error);
       Swal.fire({
         icon: "error",
-        title: "Error During Client creation",
-        text: error || "An error occurred while creating the client.",
+        title: "Error During Client Updation",
+        text: error || "An error occurred while Updating the client.",
       });
       if (error === "Your subscription plan has expired. Please update your plan.") {
         router.push("/subscription");
@@ -77,8 +77,8 @@ isLoading.value=true;
       }
     }
   } catch (error) {
-    console.error("Error During Client organization:", error);
-    openNotificationWithIcon("error", "An error occurred while creating the client.");
+    console.error("Error During Client Updation:", error);
+    openNotificationWithIcon("error", "An error occurred while Updating the client.");
   } finally {
     isLoading.value = false;
   }

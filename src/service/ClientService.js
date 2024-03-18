@@ -61,14 +61,15 @@ export const getAllClient = async () => {
     });
 
     // console.log("token: is This Of This User" , accessToken);
+    const responseData = await response.json();
 
     if (!response.ok) {
-      throw new Error("Failed to fetch AllClients");
+      throw new Error(responseData.message || 'Failed to Update client.');
     }
 
-    return response.json();
+    return { success: true, data: responseData };
   } catch (error) {
-    throw new Error("Error in getAllClientsService: " + error.message);
+    return { success: false, error: error.message || 'An error occurred while Updating the client.' };
   }
 };
 

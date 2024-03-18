@@ -38,15 +38,15 @@ if (success) {
     invoice.formData.$reset;
   Swal.fire({
     icon: "success",
-    title: "Invoice Created",
-    text: data.message || "Invoice has been Created successfully.",
+    title: "Invoice updated",
+    text: data.message || "Invoice has been updated successfully.",
   });
 } else {
   console.error("Error During Invoice Creation:", error);
   Swal.fire({
     icon: "error",
-    title: "Error During Invoice creation",
-    text: error || "An error occurred while creating the Invoice.",
+    title: "Error During Invoice updation",
+    text: error || "An error occurred while updating the Invoice.",
   });
   if (error === "Your subscription plan has expired. Please update your plan.") {
     router.push("/subscription");
@@ -55,8 +55,8 @@ if (success) {
   }
 }
 } catch (error) {
-console.error("Error During Invoice creation:", error);
-openNotificationWithIcon("error", "An error occurred while creating the Invoice.");
+console.error("Error During Invoice updation:", error);
+openNotificationWithIcon("error", "An error occurred while updating the Invoice.");
 } finally {
 isLoading.value = false;
 }

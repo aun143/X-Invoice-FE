@@ -4,6 +4,7 @@ import { useRouter, useRoute } from "vue-router";
 // import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { getSingleClient } from "../service/ClientService";
+import { getUserDetailsApi } from "../service/LoginService";
 import { getAllInvoice } from "../service/IndexService";
 import { useInvoiceStore } from "../stores/index.js";
 import { notification } from "ant-design-vue";
@@ -38,6 +39,11 @@ const handleSaveDraftButtonClick = () => {
 };
 
 onMounted(async () => {
+  try{
+    await getUserDetailsAndRedirect();
+  }catch(error){
+
+  }
   try {
     isLoading.value = true;
    
@@ -56,7 +62,7 @@ onMounted(async () => {
     } else {
       Swal.fire({
         icon: "error",
-        title: "Error During Invoice get",
+        title: "Error During Invoice Get",
         text: error || "An error occurred while getting the Invoice.",
       });
       if (error === "Your subscription plan has expired. Please update your plan.") {
@@ -66,7 +72,7 @@ onMounted(async () => {
       }
     }
   } catch (error) {
-    console.error("Error During Invoice getting:", error);
+    console.error("Error During Invoice Get:", error);
     // openNotificationWithIcon("error", "An error occurred while getting the Invoice.");
   } finally {
     isLoading.value = false;
@@ -186,17 +192,25 @@ const columns = computed(() => {
     },
   ];
 });
+async function getUserDetailsAndRedirect() {
+  try {
+    const userId = localStorage.getItem("UserId");
+    const userProfileData = await getUserDetailsApi(userId);
 
+    // Update the user profile data with the fetched data
+    invoice.userProfileData.userRole = userProfileData.userRole;
+  } catch (error) {
+    console.error("Error Fetching User Details:", error);
+  }
+}
 const handleFilter = () => {
   filteredInfo.value = invoices.value.filter((invoice) => {
     const matchesInvoiceNumber = invoice.invoiceNumber.toLowerCase().includes(invoiceNumberFilter.value.toLowerCase());
     const matchesSender = invoice.sender.firstName.toLowerCase().includes(nameFilter.value.toLowerCase());
-    //console.log("object,",matchesSender)
-    //console.log("matchesInvoiceNumber,",matchesInvoiceNumber)
-    
     return matchesInvoiceNumber && matchesSender;
   });
 };
+
 
 const handleHeaderClick = (column) => {
   if (column.sorter) {
@@ -232,6 +246,9 @@ const customRow = (record) => {
     },
   };
 };
+watch([invoiceNumberFilter, nameFilter], () => {
+  handleFilter();
+});
 const currentFilterStatus = ref("All");
 watch(filterStatus, (newFilterStatus) => {
   currentFilterStatus.value = newFilterStatus;
@@ -299,13 +316,8 @@ watch(filterStatus, (newFilterStatus) => {
             /><a-input
               v-model:value="nameFilter"
               placeholder="Sender Name"
-              style="width: 150px; margin-right: 8px"
+              style="width: 150px; "
             />
-            
-            <!-- Filter button -->
-            <a-button type="primary" @click="handleFilter" class="bg-[#10C0CB]"
-              >Filter</a-button
-            >
           </div>
           <a-table
             :loading="isLoading"

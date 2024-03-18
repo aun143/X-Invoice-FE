@@ -154,7 +154,7 @@ const submitbusinessProfileDataindividual = async (Id) => {
         text: data.message || "Profile has been Updated successfully.",
       });
     } else {
-      console.error("Error During Profile organization:", error);
+      console.error("Error During Profile individual:", error);
       Swal.fire({
         icon: "error",
         title: "Error During Profile Updation",
@@ -169,7 +169,7 @@ const submitbusinessProfileDataindividual = async (Id) => {
       }
     }
   } catch (error) {
-    console.error("Error During Profile organization:", error);
+    console.error("Error During Profile individual:", error);
     openNotificationWithIcon(
       "error",
       "An error occurred while Updating the Profile."

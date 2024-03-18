@@ -68,7 +68,7 @@ const handleSendEmailButtonClick = async () => {
       text: "Email has been sent successfully.",
     });
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("Error Sending email:", error);
   }
 };
 </script>

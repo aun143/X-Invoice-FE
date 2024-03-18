@@ -95,17 +95,17 @@ const signUpUser = async () => {
     if (success) {
       invoice.updateUserData(data);
   localStorage.setItem("UserId", data.data.data_id);
+  invoice.signupData={};
       // Handle successful signup
 
       if (data.data && data.data.access_token && data.data.data._id) {
         localStorage.setItem("accessToken", data.data.access_token);
         localStorage.setItem("UserId", data.data.data._id);
-        invoice.signupData.$reset;
         router.push({ name: "Accounts" });
         Swal.fire({
           icon: "success",
-          title: "Profile Created",
-          text: data.message || "Profile has been Created successfully.",
+          title: "User SignUp",
+          text: data.message || "User has been SignedUp successfully.",
         });
       } else {
         console.error("Incomplete response data:", data);
@@ -113,11 +113,11 @@ const signUpUser = async () => {
       }
     } else {
       // Handle signup failure
-      console.error("Error During Profile Creation:", error);
+      console.error("Error During SignUp :", error);
       Swal.fire({
         icon: "error",
-        title: "Error During Profile creation",
-        text: error || "An error occurred while creating the Profile.",
+        title: "Error During SignUp",
+        text: error || "An error occurred while SignUp.",
       });
       if (error === "Your subscription plan has expired. Please update your plan.") {
         router.push("/subscription");
@@ -127,8 +127,8 @@ const signUpUser = async () => {
     }
   } catch (error) {
     // Handle unexpected errors
-    console.error("Error During Profile creation:", error);
-    openNotificationWithIcon("error", "An error occurred while creating the Profile.");
+    console.error("Error During SignUp:", error);
+    openNotificationWithIcon("error", "An error occurred while SignUp.");
   } finally {
     isLoading.value = false;
   }

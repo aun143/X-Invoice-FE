@@ -1,12 +1,13 @@
+
 <script setup>
 import Swal from "sweetalert2";
 import VueSidebarMenuAkahon from "vue-sidebar-menu-akahon";
 import { useRoute, useRouter } from "vue-router";
 import { getUserDetailsApi } from "../src/service/LoginService";
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import { useInvoiceStore } from "../src/stores/index";
-
 import { Colors } from "./utils/color";
+
 const menuItems = [
   { link: "/dashBoard", name: "DashBoard", icon: "bxs-dashboard" },
   { link: "/Index", name: "Invoices", icon: "bxs-inbox" },
@@ -81,9 +82,6 @@ onMounted(async () => {
   }
 });
 
-// const enableSidebar = computed(() => {
-//   return componentsWithSidebar.includes(route.name);
-// });
 const route = useRoute();
 const enableSidebar = computed(() => {
   if (
@@ -103,13 +101,41 @@ const profileImg =
 const upgradeAccount = () => {
   router.push("/subscription");
 };
-</script>
 
+const online = ref(navigator.onLine);
+watch(online, (value) => {
+  if (!value) {
+    Swal.fire({
+      icon: "error",
+      title: "No Internet Connection",
+      text: "Please check your internet connection and try again.",
+      showConfirmButton: false,
+      allowOutsideClick: false, // Prevent closing when clicking outside
+      didOpen: () => {
+        const interval = setInterval(() => {
+          if (navigator.onLine) {
+            Swal.close();
+            clearInterval(interval);
+          }
+        }, 1000); // Check internet connection every second
+      },
+    });
+  }
+});
+
+window.addEventListener("online", () => {
+  online.value = true;
+});
+
+window.addEventListener("offline", () => {
+  online.value = false;
+});
+</script>
 <template>
   <div class="overflow-hidden">
     <div class="">
       <VueSidebarMenuAkahon
-        v-if="enableSidebar"
+        v-if="online && enableSidebar"
         menuTitle="X-Invoice"
         :menuLogo="menuLogo"
         :profileImg="profileImg"
@@ -125,7 +151,7 @@ const upgradeAccount = () => {
       </VueSidebarMenuAkahon>
     </div>
     <RouterView
-      v-if="enableSidebar"
+      v-if="online && enableSidebar"
       class="max-w-full pb-6 pl-[250px] lg:pl-[250px] md:pl-[195px]"
     />
     <RouterView v-else />
@@ -135,44 +161,12 @@ const upgradeAccount = () => {
         @click="upgradeAccount"
         class="mb-[8px] flex items-center justify-center h-[40px] rounded bg-[#4AA7AD] text-white cursor-pointer tran hover:bg-[#10C0CB] hover:text-white"
       >
-        <span class="mx-4"> Upgrade </span>
+        <span class="mx-4" > {{ invoice.userProfileData.userRole === 'iSuperAdmin'? 'Downgrade': 'Upgrade' }} </span>
       </button>
     </div>
   </div>
 </template>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-@media (max-width: 1023px) {
-  .sidebar {
-    width: 195px !important;
-  }
-}
-@media (max-width: 1023px) {
-  .sidebar div.profile {
-    width: 195px !important;
-  }
-}
-@media (max-width: 1023px) {
-  .sidebar div.profile .job {
-    font-size: 9px !important;
-  }
-}
-.sidebar {
-  transition: none !important;
-}
-.tran {
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
-}
-#btn {
-  display: none;
-}
-.float-button:hover {
-  background-color: #388d94;
-}
+/* Your styles */
 </style>

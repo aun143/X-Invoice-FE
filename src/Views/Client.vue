@@ -30,7 +30,7 @@ const submitclientDataOrganization = async () => {
     const { success, data, error } = await clientApi(clientData);
 
     if (success) {
-      router.push("/AllClients");
+      // router.push("/AllClients");
       Swal.fire({
         icon: "success",
         title: "Client Created",
@@ -79,7 +79,7 @@ const submitclietDataindividual = async () => {
         text: data.message || "Client has been Created successfully.",
       });
     } else {
-      console.error("Error During Client organization:", error);
+      console.error("Error During Client individual:", error);
       Swal.fire({
         icon: "error",
         title: "Error During Client creation",
@@ -92,7 +92,7 @@ const submitclietDataindividual = async () => {
       }
     }
   } catch (error) {
-    console.error("Error During Client organization:", error);
+    console.error("Error During Client individual:", error);
     openNotificationWithIcon("error", "An error occurred while creating the client.");
   } finally {
     isLoading.value = false;

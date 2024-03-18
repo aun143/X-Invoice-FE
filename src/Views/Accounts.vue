@@ -121,9 +121,9 @@ const { success, data, error } = await PostBusinessProfilerIndiviualApi(body);
 
 if (success) {
   invoice.updateUser(data);
+  invoice.userProfileData={}
     router.push("/Subscription");
   invoice.updateUserProfileAndBusinessProfile(data.data);
-
   Swal.fire({
     icon: "success",
     title: "Profile Created",
