@@ -68,7 +68,7 @@ const computedStyles = {
         <!-- Check isLoader to hide the draft button when loading -->
         <Button
         v-if="!isLoader"
-          :bgColor="Colors.orange"
+          :bgColor="saveDraftButtonColor"
           :textColor="Colors.white"
           :fontSize="computedStyles.fontSize"
           :lineHeight="computedStyles.lineHeight"

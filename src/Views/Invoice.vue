@@ -556,7 +556,7 @@ const switchProfileType = (type) => {
         dropdownTitle="Save"
         :onDropdownItemClick="handleDropdownItemClick"
         saveDraftButtonText=" Save Draft"
-        :saveDraftButtonColor="Colors.orange"
+        :saveDraftButtonColor="Colors.saveDraft"
         :onSaveDraftButtonClick="handleSaveDraftButtonClick"
         :showDropdown="true"
         :showBackButton="false"
@@ -676,7 +676,7 @@ const switchProfileType = (type) => {
         <hr />
       </div>
       <div class="container flex">
-        <div class="flex-left w-[45%] justify-center">
+        <div class="flex-left lg:w-[45%] md:w-[50%] justify-center">
           <div class="mt-4 text-left">
             <div
               v-if="isLoading"

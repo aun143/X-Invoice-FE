@@ -1,12 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-:root {
-
-}
-
-
-
 body {
   margin: 0;
   place-items: center;
@@ -36,9 +30,6 @@ select {
 select {
   background-color:#f3f3f4; 
 }
-/* .card {
-  padding: 2em;
-} */
 
 #app {
   /* max-width: 80%; */

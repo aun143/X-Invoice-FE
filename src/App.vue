@@ -73,10 +73,10 @@ onMounted(async () => {
     Swal.fire({
       icon: "error",
       title: "Oops...",
-      text: ("Error During Getting Account:", error),
+      text: ("Error During Getting Account User Role:", error),
       footer: "Please try again ",
     });
-    console.error("Error During getting Business Profile:", error);
+    console.error("Error During getting Getting User Role:", error);
   } finally {
     isLoading.value = false;
   }
@@ -105,26 +105,27 @@ const upgradeAccount = () => {
 const online = ref(navigator.onLine);
 watch(online, (value) => {
   if (!value) {
-    Swal.fire({
-      icon: "error",
-      title: "No Internet Connection",
-      text: "Please check your internet connection and try again.",
-      showConfirmButton: false,
-      allowOutsideClick: false, // Prevent closing when clicking outside
-      didOpen: () => {
-        const interval = setInterval(() => {
-          if (navigator.onLine) {
-            Swal.close();
-            clearInterval(interval);
-          }
-        }, 1000); // Check internet connection every second
-      },
-    });
+  //   Swal.fire({
+  //     icon: "error",
+  //     title: "No Internet Connection",
+  //     text: "Please check your internet connection and try again.",
+  //     showConfirmButton: false,
+  //     allowOutsideClick: false, // Prevent closing when clicking outside
+  //     didOpen: () => {
+  //       const interval = setInterval(() => {
+  //         if (navigator.onLine) {
+  //           Swal.close();
+  //           clearInterval(interval);
+  //         }
+  //       }, 1000); 
+  //     },
+  //   });
   }
 });
 
 window.addEventListener("online", () => {
   online.value = true;
+  // window.location.reload();
 });
 
 window.addEventListener("offline", () => {
@@ -132,10 +133,10 @@ window.addEventListener("offline", () => {
 });
 </script>
 <template>
-  <div class="overflow-hidden">
+  <div class="overflow-hidden hidden md:block" :style="{ 'pointer-events': online ? 'auto' : 'none' }">
     <div class="">
       <VueSidebarMenuAkahon
-        v-if="online && enableSidebar"
+        v-if="enableSidebar && online"
         menuTitle="X-Invoice"
         :menuLogo="menuLogo"
         :profileImg="profileImg"
@@ -151,10 +152,16 @@ window.addEventListener("offline", () => {
       </VueSidebarMenuAkahon>
     </div>
     <RouterView
-      v-if="online && enableSidebar"
-      class="max-w-full pb-6 pl-[250px] lg:pl-[250px] md:pl-[195px]"
+      v-if="enableSidebar"
+      :style="{ paddingLeft: !online ? '0 !important' : '' }"
+      class="max-w-full pb-6 pl-[250px] lg:pl-[250px] md:pl-[195px] "
     />
     <RouterView v-else />
+    <div v-if="!online" class="offline-message">
+      <p>No Internet Connection</p>
+      
+      <!-- You can style this message as needed -->
+    </div>
     <div class="fixed bottom-[28px] right-[28px] z-[999]">
       <button
         v-if="invoice.userProfileData.userRole"
@@ -164,6 +171,12 @@ window.addEventListener("offline", () => {
         <span class="mx-4" > {{ invoice.userProfileData.userRole === 'iSuperAdmin'? 'Downgrade': 'Upgrade' }} </span>
       </button>
     </div>
+  </div>
+  <div class="block md:hidden overflow-auto  justify-center items-center bg-[#10C0CB] text-white  p-32">
+  <h1>  For a better experience, we suggest using this website on a horizontal or larger screen. Thank you!
+
+please replace the error message on mobile screens with this
+Thanks</h1>
   </div>
 </template>
 
@@ -200,5 +213,16 @@ window.addEventListener("offline", () => {
 }
 .float-button:hover {
   background-color: #388d94;
+}
+.offline-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 0, 0, 0.8);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  z-index: 9999; 
 }
 </style>

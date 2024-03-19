@@ -175,7 +175,7 @@ const submitbusinessProfileDataindividual = async (Id) => {
       "An error occurred while Updating the Profile."
     );
   } finally {
-    isLoading.value = false;
+    isLoader.value = false;
   }
 };
 
