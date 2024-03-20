@@ -1,18 +1,13 @@
-import { BASE_URL } from "../utils/config";
-
+import axiosInstance from './axios';
 export async function uploadImage(file) {
   try {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetch(`${BASE_URL}/upload/file`, {
-      method: "POST",
-      body: formData,
-    });
+    const response = await axiosInstance.post(`/upload/file`, formData);
 
-    if (response.ok) {
-      const data = await response.json();
-      return data.url;
+    if (response) {
+      return response.url;
     } else {
       console.error("Failed to upload file");
       return null;

@@ -30,8 +30,8 @@ const handleExitButtonClick = async () => {
   });
 
   if (result.isConfirmed) {
-    localStorage.removeItem("accessToken");
     localStorage.removeItem("UserId");
+    localStorage.removeItem("accessToken");
     localStorage.removeItem("userRole");
     invoice.userProfileData.userRole = "";
     router.push({ name: "Login" });
@@ -55,8 +55,7 @@ const componentsWithSidebar = [
   "Subscription",
   "DashBoard",
 ];
-const userRole = ref();
-onMounted(async () => {
+const UserRole=async()=>{
   try {
     isLoading.value = true;
 
@@ -80,6 +79,9 @@ onMounted(async () => {
   } finally {
     isLoading.value = false;
   }
+}
+onMounted(async () => {
+  UserRole();
 });
 
 const route = useRoute();

@@ -1,5 +1,6 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
+import { notification } from "ant-design-vue";
 import { ref, onMounted, computed } from "vue";
 import {
   updateInvoiceStatus,
@@ -70,7 +71,13 @@ const changeStatus = async () => {
     isLoading.value = false;
   }
 };
-
+const openNotificationWithIcon = (type, message) => {
+  notification[type]({
+    message: type === "success" ? "Success" : "Error",
+    description: message,
+    duration: 3,
+  });
+};
 const changeUnpaidStatus = async () => {
   try {
     isLoading.value = true;
@@ -133,14 +140,14 @@ onMounted(async () => {
   try {
     isLoading.value = true;
     const response = await getSingleInvoice(invoiceId);
-    invoiceDetails.value = response;
-    console.log("response", response);
+    invoiceDetails.value = response.data;
+    // console.log("response", response);
     business.value = invoiceDetails.value.sender;
     // console.log("invoiceDetails.sender._id",invoiceDetails.value.sender._id)
     clientId.value = invoiceDetails.value.receiver;
     const clientResponse = await getSingleClient(clientId.value);
     clientDetails.value = clientResponse.data;
-    console.log("clientDetails.value", clientDetails.value);
+    // console.log("clientDetails.value", clientDetails.value);
     //console.log("invoiceDetails.receiver",clientDetails.value)
     invoice.updateFormData(invoiceDetails);
     logoPreview.value = invoiceDetails.logoPreview;
@@ -281,8 +288,8 @@ const info=()=>{
                 <span v-if="business.city">{{ business.city }}&nbsp;</span>
                 <span v-if="business.state">{{ business.state }}</span
                 ><br />
-                <span v-if="clientDetails.email"
-                  >{{ clientDetails.email }}<br
+                <span v-if="business.email"
+                  >{{ business.email }}<br
                 /></span>
               </p>
             </div>
@@ -290,7 +297,7 @@ const info=()=>{
             <p class="font-semibold">To:</p>
 
             <div class="text-left">
-              <p class="">
+              <p class="" v-if="clientDetails">
                 <span v-if="clientDetails.firstName"
                   >{{ clientDetails.firstName }}&nbsp;</span
                 >
@@ -315,6 +322,7 @@ const info=()=>{
                 <span v-if="clientDetails.email">{{ clientDetails.email }}</span
                 ><br />
               </p>
+              <p v-else>Receiver Details Unavailable </p>
             </div>
           </div>
           <div

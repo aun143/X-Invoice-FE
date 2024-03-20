@@ -12,7 +12,6 @@ import {
 } from "../service/BusinessProfileService";
 import { getUserDetailsApi } from "../service/LoginService";
 // import Modal from "../components/Modal.vue";
-import { BASE_URL } from "../utils/config";
 import { uploadImage } from "../service/UploadImage";
 import { notification } from "ant-design-vue";
 const isLoading = ref(false);
@@ -99,12 +98,12 @@ const submitbusinessProfileDataOrganization = async (id) => {
 
     if (success) {
       router.push("/");
-      invoice.updateUserProfileAndBusinessProfile(data.data);
+      invoice.updateUserProfileAndBusinessProfile(data);
 
       Swal.fire({
         icon: "success",
         title: "Profile Updated",
-        text: data.message || "Profile has been Updated successfully.",
+        text: data || "Profile has been Updated successfully.",
       });
     } else {
       console.error("Error During Profile Updation:", error);
@@ -146,12 +145,12 @@ const submitbusinessProfileDataindividual = async (Id) => {
 
     if (success) {
       router.push("/");
-      invoice.updateUserProfileAndBusinessProfile(data.data);
+      invoice.updateUserProfileAndBusinessProfile(data);
 
       Swal.fire({
         icon: "success",
         title: "Profile Updated",
-        text: data.message || "Profile has been Updated successfully.",
+        text: data || "Profile has been Updated successfully.",
       });
     } else {
       console.error("Error During Profile individual:", error);
@@ -178,6 +177,7 @@ const submitbusinessProfileDataindividual = async (Id) => {
     isLoader.value = false;
   }
 };
+
 
 onMounted(async () => {
   try {
@@ -308,10 +308,10 @@ const displayImage = (input, imageUrl) => {
     reader.readAsDataURL(file);
     if (profileType.value === "individual") {
       invoice.userProfileData.individualProfile.url = file;
-      console.log("invoice.ind.url", imageUrl);
+      console.log("invoice.ind.url", file);
     } else if (profileType.value === "organization") {
       invoice.userProfileData.organizationProfile.url = file;
-      console.log("invoice.org.url", imageUrl);
+      console.log("invoice.org.url", file);
     }
   }
 };

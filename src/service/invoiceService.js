@@ -1,121 +1,100 @@
-// invoiceService.js
-import {BASE_URL} from "../utils/config";
-
+import axiosInstance from './axios'; 
 // const BASE_URL = "http://localhost:3010/invoices/getInvoice";
+export const getSingleInvoice = async (invoiceId) => {
+  try {
+    const token = localStorage.getItem('accessToken');
 
-export const
-  getSingleInvoice= async (invoiceId) => {
-    const token = localStorage.getItem("accessToken");
+    const response = await axiosInstance.get(`/invoice/getInvoice/${invoiceId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log("response",response)
+    return { success: true, data: response };
+  } catch (error) {
+    let errorMessage = 'An error occurred while getting single Invoice.';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
+    }
+
+    return { success: false, error: errorMessage };
+  }
+};
+  export const updateInvoiceStatus = async (invoiceId, data) => {
+
     try {
-      const response = await fetch(`${BASE_URL}/invoice/getInvoice/${invoiceId}`, {
-        method: "GET",
+      const token = localStorage.getItem('accessToken');
+  
+      const response = await axiosInstance.put(`/invoice/updatePaidInvoiceStatus/${invoiceId}`, data, {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-
-          // Add any other headers as needed
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
       });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch invoice with ID ${invoiceId}`);
-      }
-
-      return response.json();
+  
+      return { success: true, data: response };
     } catch (error) {
-      throw new Error(`Error in getSingleInvoice service: ${error.message}`);
+      // console.log("error", error);
+  
+      let errorMessage = 'An error occurred while updating the Invoice Payment Status.';
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
+  
+      return { success: false, error: errorMessage };
     }
   };
+  export const updateUnpaidInvoiceStatus = async (invoiceId, data) => {
 
-  export const updateInvoiceStatus = async (invoiceId, updateData) => {
     try {
-      // const token = localStorage.getItem("accessToken");
-
-      // console.log("InvoiceId", invoiceId);
-      // console.log("token>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.", token);
-
-      // console.log("Access token Bhai is This For Now ><><>", accessToken);
-
-      const response = await fetch(
-        `${BASE_URL}/invoice/updatePaidInvoiceStatus/${invoiceId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            // Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(updateData),
-        }
-      );
-      // console.log("invoiveId", invoiceId);
-
-    const responseData = await response.json();
-        
-        if (!response.ok) {
-          return { success: false, error: responseData.message || 'Failed to create invoice.' };
-        }
-        
-        return { success: true, data: responseData };
-      } catch (error) {
-        return { success: false, error: error.message || 'A error occurred while creating the invoice.' };
+      const token = localStorage.getItem('accessToken');
+  
+      const response = await axiosInstance.put(`/invoice/updatePaidInvoiceStatus/${invoiceId}`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      return { success: true, data: response };
+    } catch (error) {
+      // console.log("error", error);
+  
+      let errorMessage = 'An error occurred while updating the Invoice Payment Status.';
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
       }
-    };
-
-export const updateUnpaidInvoiceStatus= async (invoiceId, updateData) => {
-    try {
-      // const token = localStorage.getItem("accessToken");
-
-      const response = await fetch(
-        `${BASE_URL}/invoice/updateUnpaidInvoiceStatus/${invoiceId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            // Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(updateData),
-        }
-      );
-
-      const responseData = await response.json();
-        
-        if (!response.ok) {
-          return { success: false, error: responseData.message || 'Failed to create invoice.' };
-        }
-        
-        return { success: true, data: responseData };
-      } catch (error) {
-        return { success: false, error: error.message || 'A error occurred while creating the invoice.' };
-      }
-    };
-  export const deleteInvoice= async (invoiceId, updateData) => {
+  
+      return { success: false, error: errorMessage };
+    }
+  };  
+ 
+  export const deleteInvoice = async  (invoiceId)  => {
     try {
       const token = localStorage.getItem("accessToken");
-
-      const response = await fetch(
-        `${BASE_URL}/invoice/deleteInvoice/${invoiceId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(updateData),
+  
+      const response = await axiosInstance.delete(`/invoice/deleteInvoice/${invoiceId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json(); // Parse error response
-        console.error("Error response from server:", errorData);
-        throw new Error(`Failed to deleteInvoice   for ID ${invoiceId}`);
-      }
-
-      return response.json();
+      });
+  
+      return { success: true, data: response.data };
     } catch (error) {
-      console.error("Error in deleteInvoice service:", error);
-      throw new Error(`Error in deleteInvoice service: ${error.message}`);
+      let errorMessage = 'An error occurred while deleting the invoice.';
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
+  
+      return { success: false, error: errorMessage };
     }
   };
+ 
+
+
+
 
 
 // 

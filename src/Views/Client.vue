@@ -8,7 +8,6 @@ import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
-import {BASE_URL} from "../utils/config";
 import {uploadImage} from "../service/UploadImage"
 const isLoader = ref(false);
 const router = useRouter();

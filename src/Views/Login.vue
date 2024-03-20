@@ -4,8 +4,7 @@ import { ref, } from "vue";
 import { useRouter } from "vue-router";
 import Button from "../components/Button.vue";
 import { Colors } from "../utils/color";
-import { loginUserApi,getUserDetailsApi } from "../service/LoginService";
-
+import { loginUserApi } from "../service/LoginService";
 import { notification } from "ant-design-vue";
 import { useInvoiceStore } from "../stores/index";
 import Swal from "sweetalert2";
@@ -34,20 +33,7 @@ const loginData = ref({
 });
 
 const emit = defineEmits(["updateSignUpStatus"]);
-async function getUserDetailsAndRedirect() {
-  try {
-    const userId = localStorage.getItem("UserId");
-    const userProfileData = await getUserDetailsApi(userId);
 
-    // Update the user profile data with the fetched data
-    invoice.userProfileData.userRole = userProfileData.userRole;
-
-    // After updating user data, navigate to the root route ("/")
-    router.push("/");
-  } catch (error) {
-    console.error("Error Fetching User Details:", error);
-  }
-}
 // Flag to track if the login button has been clicked
 const loginButtonClicked = ref(false);
 
@@ -89,7 +75,7 @@ const logInUser = async () => {
         "Access token and UserId set successfully:",
         data.data.access_token
       );
-      getUserDetailsAndRedirect();
+      // getUserDetailsAndRedirect();
       openNotificationWithIcon("success", "Login successful");
       loginData.email="";
       loginData.password="";

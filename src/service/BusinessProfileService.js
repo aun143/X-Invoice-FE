@@ -1,122 +1,69 @@
- import {BASE_URL} from "../utils/config";
+import axiosInstance from './axios'; 
 export const PostBusinessProfilerIndiviualApi = async (data) => {
-  try{
-  const token = localStorage.getItem("accessToken");
+  try {
+    const token = localStorage.getItem('accessToken');
 
-    const response = await fetch(`${BASE_URL}/business/postbusinessProfile`, {
-      method: 'POST',
+    const response = await axiosInstance.post(`/business/postbusinessProfile`, data, {
       headers: {
-        'Content-Type': 'application/json',
-      "Authorization": `Bearer ${token}`,
-
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
     });
-  
-    const responseData = await response.json();
 
-    if (!response.ok) {
-      throw new Error(responseData.message || 'Failed to create client.');
-    }
-
-    return { success: true, data: responseData };
+    return { success: true, data: response };
   } catch (error) {
-    return { success: false, error: error.message || 'An error occurred while creating the client.' };
+    let errorMessage = 'An error occurred while creating the business profile';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
+    }
+    return { success: false, error: errorMessage };
   }
 };
-  export const getBusinessProfileIndividualApi = async (data) => {
-    const response = await fetch(`${BASE_URL}/business/getBusinessProfile/${individualId}`, {
-      method: 'GET',
+
+export const PatchBusinessProfilerIndiviualApi = async (individualId, data) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+
+    const response = await axiosInstance.put(`/business/updatebusinessProfile/${individualId}`, data, {
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
     });
-  
-    if (!response.ok) {
-      throw new Error('Failed to Post Business Profile Indiviual');
-    }
-  
-    return response.json();
-  };  
-  export const GetBusinessProfileOrganizationApi = async (data) => {
-    const response = await fetch(`${BASE_URL}/business/getBusinessProfile/${organizationId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  
-    if (!response.ok) {
-      throw new Error('Failed to Post Business Profile Indiviual');
-    }
-  
-    return response.json();
-  };
-  
-  export const PostBusinessProfilerOrganizationApi = async (data) => {
-    const response = await fetch(`${BASE_URL}/business/postbusinessProfile`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-  
-    if (!response.ok) {
-      throw new Error('Failed to Post Business Profile organization');
-    }
-  
-    return response.json();
-  }; 
-  export const PatchBusinessProfilerIndiviualApi = async (individualId,data) => {
-    try{
-    const token = localStorage.getItem("accessToken");
 
-
-    const response = await fetch(`${BASE_URL}/business/updatebusinessProfile/${individualId}`, {
-      method: 'PUT',  // Change method to PUT
-      headers: {
-        'Content-Type': 'application/json',
-        "Authorization": `Bearer ${token}`,
-
-      },
-      body: JSON.stringify(data),
-    });
-  
-    
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      throw new Error(responseData.message || 'Failed to create client.');
-    }
-
-    return { success: true, data: responseData };
+    return { success: true, data: response.data };
   } catch (error) {
-    return { success: false, error: error.message || 'An error occurred while creating the client.' };
+    // console.log("error", error);
+
+    let errorMessage = 'An error occurred while updating the individual business profile.';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
+    }
+
+    return { success: false, error: errorMessage };
   }
 };
-  export const PatchBusinessProfilerOrganizationApi = async (organizationId,data) => {
-    try{
-    const token = localStorage.getItem("accessToken");
 
-    const response = await fetch(`${BASE_URL}/business/updatebusinessProfile/${organizationId}`, {
-      method: 'PUT',  // Change method to PUT
+export const PatchBusinessProfilerOrganizationApi = async (organizationId, data) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+
+    const response = await axiosInstance.put(`/business/updatebusinessProfile/${organizationId}`, data, {
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": `Bearer ${token}`,
-
+        'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
     });
- 
-    const responseData = await response.json();
 
-    if (!response.ok) {
-      throw new Error(responseData.message || 'Failed to create client.');
+    return { success: true, data: response.data };
+  } catch (error) {
+    // console.log("error", error);
+
+    let errorMessage = 'An error occurred while updating the organization business profile.';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
     }
 
-    return { success: true, data: responseData };
-  } catch (error) {
-    return { success: false, error: error.message || 'An error occurred while creating the client.' };
+    return { success: false, error: errorMessage };
   }
 };

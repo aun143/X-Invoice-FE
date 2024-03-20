@@ -37,46 +37,57 @@ const sortedInfo = reactive({
 const handleSaveDraftButtonClick = () => {
   router.push("/new");
 };
-
-onMounted(async () => {
-  try{
-    await getUserDetailsAndRedirect();
-  }catch(error){
-
-  }
+const AllInvoice = async () => {
   try {
     isLoading.value = true;
-   
+
     const { success, data, error } = await getAllInvoice();
+
+    if (!success) {
+      throw new Error(error || 'Failed to get invoices.');
+    }
+
     const invoicesWithReceiverNames = await Promise.all(data.map(async (invoice) => {
-      const reciever = await getSingleClient(invoice.receiver);
-      const receiverDetails=reciever.data;
-      const receiverName = receiverDetails.firstName + " " + receiverDetails.lastName;
-      return { ...invoice, receiverName };
+      try {
+        const { success, data, error } = await getSingleClient(invoice.receiver);
+        
+        if (success) {
+          const receiverDetails = data;
+          const receiverName = receiverDetails.firstName + " " + receiverDetails.lastName;
+          return { ...invoice, receiverName };
+        } else {
+          console.log("Error fetching client details:", error);
+          // If there's an error fetching client details, return the invoice without the receiver name
+          return { ...invoice, receiverName: "Receiver Details Unavailable" };
+        }
+      } catch (error) {
+        console.log("Error fetching client details:", error);
+        // If there's an error fetching client details, return the invoice without the receiver name
+        return { ...invoice, receiverName: "Receiver Details Unavailable" };
+      }
     }));
+
     invoices.value = invoicesWithReceiverNames;
 
-    if (success) {
-    
-      console.log("Success During Invoice get:", success);
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error During Invoice Get",
-        text: error || "An error occurred while getting the Invoice.",
-      });
-      if (error === "Your subscription plan has expired. Please update your plan.") {
-        router.push("/subscription");
-      } else {
-        openNotificationWithIcon("error", error);
-      }
-    }
+    // Handle success as needed
+    // console.log("Success During Invoice get:", success);
   } catch (error) {
     console.error("Error During Invoice Get:", error);
+    // Handle error if needed
     // openNotificationWithIcon("error", "An error occurred while getting the Invoice.");
   } finally {
     isLoading.value = false;
   }
+};
+
+onMounted(async () => {
+  try{
+     getUserDetailsAndRedirect();
+     AllInvoice();
+  }catch(error){
+
+  }
+ 
 });
 const openNotificationWithIcon = (type, message) => {
   notification[type]({

@@ -1,53 +1,45 @@
-import {BASE_URL} from "../utils/config";
+import axiosInstance from './axios'; 
 export const signUpUserApi = async (data) => {
-  try{
-  const response = await fetch(`${BASE_URL}/user/create`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await axiosInstance.post('/user/create', data);
 
- 
-  const responseData = await response.json();
+    // Axios handles response status internally, so no need to check for response.ok
+    return { success: true, data: response };
+  } catch (error) {
+    let errorMessage = 'An error occurred while signup.';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
+    }
 
-  if (!response.ok) {
-    throw new Error(responseData.message || 'Failed to create client.');
+    return { success: false, error: errorMessage };
   }
-
-  return { success: true, data: responseData };
-} catch (error) {
-  return { success: false, error: error.message || 'An error occurred while creating the client.' };
-}
 };
-export const getSignUpUser = async (data) => {
-  const response = await fetch(`${BASE_URL}/user/getLoginUser`, {
-    method: 'Get',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
 
-  if (!response.ok) {
-    throw new Error('Failed to SignUp');
-  }
+// export const getSignUpUser = async () => {
+//   try {
+//     const response = await axiosInstance.get('/user/getLoginUser');
 
-  return response.json();
-};
+//     // Axios handles response status internally, so no need to check for response.ok
+//     return response.data;
+//   } catch (error) {
+//     // Axios interceptor will handle error responses
+//     throw new Error('Failed to get SignUp user');
+//   }
+// };
+
 export const updateSignUpData = async (data) => {
-  const response = await fetch(`${BASE_URL}/user/subscription`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await axiosInstance.put('/user/subscription', data);
 
-  if (!response.ok) {
-    throw new Error('Failed to SignUp');
+    // Axios handles response status internally, so no need to check for response.ok
+    return response;
+  } catch (error) {
+    let errorMessage = 'An error occurred while updating signup data.';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
+    }
+
+    // throw new Error('Failed to update SignUp data');
+    return { success: false, error: errorMessage };
   }
-
-  return response.json();
 };

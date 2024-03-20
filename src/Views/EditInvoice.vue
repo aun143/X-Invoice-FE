@@ -10,7 +10,6 @@ import { getAllClient } from "../service/ClientService";
 import { Colors } from "../utils/color";
 import { updateInvoiceData } from '../service/MainService';
 import {getSingleInvoice} from "../service/invoiceService";
-import {BASE_URL} from "../utils/config";
 import Swal  from "sweetalert2";
 import { notification } from "ant-design-vue";
 import {uploadImage} from "../service/UploadImage"
@@ -203,29 +202,33 @@ const deleteItem = (index) => {
   }
 };
 const clients=ref();
-const ClientProfile = async () => { try {
+const ClientProfile = async () => {
+  try {
+    invoice.resetFormData();
+
     isLoading.value = true;
-  const result = await getAllClient(); 
-  if (result && result.data) {
-    clients.value = result.data;
-  } else {
-    throw new Error("No data received from server");
-  }
-} catch (error) {
-  console.error("Error fetching Clients:", error);
-  Swal.fire({
-    icon: 'error',
-    title: 'Oops...',
-    text: "Error fetching Clients: " + error.message,
-    footer: 'Please try again'
-  });
-}finally {
+    const result = await getAllClient();
+    if (result && result.data.data) {
+      clients.value = result.data.data;
+    } else {
+      throw new Error("No data received from server");
+    }
+  } catch (error) {
+    console.error("Error fetching Clients:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Error fetching Clients: " + error.message,
+      footer: "Please try again",
+    });
+  } finally {
     isLoading.value = false; // Set isLoading back to false after fetching data
-  };}
+  }
+};
   const InvoiceData = async () => {try {
     isLoading.value = true;
     const response = await getSingleInvoice(invoiceId);
-     invoice.formData = response;
+     invoice.formData = response.data;
     invoice.updateFormData(invoice.formData);
     invoice.formData.file = invoice.formData.url;
     //console.log("Invoice details fetched successfully:", invoice.formData);
@@ -245,9 +248,9 @@ const addMoreItem = () => {
 
 const SubTotal = computed(() => {
   let sub = 0;
-  invoice.formData.items.forEach((item) => {
-    sub += item.amount;
-  });
+  // invoice.formData.items.forEach((item) => {
+  //   sub += item.amount;
+  // });
   return sub;
 });
 
@@ -574,9 +577,18 @@ const calculateUpcomingDueDate = () => {
 </div>
           </div>
           
-          <a-select  v-model:value="invoice.formData.receiver" class="ml-2 w-[100%] tex-left"  size="medium"  :loading="isLoading" >
+         <a-select
+              size="medium"
+              v-model:value="invoice.formData.receiver"
+              class="ml-2 w-[100%]"
+              :loading="isLoading"
+              style="text-align: left"
+            >
               <a-select-option
-              v-for="client in filteredClients" :key="client._id" >  {{ client.firstName }} {{ client.lastName }}
+                v-for="client in filteredClients"
+                :key="client._id"
+              >
+                {{ client.firstName }} {{ client.lastName }}
               </a-select-option>
             </a-select>
 

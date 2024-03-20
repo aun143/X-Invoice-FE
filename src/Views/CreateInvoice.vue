@@ -13,7 +13,6 @@ import { getUserDetailsApi } from "../service/LoginService";
 import Swal from "sweetalert2";
 import { notification } from "ant-design-vue";
 import { postInvoiceData } from "../service/MainService";
-import { BASE_URL } from "../utils/config";
 import { uploadImage } from "../service/UploadImage";
 // import {  Input } from "ant-design-vue";
 

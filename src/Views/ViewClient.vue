@@ -37,7 +37,13 @@ const handleDropdownItemClickParent = (clickedItem) => {
 };
 
 
-
+const openNotificationWithIcon = (type, message) => {
+  notification[type]({
+    message: type === "success" ? "Success" : "Error",
+    description: message,
+    duration: 3,
+  });
+};
 const deletClient = async () => {
   try {
     //console.log("deletind clientId:", clientId);

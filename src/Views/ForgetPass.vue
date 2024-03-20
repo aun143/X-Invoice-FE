@@ -196,7 +196,6 @@ const openNotificationWithIcon = (type, message) => {
                 <Button v-else
                 :bgColor="Colors.orange"
                 :textColor="Colors.white"
-                :class="computedClasses"
                 fontSize="10px"
                 buttonText="Reset Password"
                 class="w-100"

@@ -117,13 +117,14 @@ const submit = async () => {
 
     
     const body = { userId: userid, profileBody: invoice.userProfileData };
+    console.log("body",body.profileBody)
 const { success, data, error } = await PostBusinessProfilerIndiviualApi(body);
 
 if (success) {
   invoice.updateUser(data);
   invoice.userProfileData={}
+  invoice.updateUserProfileAndBusinessProfile(data);
     router.push("/Subscription");
-  invoice.updateUserProfileAndBusinessProfile(data.data);
   Swal.fire({
     icon: "success",
     title: "Profile Created",
@@ -167,7 +168,6 @@ const computedClasses = {
 </script>
 
 <template>
-  
   <section class="flex w-[100%]  items-center justify-center lg:mt-[15%] 2xl:mt-[10%] 2xl:[mt-40%] mt-[2%]" >
     <div class="grid grid-cols-10 max-w-5xl h-[80%] shadow-md relative">
       <div

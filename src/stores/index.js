@@ -345,7 +345,7 @@ userClientProfile :{
           file: "",
           url: "",
           invoiceDue: "",
-          sender: this.$state.formData.sender,
+          sender: {},
           receiver:"",
           items: [
             {

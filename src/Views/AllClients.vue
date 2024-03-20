@@ -6,6 +6,7 @@ import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import Swal from "sweetalert2";
 import { Colors } from "../utils/color";
+import { notification } from "ant-design-vue";
 
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
@@ -66,11 +67,8 @@ const fetchClients = async () => {
       clients.value = data.data;
     totalItems.value = data.totalItems;
     }else{
-      Swal.fire({
-    icon: "error",
-    title: "Error Getting All Clients",
-    text: error || "An error occurred while Getting All Clients.",
-  });
+    openNotificationWithIcon("error", error);
+
   if (error === "Your subscription plan has expired. Please update your plan.") {
     router.push("/subscription");
   } else {
@@ -83,9 +81,16 @@ const fetchClients = async () => {
     isLoading.value = false;
   }
 };
-
-onMounted(fetchClients);
-
+const openNotificationWithIcon = (type, message) => {
+  notification[type]({
+    message: type === "success" ? "Success" : "Error",
+    description: message,
+    duration: 5, 
+  });
+};
+onMounted(() => {
+  fetchClients();
+});
 const customRow = (record) => {
   return {
     onClick: () => {

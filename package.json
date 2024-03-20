@@ -14,7 +14,7 @@
     "ag-grid-community": "^31.0.2",
     "ag-grid-vue3": "^31.0.2",
     "ant-design-vue": "^4.1.2",
-    "axios": "^1.6.3",
+    "axios": "^1.6.8",
     "cloudinary": "^2.0.1",
     "cors": "^2.8.5",
     "date-fns": "^3.0.6",

@@ -1,53 +1,39 @@
-import {BASE_URL} from "../utils/config";
-
+import axiosInstance from './axios';
 export const loginUserApi = async (data) => {
-  try{
-  const response = await fetch(`${BASE_URL}/user/loginUser`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await axiosInstance.post(`/user/loginUser`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  
-  const responseData = await response.json();
-
-  if (!response.ok) {
-    throw new Error(responseData.message || 'Failed to create client.');
+    return { success: true, data: response };
+  } catch (error) {
+    let errorMessage = 'An error occurred while login';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
+    }
+    return { success: false, error: errorMessage };
   }
-
-  return { success: true, data: responseData };
-} catch (error) {
-  return { success: false, error: error.message || 'An error occurred while creating the client.' };
-}
 };
 
 export const getUserDetailsApi = async () => {
   try {
     const accessToken = localStorage.getItem("accessToken");
 
-    // console.log("accessToken:IS THIS bHAI>>> " + accessToken);
-    const response = await fetch(`${BASE_URL}/user/me`, {
-      method: "GET",
+    const response = await axiosInstance.get(`/user/me`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
     });
 
-    // console.log("accessToken:>>> ", accessToken);
-
-    if (!response.ok) {
-      throw new Error("Failed to get user details");
-    }
-
-    return response.json();
+    return response;
   } catch (error) {
-    console.error("Error in getUserDetailsApi:", error.message);
-    throw error;
+    let errorMessage = 'An error occurred while getting the business profile.';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
+    }
+    return { success: false, error: errorMessage };
   }
 };
-
-
-// Assuming you have a function to retrieve the access token from local storage

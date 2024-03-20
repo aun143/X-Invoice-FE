@@ -13,7 +13,7 @@ async function updateFree() {
   const result = await Swal.fire({
     title: "Free Plan",
     text: "Are you sure you want to Choose Free Plan",
-    icon: "success",
+    icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
@@ -49,7 +49,7 @@ async function updateBasic() {
   const result = await Swal.fire({
     title: "Basic Plan",
     text: "Are you sure you want to Choose Basic Plan",
-    icon: "success",
+    icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
@@ -86,7 +86,7 @@ async function updateStandard() {
   const result = await Swal.fire({
     title: "Standard Plan",
     text: "Are you sure you want to Choose Standard Plan",
-    icon: "success",
+    icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
@@ -123,7 +123,7 @@ async function updatePremium() {
   const result = await Swal.fire({
     title: "Premium Plan",
     text: "Are you sure you want to Choose Premium Plan",
-    icon: "success",
+    icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",

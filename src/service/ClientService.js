@@ -1,150 +1,111 @@
-import {BASE_URL} from "../utils/config";
-// export const clientApi = async (data) => {
-
-//   try {
-//     const token = localStorage.getItem("accessToken");
-
-//     const response = await fetch(`${BASE_URL}/client/createClient`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         "Authorization": `Bearer ${token}`,
-//       },
-//       body: JSON.stringify(data),
-//     });
-   
-//     return response.json();
-//   } catch (error) {
-//     return Error
-//   }
-
-
-// };
+import axiosInstance from './axios';
 
 export const clientApi = async (data) => {
   try {
     const token = localStorage.getItem("accessToken");
 
-    const response = await fetch(`${BASE_URL}/client/createClient`, {
-      method: "POST",
+    const response = await axiosInstance.post(`/client/createClient`, data, {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
+      }
     });
 
-    const responseData = await response.json();
+    return { success: true, data: response.data };
+  } catch (error) {
 
-    if (!response.ok) {
-      throw new Error(responseData.message || 'Failed to create client.');
+    let errorMessage = 'An error occurred while creating the client.';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
     }
 
-    return { success: true, data: responseData };
-  } catch (error) {
-    return { success: false, error: error.message || 'An error occurred while creating the client.' };
+    return { success: false, error: errorMessage };
   }
 };
-
-
 export const getAllClient = async () => {
   try {
-    // Retrieve the token from local storage using the key
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem('accessToken');
 
-    const response = await fetch(`${BASE_URL}/client/getAllClient`, {
-      method: "GET",
+    const response = await axiosInstance.get('/client/getAllClient', {
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
     });
-
-    // console.log("token: is This Of This User" , accessToken);
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      throw new Error(responseData.message || 'Failed to Update client.');
+    // console.log("response",response)
+    return { success: true, data: response };
+  } catch (error) {
+    let errorMessage = 'An error occurred while getting All the client';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
     }
 
-    return { success: true, data: responseData };
-  } catch (error) {
-    return { success: false, error: error.message || 'An error occurred while Updating the client.' };
+    return { success: false, error: errorMessage };
   }
 };
-
 
 export const updateClient = async (clientId, updatedData) => {
   try {
     const token = localStorage.getItem("accessToken");
 
-    const response = await fetch(`${BASE_URL}/client/updateClient/${clientId}`, {
-      method: "PUT",
+    const response = await axiosInstance.put(`/client/updateClient/${clientId}`, updatedData, {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
-
-      },
-      body: JSON.stringify(updatedData),
+      }
     });
 
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      throw new Error(responseData.message || 'Failed to Update client.');
+    return { success: true, data: response.data };
+  } catch (error) {
+    let errorMessage = 'An error occurred while updating the client.';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
     }
 
-    return { success: true, data: responseData };
-  } catch (error) {
-    return { success: false, error: error.message || 'An error occurred while Updating the client.' };
+    return { success: false, error: errorMessage };
   }
 };
+
 export const getSingleClient = async (clientId) => {
   try {
     const token = localStorage.getItem("accessToken");
-    const response = await fetch(`${BASE_URL}/client/getClient/${clientId}`, {
-      method: "GET",
+
+    const response = await axiosInstance.get(`/client/getClient/${clientId}`, {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
-
-      },
-     
+      }
     });
 
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      throw new Error(responseData.message || 'Failed to create client.');
+    return { success: true, data: response };
+  } catch (error) {
+    let errorMessage = 'An error occurred while getting single client.';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
     }
 
-    return { success: true, data: responseData };
-  } catch (error) {
-    return { success: false, error: error.message || 'An error occurred while creating the client.' };
+    return { success: false, error: errorMessage };
   }
 };
 
 export const deleteClient = async (clientId) => {
-
   try {
     const token = localStorage.getItem("accessToken");
 
-    const response = await fetch(`${BASE_URL}/client/deleteClient/${clientId}`, {
-      method: "DELETE",
+    const response = await axiosInstance.delete(`/client/deleteClient/${clientId}`, {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
-
-      },
-     
+      }
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to get single Client ${clientId}`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    let errorMessage = 'An error occurred while deleting client.';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
     }
 
-    return response.json();
-  } catch (error) {
-    throw new Error("Error in getsingleClientService: " + error.message);
+    return { success: false, error: errorMessage };
   }
 };

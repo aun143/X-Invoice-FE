@@ -14,7 +14,6 @@ import { getUserDetailsApi } from "../service/LoginService";
 import Swal from "sweetalert2";
 import { notification } from "ant-design-vue";
 import { postInvoiceData } from "../service/MainService";
-import { BASE_URL } from "../utils/config";
 import { uploadImage } from "../service/UploadImage";
 // import {  Input } from "ant-design-vue";
 
@@ -66,7 +65,7 @@ if(success){
       icon: "success",
       title: " Invoice Created ",
       text: " Invoice has been Created successfully.",
-    });
+    })
     return data._id; // Return the ID of the created invoice
     } else {
       openNotificationWithIcon("error", error || "An error occurred while creating the invoice");
@@ -807,7 +806,7 @@ const switchProfileType = (type) => {
                 <div class="home">
                   <!-- <Modal @close="toggleModal" :modalActive="modalActive">
                 </Modal> -->
-                  <a-modal v-model:open="open">
+                  <a-modal v-model:open="open" width="80%" class="max-w-[100%] md:max-w-[100%]  lg:max-w-[60%]  xl:max-w-[50%] 2xl:max-w-[40%] ">
                     <Client />
                   </a-modal>
                 </div>

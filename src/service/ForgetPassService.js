@@ -1,28 +1,23 @@
-import {BASE_URL} from "../utils/config";
+import axiosInstance from './axios';
 export const ForgetUserApi = async (data) => {
-  try{
-  const token = localStorage.getItem("accessToken");
+  try {
+    const token = localStorage.getItem("accessToken");
 
-  const response = await fetch(`${BASE_URL}/user/forgotpassword`, {
+    const response = await axiosInstance.post(`/user/forgotpassword`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
 
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      "Authorization": `Bearer ${token}`,
-
-
-    },
-    body: JSON.stringify(data),
-  });
-
-  const responseData = await response.json();
-
-  if (!response.ok) {
-    throw new Error(responseData.message || 'Failed to create client.');
+    return { success: true, data: response };
+  } catch (error) {
+    let errorMessage = 'An error occurred while updating the password.';
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message;
+    }
+    return { success: false, error: errorMessage };
   }
-
-  return { success: true, data: responseData };
-} catch (error) {
-  return { success: false, error: error.message || 'An error occurred while creating the client.' };
-}
 };
+
+

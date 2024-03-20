@@ -6,9 +6,8 @@ import { getSingleClient, updateClient,deleteClient } from "../service/ClientSer
 import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
-import { notification } from "ant-design-vue";
+import { notification } from "ant-design-vue";  
 import Swal from "sweetalert2";
-import {BASE_URL} from "../utils/config";
 import {uploadImage} from "../service/UploadImage"
 
 const invoice = useInvoiceStore();
@@ -62,7 +61,7 @@ const handleSaveDraftButtonClick = async () => {
       Swal.fire({
         icon: "success",
         title: "Client Created",
-        text: data.message || "Client has been Updatied successfully.",
+        text: data || "Client has been Updatied successfully.",
       });
     } else {
       console.error("Error During Client Updation:", error);
