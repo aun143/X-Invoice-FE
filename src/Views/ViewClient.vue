@@ -1,13 +1,15 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getSingleClient, updateClient,deleteClient } from "../service/ClientService";
+import { getSingleClient,deleteClient } from "../service/ClientService";
 import Button from "../components/Button.vue";
 import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
 import Swal from "sweetalert2";
+import { getAllInvoice } from "../service/IndexService";
+
 
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
@@ -16,13 +18,10 @@ const route = useRoute();
 const router = useRouter();
 const clientId = route.params.clientId;
 const clientDetails = ref("");
+const invoices  = ref("");
 const showMore = ref(false);
 
 const selectedField = ref("individual");
-const selectField = (field) => {
-  selectedField.value = field;
-};
-
 const dropdownTitle = "Actions";
 const dropdownItems = [{ title: "Edit Client" }, { title: "Delete Client" }];
 const handleDropdownItemClickParent = (clickedItem) => {
@@ -46,16 +45,77 @@ const openNotificationWithIcon = (type, message) => {
 };
 const deletClient = async () => {
   try {
-    //console.log("deletind clientId:", clientId);
-    const status = await deleteClient(clientId);
-    Swal.fire({
-      icon: "success",
-      title: " Client Deleted ",
-      text: " Client has been Deleted Successfully.",
+    // Check if client data is associated with any invoices
+    const invoicesWithClient = invoices.value.filter(invoice => {
+      return invoice.receiver === clientId;
     });
-    //console.log("delete client successfully:", status);
+
+    if (invoicesWithClient.length > 0) {
+      // Client data is associated with invoices
+      const invoiceNumbers = invoicesWithClient.map(invoice => invoice.invoiceNumber).join(', ');
+      const errorMessage = `Cannot delete Client as it is associated with the following invoice(s):${invoiceNumbers}`;
+      Swal.fire({
+        icon: "error",
+        title: "Client Deletion Error",
+        text: errorMessage
+      });
+    } else {
+      // No invoices associated with the client, proceed with deletion
+      const status = await deleteClient(clientId);
+      Swal.fire({
+        icon: "success",
+        title: "Client Deleted",
+        text: "Client has been deleted successfully."
+      });
+      // Redirect or handle as needed after successful deletion
+      router.push("/AllClients");
+    }
   } catch (error) {
-    console.error("Error delete client:", error);
+    console.error("Error deleting client:", error);
+    // Handle error if needed
+  }
+};
+
+const AllInvoice = async () => {
+  try {
+    isLoading.value = true;
+
+    const { success, data, error } = await getAllInvoice();
+
+    if (!success) {
+      throw new Error(error || 'Failed to get invoices.');
+    }
+
+    const invoicesWithReceiverNames = await Promise.all(data.map(async (invoice) => {
+      try {
+        const { success, data, error } = await getSingleClient(invoice.receiver);
+        
+        if (success) {
+          const receiverDetails = data;
+          const receiverName = receiverDetails.firstName + " " + receiverDetails.lastName;
+          return { ...invoice, receiverName };
+        } else {
+          console.log("Error fetching client details:", error);
+          // If there's an error fetching client details, return the invoice without the receiver name
+          return { ...invoice, receiverName: "Receiver Details Unavailable" };
+        }
+      } catch (error) {
+        console.log("Error fetching client details:", error);
+        // If there's an error fetching client details, return the invoice without the receiver name
+        return { ...invoice, receiverName: "Receiver Details Unavailable" };
+      }
+    }));
+
+    invoices.value = invoicesWithReceiverNames;
+
+    // Handle success as needed
+    // console.log("Success During Invoice get:", success);
+  } catch (error) {
+    console.error("Error During Invoice Get:", error);
+    // Handle error if needed
+    // openNotificationWithIcon("error", "An error occurred while getting the Invoice.");
+  } finally {
+    isLoading.value = false;
   }
 };
 const fetchclientDetails = async () => {
@@ -102,6 +162,7 @@ isLoading.value = false;
 
 onMounted(() => {
   fetchclientDetails();
+  AllInvoice();
 });
 /////
 const logoPreview = ref(null);
