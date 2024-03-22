@@ -47,7 +47,9 @@ const AllInvoice = async () => {
       throw new Error(error || 'Failed to get invoices.');
     }
 
-    const invoicesWithReceiverNames = await Promise.all(data.map(async (invoice) => {
+    let invoicesData = Array.isArray(data) ? data : data?.invoices || [];
+
+    const invoicesWithReceiverNames = await Promise.all(invoicesData.map(async (invoice) => {
       try {
         const { success, data, error } = await getSingleClient(invoice.receiver);
         
@@ -79,6 +81,7 @@ const AllInvoice = async () => {
     isLoading.value = false;
   }
 };
+
 
 onMounted(async () => {
   try{
