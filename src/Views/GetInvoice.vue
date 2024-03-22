@@ -13,8 +13,8 @@ import { Colors } from "../utils/color";
 import { useInvoiceStore } from "../stores/index";
 import { getSingleClient } from "../service/ClientService";
 import Swal from "sweetalert2";
-import { BASE_URL } from "../utils/config";
-
+// import { BASE_URL } from "../utils/config";
+import axiosInstance from "../service/axios"; 
 const logoPreview = ref("");
 const invoice = useInvoiceStore();
 const router = useRouter();
@@ -166,7 +166,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
   if (clickedItem.title === "Download as Pdf") {
     // alert("Download as Pdf");
     // router.push(`/pdf/generate/${clientId.value}/${businessId.value}/${invoiceId}`);
-    const url = new URL(BASE_URL);
+    const url = new URL(axiosInstance.defaults.baseURL);
     // url.port = "3010";
     url.pathname = "/api/pdf/X-Invoice";
     url.searchParams.append("clientId", clientId.value);
