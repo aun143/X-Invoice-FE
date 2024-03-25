@@ -35,7 +35,7 @@ const handleSaveDraftButtonClick = async (Id) => {
 
 if (success) {
   router.push("/");
-    invoice.formData.$reset;
+    invoice.resetFormData();
   Swal.fire({
     icon: "success",
     title: "Invoice updated",

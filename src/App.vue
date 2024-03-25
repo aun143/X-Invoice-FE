@@ -6,8 +6,6 @@ import { useRoute, useRouter } from "vue-router";
 import { getUserDetailsApi } from "../src/service/LoginService";
 import { computed, ref, onMounted, watch } from "vue";
 import { useInvoiceStore } from "../src/stores/index";
-import { Colors } from "./utils/color";
-
 const menuItems = [
   { link: "/dashBoard", name: "DashBoard", icon: "bxs-dashboard" },
   { link: "/Index", name: "Invoices", icon: "bxs-inbox" },

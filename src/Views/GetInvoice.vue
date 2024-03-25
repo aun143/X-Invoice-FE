@@ -256,7 +256,7 @@ const info=()=>{
           </div>
 
           <div
-            class="w-48 mt-4 lg:ml-[25%] 2xl:ml-[10%] h-auto flex justify-end items-end"
+            class="w-48 mt-4 lg:ml-[25%] 2xl:ml-[30%] h-auto flex justify-end items-end"
           >
             <img :src="imageUrl" alt="Logo" />
           </div>
@@ -354,23 +354,23 @@ const info=()=>{
         <div class="flex lg:flex-row 2xl:flex-row xl:flex-row flex-col px-4">
   <table class="w-full">
     <thead>
-      <tr>
-        <th class="text-left font-semibold cursor-pointer" @click="info">Description</th>
-        <th class="font-semibold text-left">Quantity</th>
-        <th class="font-semibold text-left">Rate</th>
-        <th class="font-semibold text-left">Amount</th>
+      <tr class="bg-gray-100 h-10">
+        <th class="text-center font-semibold cursor-pointer " @click="info">Description</th>
+        <th class="font-semibold text-center">Quantity</th>
+        <th class="font-semibold text-center">Rate</th>
+        <th class="font-semibold text-center">Amount</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="(item, index) in invoiceDetails.items" :key="index">
         <td style="width: 25%;">
-          <textarea disabled cols="25" rows=2  v-model="item.description" class="w-full h-full pl-0" style="overflow: hidden;"></textarea>
+          <textarea disabled cols="25" rows=2  v-model="item.description" class="w-full h-full pl-0 text-center" style="overflow: hidden;"></textarea>
         </td>
         <td style="width: 25%;">
-          <input disabled class="w-full h-full" v-model="item.quantity" />
+          <input disabled class="w-full h-full text-center" v-model="item.quantity" />
         </td>
         <td style="width: 25%;">
-          <input disabled class="w-full h-full" v-model="item.rate" />
+          <input disabled class="w-full h-full text-center" v-model="item.rate" />
           <!-- <select disabled class="w-full h-full mt-2">
             <option v-for="unit in item.unit" :key="unit" :value="unit">
               {{ unit.name }}
@@ -378,7 +378,7 @@ const info=()=>{
           </select> -->
         </td>
         <td style="width: 25%;">
-          <input disabled class="w-full h-full" v-model="item.amount" />
+          <input disabled class="w-full h-full text-center" v-model="item.amount" />
 
         </td>
       </tr>
@@ -404,7 +404,7 @@ const info=()=>{
                 />
               </div>
               <hr /> -->
-        <div class="flex flex-col max-w-full items-end xl:mr-20 2xl:mr-32">
+        <div class="flex flex-col max-w-full items-end xl:mr-20 ">
           <div
             class="flex justify-between xl:w-[70%] md:w-[75%] 2xl:w-[70%] items-end"
           >
