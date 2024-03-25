@@ -251,7 +251,7 @@ const info=()=>{
               </span>
             </div>
             <div class="flex mt-2">
-              <strong class="text-xl">{{ invoiceDetails.invoiceName }}</strong>
+              <p class="text-xl font-semibold">{{ invoiceDetails.invoiceName }}</p>
             </div>
           </div>
 
@@ -364,7 +364,7 @@ const info=()=>{
     <tbody>
       <tr v-for="(item, index) in invoiceDetails.items" :key="index">
         <td style="width: 25%;">
-          <textarea disabled cols="25" rows=2  v-model="item.description" class="w-full h-full pl-0 text-center" style="overflow: hidden;"></textarea>
+          <textarea disabled cols="25" rows=2  v-model="item.description" class="w-full h-full pl-0 text-justify" style="overflow: hidden;"></textarea>
         </td>
         <td style="width: 25%;">
           <input disabled class="w-full h-full text-center" v-model="item.quantity" />

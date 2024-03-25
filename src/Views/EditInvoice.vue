@@ -30,6 +30,9 @@ const handleSaveDraftButtonClick = async (Id) => {
  }
     try {
      if (!validateForm()) return;
+     if (!validateDueDate()) {
+      return;
+    }
      isLoader.value=true;
       const { success, data, error } = await updateInvoiceData(invoiceId, invoice.formData);
 
@@ -305,6 +308,40 @@ const switchProfileType = (type) => {
   InvoiceData();
   ClientProfile();
 };
+const validateDueDate = () => {
+  const invoiceDate = new Date(invoice.formData.date); // Get formData.date
+
+  // Check if formData.date is provided
+  if (!invoiceDate || isNaN(invoiceDate.getTime())) {
+    openNotificationWithIcon("error", "Please select an invoice date first");
+    return false;
+  }
+
+  const dueDate = new Date(invoice.formData.invoiceDueDate);
+
+  // Check if due date is before the invoice date or is more than 60 days ahead
+  if (dueDate < invoiceDate) {
+    openNotificationWithIcon(
+      "error",
+      "Invoice due date cannot be before the invoice date"
+    );
+    return false;
+  }
+
+  const maxDueDate = new Date(invoiceDate); // Set maxDueDate as a copy of invoiceDate
+  maxDueDate.setDate(maxDueDate.getDate() + 60);
+
+  // Check if due date is more than 60 days in the future relative to invoice date
+  if (dueDate > maxDueDate) {
+    openNotificationWithIcon(
+      "error",
+      "Invoice due date cannot be more than 60 days in the future"
+    );
+    return false;
+  }
+
+  return true; // Due date is valid
+};
 const calculateUpcomingDueDate = () => {
   const selectedDueDate = invoice.formData.invoiceDueDate;
   if (selectedDueDate) {
@@ -379,7 +416,7 @@ const calculateUpcomingDueDate = () => {
         </div>
         <div class="flex flex-col w-1/2 items-end">
           <label for="logoInput" class="" >
-            <div class="logo-placeholder border-none  cursor-pointer rounded md:w-28 lg:w-48 h-32 border-2  grid place-items-center text-slate-500 text-5xl ">
+            <div class="logo-placeholder border-none  cursor-pointer rounded md:w-28 lg:w-40 lg:ml-4 h-32 border-2  grid place-items-center text-slate-500 text-5xl ">
               <!-- <img src="https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png"  ref="logoPreview"  class="logo rounded"   alt="Logo" />  -->
               <div v-if="isLoadingImg"><a-spin size="large"/></div>
               <img  v-else
@@ -604,14 +641,19 @@ const calculateUpcomingDueDate = () => {
         <div class="flex items-end mb-2">
           <div>
             <p class="w-4/5 ml-3 text-start" ml-2 text-start>Invoice Due</p>
-            <a-select v-model:value="invoice.formData.invoiceDueDate"  size="medium" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate" style="text-align: left;">
+            <a-input
+                type="Date"
+                v-model:value="invoice.formData.invoiceDueDate"
+                class="ml-2 w-[200px]"
+              />
+            <!-- <a-select v-model:value="invoice.formData.invoiceDueDate"  size="medium" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate" style="text-align: left;">
         
               <a-select-option value="07">After 07 days</a-select-option>
               <a-select-option value="15">After 15 days</a-select-option>
               <a-select-option value="30">After 30 days</a-select-option>
               <a-select-option value="45">After 45 days</a-select-option>
               <a-select-option value="60">After 60 days</a-select-option>
-            </a-select>
+            </a-select> -->
           </div>
         </div>
        

@@ -17,13 +17,6 @@ import { postInvoiceData } from "../service/MainService";
 import { uploadImage } from "../service/UploadImage";
 // import {  Input } from "ant-design-vue";
 
-const date = ref("");
-const data = ref("");
-const { getDate, setDate } = useInvoiceStore();
-// watchEffect(() => {
-//   setDate(date.value); // Update the store when the value changes in the component
-// });
-
 const route = useRoute();
 const router = useRouter();
 const invoiceId = route.params.id;
@@ -208,14 +201,11 @@ const handleFileInputChange = async () => {
     }
   }
 };
-const currentDate = computed(() => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+const currentDate = ref(new Date().toISOString().slice(0, 10));
+invoice.formData.date = currentDate.value;
+watchEffect(() => {
+  invoice.formData.date = currentDate.value;
 });
-
 const displayImage = (input, imageUrl) => {
   const file = input.files[0];
 

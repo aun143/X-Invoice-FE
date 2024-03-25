@@ -9,7 +9,7 @@ export const useInvoiceStore = defineStore("invoice", {
       purchaseOrderNumber: "",
       invoiceNumber: "",
       invoiceName: "INV",
-      date: new Date(),
+      date: getCurrentDate(),
       invoiceDueDate: new Date(),
       file: "",
       url:"",
@@ -458,6 +458,5 @@ function getCurrentDate() {
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
-  console.log("date", `${month}/${day}/${year}`);
-  return `${month}/${day}/${year}`;
+  return `${year}-${month}-${day}`;
 }
