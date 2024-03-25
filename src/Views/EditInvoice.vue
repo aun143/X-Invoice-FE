@@ -42,12 +42,7 @@ if (success) {
     text: data.message || "Invoice has been updated successfully.",
   });
 } else {
-  console.error("Error During Invoice Creation:", error);
-  Swal.fire({
-    icon: "error",
-    title: "Error During Invoice updation",
-    text: error || "An error occurred while updating the Invoice.",
-  });
+  console.error("Error During Invoice updation:", error);
   if (error === "Your subscription plan has expired. Please update your plan.") {
     router.push("/subscription");
   } else {
@@ -693,14 +688,14 @@ const calculateUpcomingDueDate = () => {
             <td class="align-top flex flex-col">
               <a-input-number
                 v-model:value="item.rate"
-                class="w-full ml-4"
+                class="w-full ml-4 "
                 type="number"
                 placeholder="0"
               />
               <a-select
-                size="large"
+                size="medium"
                 v-model:value="item.unit"
-                class="mt-1 mb-2 flex ml-6"
+                class="mt-1 mb-2 flex ml-4 w-full"
                 @change="() => handleUnitChange(index, item.unit)"
                 style="text-align: left"
               >

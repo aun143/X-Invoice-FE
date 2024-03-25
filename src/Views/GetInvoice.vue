@@ -232,7 +232,7 @@ const info=()=>{
     >
       <form @submit.prevent class="p-4 bg-white">
         <div class="grid grid-cols-2 items-center">
-          <div class="flex w-full mt-8">
+          <div class="flex w-full mt-8 ">
             <div
               class="flex mr-5 items-center justify-center text-xl w-[60px] max-h-12 text-black"
             >
@@ -256,7 +256,7 @@ const info=()=>{
           </div>
 
           <div
-            class="w-32 mt-4 lg:ml-[25%] 2xl:ml-[10%] h-auto flex justify-end items-end"
+            class="w-48 mt-4 lg:ml-[25%] 2xl:ml-[10%] h-auto flex justify-end items-end"
           >
             <img :src="imageUrl" alt="Logo" />
           </div>
@@ -352,11 +352,10 @@ const info=()=>{
         <hr />
         <br />
         <div class="flex lg:flex-row 2xl:flex-row xl:flex-row flex-col px-4">
-          <i class="fas fa-info-circle flex" @click="info" id="info-icon"></i>
   <table class="w-full">
     <thead>
       <tr>
-        <th class="text-left font-semibold ">Description</th>
+        <th class="text-left font-semibold cursor-pointer" @click="info">Description</th>
         <th class="font-semibold text-left">Quantity</th>
         <th class="font-semibold text-left">Rate</th>
         <th class="font-semibold text-left">Amount</th>
