@@ -486,6 +486,7 @@ const fontSize = "12px";
                 />
               </div>
               <hr class="my-4" />
+   
               <div>
                 <p class="justify-start flex">Notes</p>
                 <a-textarea readonly
