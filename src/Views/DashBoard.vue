@@ -25,7 +25,7 @@ const createBarChart = (data) => {
   new Chart(ctx, {
     type: "bar",
     data: {
-      labels: ['Total Clients', 'Total Invoices'],      
+      labels: ['January', 'February', 'March', 'April', 'May'], // Example labels (replace with your data)
       datasets: [{
         label: 'Data',
         
@@ -55,7 +55,7 @@ const createLineGraph = (data) => {
   new Chart(ctx, {
     type: "line",
     data: {
-      labels: ['Total Clients', 'Total Invoices'], // Example labels (replace with your data)
+      labels: ['2023-12', '2024-1','2024-2'], // Example labels (replace with your data)
       datasets: [{
         label: 'Data', // Example dataset label
         data: [totalClients.value, totalInvoices.value],// Example dataset data (replace with your data)
