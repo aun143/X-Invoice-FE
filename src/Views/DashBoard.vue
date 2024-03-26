@@ -25,18 +25,16 @@ const createBarChart = (data) => {
   new Chart(ctx, {
     type: "bar",
     data: {
-      labels: ["Total Clients", "Total Invoices"],
-      datasets: [
-        {
-          label: "Data",
-          data: [totalClients.value, totalInvoices.value],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.5)",
-            "rgba(54, 162, 235, 0.5)",
-          ],
-          borderWidth: 1,
-        },
-      ],
+      labels: ['Total Clients', 'Total Invoices'],      
+      datasets: [{
+        label: 'Data',
+        data: [totalClients.value, totalInvoices.value],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.5)', 
+          'rgba(54, 162, 235, 0.5)', 
+        ],
+        borderWidth: 1,
+      }],
     },
     options: {
       scales: {
@@ -56,19 +54,16 @@ const createLineGraph = (data) => {
   new Chart(ctx, {
     type: "line",
     data: {
-      labels: ["Total Clients", "Total Invoices"], // Example labels (replace with your data)
-      datasets: [
-        {
-          label: "Data", // Example dataset label
-          data: [totalClients.value, totalInvoices.value], // Example dataset data (replace with your data)
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.5)", // Red for Total Clients
-            "rgba(54, 162, 235, 0.5)", // Blue for Total Invoices
-          ],
-          borderWidth: 1,
-          fill: false,
-        },
-      ],
+      labels: ['Total Clients', 'Total Invoices'], // Example labels (replace with your data)
+      datasets: [{
+        label: 'Data', // Example dataset label
+        data: [totalClients.value, totalInvoices.value],// Example dataset data (replace with your data)
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.5)', // Red for Total Clients
+          'rgba(54, 162, 235, 0.5)', // Blue for Total Invoices
+        ],        borderWidth: 1,
+        fill: false,
+      }],
     },
     options: {
       scales: {
@@ -83,26 +78,25 @@ const createLineGraph = (data) => {
   });
 };
 const createPieChart = (data) => {
-  const ctx = pieChart.value.getContext("2d");
+  const ctx = pieChart.value.getContext('2d');
 
   new Chart(ctx, {
     type: "pie",
     data: {
-      labels: ["Total Clients", "Total Invoices"],
-      datasets: [
-        {
-          label: "Data",
-          data: [totalClients.value, totalInvoices.value],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.5)", // Red for Total Clients
-            "rgba(54, 162, 235, 0.5)", // Blue for Total Invoices
-          ],
-          borderWidth: 1,
-        },
-      ],
+      labels: ['Total Clients', 'Total Invoices'],
+      datasets: [{
+        label: 'Data',
+        data: [totalClients.value, totalInvoices.value],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.5)', // Red for Total Clients
+          'rgba(54, 162, 235, 0.5)', // Blue for Total Invoices
+        ],
+        borderWidth: 1,
+      }],
     },
   });
 };
+
 const handleDropdownItemClickParent = (clickedItem) => {
   if (clickedItem.title === "Create Invoice") {
     // invoice.formData.$reset;
