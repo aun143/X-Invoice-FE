@@ -19,7 +19,7 @@ import DashBoard from "../Views/DashBoard.vue";
 import CreateInvoice from "../Views/CreateInvoice.vue";
 
 const routes = [
-  { path: "/", redirect: "/Index" },
+  { path: "/", redirect: "/DashBoard" },
   {
     name: "Invoice",
     path: "/New",

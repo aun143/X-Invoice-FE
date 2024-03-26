@@ -130,7 +130,7 @@ const calculateAmount = (item) => {
 // };
 //console.log("invoice",invoice)
 const dropdownItems = [
-  { title: "Save", link: "/" },
+  { title: "Save", link: "/Index" },
   { title: "Save & Send", link: "#" },
   { title: "Save & Mark Send", link: "#" },
 ];
@@ -284,7 +284,7 @@ const handleSaveDraftButtonClick = async () => {
   try {
     const invoiceId =await invoiceSubmit();
     if (invoiceId) {
-      router.push("/");
+      router.push("/Index");
     }
   } catch (error) {
     Swal.fire({
@@ -302,7 +302,7 @@ const handleDropdownItemClick = async (clickedItem) => {
     try {
     const invoiceId =await invoiceSubmit();
     if (invoiceId) {
-      router.push("/");
+      router.push("/Index");
     }
   } catch (error) {
     Swal.fire({
@@ -356,7 +356,7 @@ const changeStatus = async () => {
     const { success, data, error } = await updateInvoiceStatus(invoiceID.value, updateData);
 
     if (success) {
-      router.push("/");
+      router.push("/Index");
       Swal.fire({
         icon: "success",
         title: "Payment Method Updated",

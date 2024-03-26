@@ -53,7 +53,7 @@ const invoiceSubmit = async () => {
     const { success, data, error } = await postInvoiceData(invoice.formData);
 
 if (success) {
-  router.push("/");
+  router.push("/Index");
     invoice.resetFormData();
   Swal.fire({
     icon: "success",
@@ -135,7 +135,7 @@ const calculateAmount = (item) => {
 //console.log("invoice",invoice)
 const dropdownTitle = "Save";
 const dropdownItems = [
-  { title: "Save", link: "/" },
+  { title: "Save", link: "/Index" },
   { title: "Save & Send", link: "#" },
   { title: "Save & Mark Send", link: "#" },
 ];

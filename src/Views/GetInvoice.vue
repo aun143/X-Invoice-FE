@@ -45,7 +45,7 @@ const changeStatus = async () => {
     const { success, data, error } = await updateInvoiceStatus(invoiceId, updateData);
 
     if (success) {
-      router.push("/");
+      router.push("/Index");
       Swal.fire({
         icon: "success",
         title: "Payment Method Updated",
@@ -88,7 +88,7 @@ const changeUnpaidStatus = async () => {
     const { success, data, error } = await updateUnpaidInvoiceStatus(invoiceId, updateData);
 
     if (success) {
-      router.push("/");
+      router.push("/Index");
       Swal.fire({
         icon: "success",
         title: "Payment Method Updated",
@@ -119,7 +119,7 @@ const deleteInvoicee = async () => {
   try {
     // console.log("Changing status for invoiceId:", invoiceId);
     const status = await deleteInvoice(invoiceId);
-    router.push("/");
+    router.push("/Index");
     Swal.fire({
       icon: "success",
       title: " Invoice Deleted ",
@@ -178,7 +178,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
   } else if (clickedItem.title === "Mark as Paid") {
     // alert("Mark as Paid");
     changeStatus(invoiceId);
-    router.push("/");
+    router.push("/Index");
   } else if (clickedItem.title === "Delete") {
     deleteInvoicee(invoiceId);
   } else if (clickedItem.title === "Send Invoice") {
@@ -186,7 +186,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
   } else if (clickedItem.title === "Mark as Unpaid") {
     // alert("Mark as Unpaid");
     changeUnpaidStatus(invoiceId);
-    router.push("/");
+    router.push("/Index");
   }
 };
 const formatDate = (dateString) => {
