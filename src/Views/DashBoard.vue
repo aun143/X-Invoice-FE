@@ -25,7 +25,7 @@ const createBarChart = (data) => {
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Total Clients', 'Total Invoices'],      
+      labels: ['2023-12', '2024-01','2024-02','2024-03'],      
       datasets: [{
         label: 'Data',
         data: [totalClients.value, totalInvoices.value],
@@ -54,7 +54,7 @@ const createLineGraph = (data) => {
   new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['Total Clients', 'Total Invoices'], // Example labels (replace with your data)
+      labels: ['January', 'February', 'March', 'April', 'May' , 'June','Jul','Aug','Sep','Oct','Nov','Dec'], // Example labels (replace with your data)
       datasets: [{
         label: 'Data', // Example dataset label
         data: [totalClients.value, totalInvoices.value],// Example dataset data (replace with your data)
@@ -77,13 +77,17 @@ const createLineGraph = (data) => {
     }
   });
 };
-const createPieChart = (data) => {
+const createPieChart = () => {
   const ctx = pieChart.value.getContext('2d');
+
+  // Calculate the percentage of invoices
+  const total = totalClients.value + totalInvoices.value;
+  const invoicesPercentage = ((totalInvoices.value / total) * 100).toFixed(2);
 
   new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: ['Total Clients', 'Total Invoices'],
+      labels: [`Total Clients (${100 - invoicesPercentage}%)`, `Total Invoices (${invoicesPercentage}%)`],
       datasets: [{
         label: 'Data',
         data: [totalClients.value, totalInvoices.value],
@@ -96,6 +100,7 @@ const createPieChart = (data) => {
     },
   });
 };
+
 const handleDropdownItemClickParent = (clickedItem) => {
 if (clickedItem.title === "Create Invoice") {
   // invoice.formData.$reset;
