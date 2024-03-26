@@ -28,6 +28,7 @@ const createBarChart = (data) => {
       labels: ['2023-12', '2024-01','2024-02','2024-03'],      
       datasets: [{
         label: 'Data',
+        
         data: [totalClients.value, totalInvoices.value],
         backgroundColor: [
           'rgba(255, 99, 132, 0.5)', 
