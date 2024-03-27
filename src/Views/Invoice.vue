@@ -10,7 +10,6 @@ import { updateInvoiceStatus } from "../service/invoiceService";
 import { getAllClient } from "../service/ClientService";
 // import InvoiceService from "../service/InvoiceService";
 import { getUserDetailsApi } from "../service/LoginService";
-import Swal from "sweetalert2";
 import { notification } from "ant-design-vue";
 import { postInvoiceData } from "../service/MainService";
 import { uploadImage } from "../service/UploadImage";
@@ -47,11 +46,8 @@ const invoiceSubmit = async () => {
     if (success) {
       //console.log('Invoice submitted successfully:', response);
       invoice.resetFormData();
-      Swal.fire({
-        icon: "success",
-        title: " Invoice Created ",
-        text: " Invoice has been Created successfully.",
-      });
+      openNotificationWithIcon("success", data.message || "Invoice has been Created successfully.")
+
       return data._id; // Return the ID of the created invoice
     } else {
       openNotificationWithIcon(
@@ -61,12 +57,8 @@ const invoiceSubmit = async () => {
       return null; // Return null indicating failure
     }
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Creating Invoice:", error),
-      footer: "Please try again ",
-    });
+    openNotificationWithIcon("error", error || "An error occurred while creating the invoice.")
+
     console.error("Error During Invoice creation:", error);
   } finally {
     isLoader.value = false;
@@ -228,12 +220,6 @@ const deleteItem = (index) => {
   if (invoice.formData.items.length > 1) {
     invoice.formData.items.splice(index, 1);
   } else {
-    // Swal.fire({
-    //   icon: 'warning',
-    //   title: 'Cannot Delete Item',
-    //   text: 'At least one item must remain in the invoice.',
-    //   footer: 'Please make sure there is at least Two item before deleting.'
-    // });
     openNotificationWithIcon("error", "Cannot Delete All Items");
   }
 };
@@ -276,13 +262,7 @@ const handleSaveDraftButtonClick = async () => {
       router.push("/Index");
     }
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error Submitting Invoice:", error),
-      footer: "Please try again ",
-    });
-    console.error("Error Submitting Invoice:", error);
+       console.error("Error Submitting Invoice:", error);
   }
 };
 const invoiceID = ref("");
@@ -294,13 +274,7 @@ const handleDropdownItemClick = async (clickedItem) => {
         router.push("/Index");
       }
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: ("Error Submitting Invoice:", error),
-        footer: "Please try again ",
-      });
-      console.error("Error Submitting Invoice:", error);
+            console.error("Error Submitting Invoice:", error);
     }
   } else if (clickedItem.title === "Save & Send") {
     try {
@@ -309,12 +283,6 @@ const handleDropdownItemClick = async (clickedItem) => {
         router.push(`/GetInvoice/${invoiceId}/send`);
       }
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: ("Error Submitting Invoice:", error),
-        footer: "Please try again ",
-      });
       console.error("Error Submitting Invoice:", error);
     }
   } else if (clickedItem.title === "Save & Mark Send") {
@@ -325,12 +293,6 @@ const handleDropdownItemClick = async (clickedItem) => {
         changeStatus(invoiceID.value);
       }
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: ("Error Submitting Invoice:", error),
-        footer: "Please try again ",
-      });
       console.error("Error Submitting Invoice:", error);
     }
   }
@@ -349,18 +311,12 @@ const changeStatus = async () => {
 
     if (success) {
       router.push("/Index");
-      Swal.fire({
-        icon: "success",
-        title: "Payment Method Updated",
-        text: data.message || "Payment Method has been updated successfully.",
-      });
+      openNotificationWithIcon("success", data.message || "Payment Method has been Updated successfully.")
+
     } else {
       console.error("Error During Payment Method updation:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error During Payment Method Updation",
-        text: error || "An error occurred while updating the Payment Method.",
-      });
+      openNotificationWithIcon("error", error || "error During Payment Method  Updation.")
+
       if (error === "Maximum invoices limit reached for the user") {
         router.push("/subscription");
       } else {
@@ -406,12 +362,8 @@ const BusinessProfile = async () => {
       router.push("/login");
     }
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error Submitting Invoice:", error),
-      footer: "Please try again ",
-    });
+    openNotificationWithIcon("error", error || "error During fetching Business Profile.")
+
     console.error("Error getting account in Invoice", error);
   } finally {
     isLoading.value = false;
@@ -430,12 +382,8 @@ const ClientProfile = async () => {
     }
   } catch (error) {
     console.error("Error fetching Clients:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Error fetching Clients: " + error.message,
-      footer: "Please try again",
-    });
+    openNotificationWithIcon("error", error || "error During fetching Client.")
+
   } finally {
     isLoading.value = false;
   }

@@ -4,8 +4,6 @@ import { getAllClient } from '../service/ClientService';
 import { useRoute, useRouter } from 'vue-router';
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
-import Swal from "sweetalert2";
-import { Colors } from "../utils/color";
 import { notification } from "ant-design-vue";
 
 const invoice = useInvoiceStore();

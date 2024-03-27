@@ -4,8 +4,6 @@ import { useRoute, useRouter } from "vue-router";
 import { useInvoiceStore } from "../stores/index";
 import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
-import Swal from "sweetalert2";
-// import {BASE_URL} from "../utils/config";
 import { getAllClient } from "../service/ClientService";
 import  axiosInstance  from "../service/axios";
 import  {sendInvoiceEmail,getInvoiceEmail}  from "../service/mail";
@@ -75,12 +73,8 @@ const ClientProfile = async () => {
     }
   } catch (error) {
     console.error("Error fetching Clients:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Error fetching Clients: " + error.message,
-      footer: "Please try again",
-    });
+    openNotificationWithIcon("error", error.message || "error During Invoice Send.")
+
   } finally {
     isLoading.value = false; // Set isLoading back to false after fetching data
   }
@@ -117,11 +111,8 @@ const handleSendEmailButtonClick = async () => {
 
     //console.log(response.data.message);
     router.push("/");
-    Swal.fire({
-      icon: "success",
-      title: "Email Sent",
-      text: "Email has been sent successfully.",
-    });
+    openNotificationWithIcon("success", data || "Email Send Successfully")
+
   } catch (error) {
     console.error("Error Sending email:", error);
   }finally{

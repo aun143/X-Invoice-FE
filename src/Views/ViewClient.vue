@@ -7,7 +7,6 @@ import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
-import Swal from "sweetalert2";
 import { getAllInvoice } from "../service/IndexService";
 
 
@@ -52,19 +51,13 @@ const deletClient = async () => {
       // Client data is associated with invoices
       const invoiceNumbers = invoicesWithClient.map(invoice => invoice.invoiceNumber).join(', ');
       const errorMessage = `Cannot delete Client as it is associated with the following invoice(s):${invoiceNumbers}`;
-      Swal.fire({
-        icon: "error",
-        title: "Client Deletion Error",
-        text: errorMessage
-      });
+      openNotificationWithIcon("error", errorMessage || "Error During Client Deletion")
+
     } else {
       // No invoices associated with the client, proceed with deletion
       const status = await deleteClient(clientId);
-      Swal.fire({
-        icon: "success",
-        title: "Client Deleted",
-        text: "Client has been deleted successfully."
-      });
+            openNotificationWithIcon("success", "Client Deleted Sucessfully")
+
       // Redirect or handle as needed after successful deletion
       router.push("/AllClients");
     }
@@ -138,11 +131,8 @@ invoice.userClientProfile.clientDataOrganization = {
 }
 } else {
   console.error("Error During Client Get:", error);
-  Swal.fire({
-    icon: "error",
-    title: "Error During Client Get",
-    text: error || "An error occurred while gettting the client.",
-  });
+  openNotificationWithIcon("error", error || "Error During fetching Client")
+
   if (error === "Your subscription plan has expired. Please update your plan.") {
     router.push("/subscription");
   } else {

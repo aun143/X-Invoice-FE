@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import Button from "../components/Button.vue";
-import Swal from "sweetalert2";
 import { Colors } from "../utils/color";
 import { ForgetUserApi } from "../service/ForgetPassService";
 import { notification } from "ant-design-vue";
@@ -38,18 +37,12 @@ if (success) {
     ForgetPass.value.email = "";
     ForgetPass.value.newPassword = "";
     router.push("/login")
-  Swal.fire({
-    icon: "success",
-    title: "Password Updated",
-    text: data.message || "Password has been Updated successfully.",
-  });
+    openNotificationWithIcon("success", data.message || "Password has been Updated successfully.")
+
 } else {
   console.error("Error During Password Updation:", error);
-  Swal.fire({
-    icon: "error",
-    title: "Error During Password Updation",
-    text: error || "An error occurred while Updating the Password.",
-  });
+  openNotificationWithIcon("error", error || "An error occurred while updating the password.")
+
   if (error === "Your subscription plan has expired. Please update your plan.") {
     router.push("/subscription");
   } else {

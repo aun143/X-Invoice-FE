@@ -2,9 +2,9 @@
         import { ref,onMounted } from "vue";
         import { Colors } from "../utils/color";
         import Button from "../components/Button.vue";
-        import { Dropdown, Menu } from 'ant-design-vue';
-import { useRoute, useRouter } from "vue-router";
-import Swal from "sweetalert2";
+import {  useRouter } from "vue-router";
+import { notification } from "ant-design-vue";
+
 import { getUserDetailsApi } from "../service/LoginService";
 
 import { useInvoiceStore } from "../stores/index";
@@ -26,17 +26,19 @@ const isLoading = ref(false);
     }
     // showPopup();
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Getting Account User Role:", error),
-      footer: "Please try again ",
-    });
+    openNotificationWithIcon("error", error || "Error During Getting Account User Role");
     console.error("Error During getting Getting User Role:", error);
   } finally {
     isLoading.value = false;
   }
 }
+const openNotificationWithIcon = (type, message) => {
+  notification[type]({
+    message: type === "success" ? "Success" : "Error",
+    description: message,
+    duration: 3,
+  });
+};
 onMounted(async () => {
   UserRole();
 });

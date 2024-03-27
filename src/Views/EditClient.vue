@@ -7,7 +7,6 @@ import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";  
-import Swal from "sweetalert2";
 import {uploadImage} from "../service/UploadImage"
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
@@ -47,18 +46,12 @@ const handleSaveDraftButtonClick = async () => {
     if (success) {
       invoice.userClientProfile.clientDataindividual = {};
     router.push("/AllClients");
-      Swal.fire({
-        icon: "success",
-        title: "Client Created",
-        text: data || "Client has been Updatied successfully.",
-      });
+    openNotificationWithIcon("success", data || "Client has been Updated successfully.")
+
     } else {
       console.error("Error During Client Updation:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error During Client Updation",
-        text: error || "An error occurred while Updating the client.",
-      });
+      openNotificationWithIcon("error", error || "An error occurred while updating the client.")
+
       if (error === "Your subscription plan has expired. Please update your plan.") {
         router.push("/subscription");
       } else {
@@ -129,11 +122,8 @@ invoice.userClientProfile.clientDataOrganization = {
 }
 } else {
   console.error("Error During Client Get:", error);
-  Swal.fire({
-    icon: "error",
-    title: "Error During Client Get",
-    text: error || "An error occurred while gettting the client.",
-  });
+  openNotificationWithIcon("error", error || "An error occurred while getting the client.")
+
   if (error === "Your subscription plan has expired. Please update your plan.") {
     router.push("/subscription");
   } else {

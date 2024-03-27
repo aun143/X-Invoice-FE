@@ -3,7 +3,6 @@ import { ref, onMounted } from "vue";
 import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
 import { useRouter, useRoute } from "vue-router";
-import Swal from "sweetalert2";
 import { useInvoiceStore } from "../stores/index";
 import {
   PatchBusinessProfilerIndiviualApi,
@@ -52,12 +51,6 @@ const validateForm = (profileType) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email)) {
     emailError.value = "Email must be Valid and contain '@' ";
   }
-  // if (!/^[a-z A-Z 0-9 ,]+$/.test(profileData.address1)) {
-  //   address1Error.value = "Address1 must contain only Alphanumeric characters";
-  // }
-  // if (!/^[a-z A-Z 0-9 ,]+$/.test(profileData.address2)) {
-  //   address2Error.value = "Address2 must contain only Alphanumeric characters";
-  // }
   if (!/^[a-z A-Z ]+$/.test(profileData.city)) {
     cityError.value = "City must contain only Alphabetic A-Z characters";
   }
@@ -96,21 +89,12 @@ const submitbusinessProfileDataOrganization = async (id) => {
     );
 
     if (success) {
-      router.push("/");
       invoice.updateUserProfileAndBusinessProfile(data);
-
-      Swal.fire({
-        icon: "success",
-        title: "Profile Updated",
-        text: data || "Profile has been Updated successfully.",
-      });
-    } else {
+      router.push("/");
+      openNotificationWithIcon("success", data || "Profile has been Updated successfully.");
+          } else {
       console.error("Error During Profile Updation:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error During Profile Updation",
-        text: error || "An error occurred while Updating the Profile.",
-      });
+      openNotificationWithIcon("error", error || "An error occurred while Updating the Profile.");
       if (
         error === "Your subscription plan has expired. Please update your plan."
       ) {
@@ -145,19 +129,12 @@ const submitbusinessProfileDataindividual = async (Id) => {
     if (success) {
       router.push("/");
       invoice.updateUserProfileAndBusinessProfile(data);
+      openNotificationWithIcon("success", data || "Profile has been Updated successfully.");
 
-      Swal.fire({
-        icon: "success",
-        title: "Profile Updated",
-        text: data || "Profile has been Updated successfully.",
-      });
     } else {
       console.error("Error During Profile individual:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error During Profile Updation",
-        text: error || "An error occurred while Updating the Profile.",
-      });
+            openNotificationWithIcon("error", error || "An error occurred while Updating the Profile.");
+
       if (
         error === "Your subscription plan has expired. Please update your plan."
       ) {
@@ -219,12 +196,8 @@ onMounted(async () => {
       router.push("/login");
     }
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Account Update:", error),
-      footer: "Please try again ",
-    });
+    openNotificationWithIcon("error", error || "An error occurred while getting the Profiles.");
+
     console.error("Error During Account Update:", error);
   } finally {
     isLoading.value = false;
@@ -249,10 +222,6 @@ const handleSaveDraftButtonClick = () => {
     }
   }
 };
-
-const logo = () => {
-  router.push("/UploadImg");
-};
 const logoInputRef = ref(null);
 const logoPreview = ref(null);
 
@@ -274,12 +243,7 @@ const handleFileInputChange = async () => {
       }
     } catch (error) {
       console.error("Error uploading image:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Error uploading image. Please try again.",
-        footer: "Please try again",
-      });
+      openNotificationWithIcon("error", error || "Error uploading image. Please try again.");
     } finally {
       isLoadingImg.value = false;
     }
@@ -936,7 +900,6 @@ const displayImage = (input, imageUrl) => {
           <Button v-else
           :bgColor="Colors.primary"
           :textColor="Colors.white"
-          :fontSize="fontSize"
           buttonText="Save Changes"
           class="h-12 w-64"
           @click="handleSaveDraftButtonClick()"

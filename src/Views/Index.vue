@@ -8,7 +8,6 @@ import { getUserDetailsApi } from "../service/LoginService";
 import { getAllInvoice } from "../service/IndexService";
 import { useInvoiceStore } from "../stores/index.js";
 import { notification } from "ant-design-vue";
-import Swal from "sweetalert2";
 const invoice=useInvoiceStore();
 const filterStatus = ref("All");
 const invoices = ref();
@@ -76,7 +75,7 @@ const AllInvoice = async () => {
   } catch (error) {
     console.error("Error During Invoice Get:", error);
     // Handle error if needed
-    // openNotificationWithIcon("error", "An error occurred while getting the Invoice.");
+    openNotificationWithIcon("error", "An error occurred while getting the Invoice.");
   } finally {
     isLoading.value = false;
   }

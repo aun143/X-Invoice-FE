@@ -46,18 +46,11 @@ const changeStatus = async () => {
 
     if (success) {
       router.push("/Index");
-      Swal.fire({
-        icon: "success",
-        title: "Payment Method Updated",
-        text: data.message || "Payment Method has been updated successfully.",
-      });
+      openNotificationWithIcon("success", data.message || "Payment Method has been Updated successfully.")
+
     } else {
       console.error("Error During Payment Method updation:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error During Payment Method Updation",
-        text: error || "An error occurred while updating the Payment Method.",
-      });
+      openNotificationWithIcon("error", error || "error During Payment Method  Updation.")
       if (error === "Your subscription plan has expired. Please update your plan.") {
         router.push("/subscription");
       } else {
@@ -89,18 +82,12 @@ const changeUnpaidStatus = async () => {
 
     if (success) {
       router.push("/Index");
-      Swal.fire({
-        icon: "success",
-        title: "Payment Method Updated",
-        text: data.message || "Payment Method has been updated successfully.",
-      });
+      openNotificationWithIcon("success", data.message || "Payment Method has been Updated successfully.")
+
     } else {
       console.error("Error During Payment Method updation:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error During Payment Method Updation",
-        text: error || "An error occurred while updating the Payment Method.",
-      });
+      openNotificationWithIcon("error", error || "error During Payment Method  Updation.")
+
       if (error === "Your subscription plan has expired. Please update your plan.") {
         router.push("/subscription");
       } else {
@@ -120,11 +107,8 @@ const deleteInvoicee = async () => {
     // console.log("Changing status for invoiceId:", invoiceId);
     const status = await deleteInvoice(invoiceId);
     router.push("/Index");
-    Swal.fire({
-      icon: "success",
-      title: " Invoice Deleted ",
-      text: " Invoice has been Deleted successfully.",
-    });
+    openNotificationWithIcon("success", data.message || "Invoice has been deleted successfully.")
+
     // console.log("invoice deleted successfully:", status);
   } catch (error) {
     console.error("Error deleting invoice Deletion:", error);

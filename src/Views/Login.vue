@@ -7,8 +7,6 @@ import { Colors } from "../utils/color";
 import { loginUserApi } from "../service/LoginService";
 import { notification } from "ant-design-vue";
 import { useInvoiceStore } from "../stores/index";
-import Swal from "sweetalert2";
-
 const showPassword = ref(false);
 const isLoading = ref(false);
 
@@ -76,26 +74,19 @@ const logInUser = async () => {
         data.data.access_token
       );
       // getUserDetailsAndRedirect();
-      openNotificationWithIcon("success", "Login successful");
       loginData.email="";
       loginData.password="";
       router.push({ name: "Index" });
-      Swal.fire({
-      icon: "success",
-      title: " Login   ",
-      text: "Login successfully.",
-    });
+      openNotificationWithIcon("success", "Login Successfully")
+
     } else {
       console.log("Access token not found in the data:", data.data);
       openNotificationWithIcon("error", "Error during login");
     }}else {
       // Handle signup failure
       console.error("Error During Login.", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error During Login",
-        text: error || "An error occurred while Login.",
-      });
+      openNotificationWithIcon("error", error || "error During Login.")
+
       if (error === "Your subscription plan has expired. Please update your plan.") {
         router.push("/subscription");
       } else {

@@ -1,5 +1,4 @@
 <script setup>
-import Swal from "sweetalert2";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { clientApi } from "../service/ClientService";
@@ -30,18 +29,10 @@ const submitclientDataOrganization = async () => {
 
     if (success) {
       router.push("/AllClients");
-      Swal.fire({
-        icon: "success",
-        title: "Client Created",
-        text: data.message || "Client has been Created successfully.",
-      });
+      openNotificationWithIcon("success", data.message || "Client has been Created successfully.")
     } else {
       console.error("Error During Client organization:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error During Client creation",
-        text: error || "An error occurred while creating the client.",
-      });
+      openNotificationWithIcon("error", error || "An error occurred while creating the client.")
       if (
         error === "Your subscription plan has expired. Please update your plan."
       ) {
@@ -77,18 +68,10 @@ const submitclietDataindividual = async () => {
 
     if (success) {
       router.push("/AllClients");
-      Swal.fire({
-        icon: "success",
-        title: "Client Created",
-        text: data.message || "Client has been Created successfully.",
-      });
+      openNotificationWithIcon("success", data.message || "Client has been Created successfully.")
     } else {
       console.error("Error During Client individual:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error During Client creation",
-        text: error || "An error occurred while creating the client.",
-      });
+      openNotificationWithIcon("error", error || "An error occurred while creating the client.")
       if (error === "Maximum clients limit reached for the user") {
         router.push("/subscription");
       } else {
@@ -105,65 +88,15 @@ const submitclietDataindividual = async () => {
     isLoader.value = false;
   }
 };
-
-// const submitclietDataindividual = async () => {
-//   if(isLoadingImg.value){
-//   openNotificationWithIcon("error", "Please Wait To upload Image First");
-//   return;
-//  }
-//   try {
-//     isLoading.value=true
-//     if (!validateFormInd()) return;
-//     const clientData = {
-//       ...invoice.userClientProfile.clientDataindividual,
-//       clientType: "individual",
-//     };
-//     const response = await clientApi(clientData);
-//     if (response) {
-//       router.push("/AllClients");
-//       Swal.fire({
-//       icon: "success",
-//       title: "Client Created ",
-//       text: "Client has been Created successfully.",
-//     });
-//     }
-
-//     else{
-//       console.log("resp" , response);
-//       Swal.fire({
-//       icon: "error",
-//       title: "Error During ",
-//       text: response.message,
-//     });
-//     }
-
-//   } catch (error) {
-//     console.log("error",error)
-//     let errorMessage = "An error occurred while creating the client.";
-//     if (error.response && error.response.data && error.response.data.message) {
-//       errorMessage = error.response.data.message;
-//     }
-//     if (errorMessage === "Your subscription plan has expired. Please update your plan.") {
-//       // Specific handling for subscription expiration error
-//       // For example, redirect to subscription page
-//       router.push("/subscription");
-//     } else {
-//       openNotificationWithIcon("error", errorMessage);
-//       console.error("Error During Client organization:", error);
-//     }
-//   }finally{
-//     isLoading.value=false;
-//   }
-// };
 const invoice = useInvoiceStore();
 const validateFormOrg = () => {
   const emptyFields = [];
 
   if (!invoice.userClientProfile.clientDataOrganization.firstName) {
-    emptyFields.push("FirstName must be Alphabetic");
+    emptyFields.push("FirstName ");
   }
   if (!invoice.userClientProfile.clientDataOrganization.lastName) {
-    emptyFields.push("LastName must be Alphabetic");
+    emptyFields.push("LastName ");
   }
   if (!invoice.userClientProfile.clientDataOrganization.phone) {
     emptyFields.push("Phone Number");
@@ -176,11 +109,14 @@ const validateFormOrg = () => {
   ) {
     emptyFields.push("Email must be valid and contain '@'.");
   }
+  if (!invoice.userClientProfile.clientDataOrganization.state) {
+    emptyFields.push(" State ");
+  }
   if (!invoice.userClientProfile.clientDataOrganization.city) {
-    emptyFields.push(" City must be Alphaetic");
+    emptyFields.push(" City ");
   }
   if (!invoice.userClientProfile.clientDataOrganization.country) {
-    emptyFields.push("Country must be Alphabetic");
+    emptyFields.push("Country ");
   }
 
   if (emptyFields.length > 0) {
@@ -197,10 +133,10 @@ const validateFormInd = () => {
   const emptyFields = [];
 
   if (!invoice.userClientProfile.clientDataindividual.firstName) {
-    emptyFields.push("FirstName  must be Alphabetic");
+    emptyFields.push("FirstName  ");
   }
   if (!invoice.userClientProfile.clientDataindividual.lastName) {
-    emptyFields.push("LastName  must be Alphabetic");
+    emptyFields.push("LastName  ");
   }
   if (!invoice.userClientProfile.clientDataindividual.phone) {
     emptyFields.push("Phone Number");
@@ -213,11 +149,13 @@ const validateFormInd = () => {
   ) {
     emptyFields.push("Email must be valid and contain '@'.");
   }
-  if (!invoice.userClientProfile.clientDataindividual.city) {
-    emptyFields.push(" City must be Alphabetic");
+  if (!invoice.userClientProfile.clientDataindividual.state) {
+    emptyFields.push(" State ");
+  }if (!invoice.userClientProfile.clientDataindividual.city) {
+    emptyFields.push(" City ");
   }
   if (!invoice.userClientProfile.clientDataindividual.country) {
-    emptyFields.push("Country  must be Alphabetic");
+    emptyFields.push("Country  ");
   }
 
   if (emptyFields.length > 0) {
@@ -312,23 +250,21 @@ const filterOptions = (event) => {
 };
 const filteredOptions = ref(invoice.countryOptions);
 const selectOption = (option, event) => {
-  event.stopPropagation(); // Prevent event propagation
+  event.stopPropagation(); 
   if (selectedField.value === "individual") {
-    invoice.userClientProfile.clientDataindividual.country = option.label; // Update the country in the individual client data
+    invoice.userClientProfile.clientDataindividual.country = option.label; 
   } else if (selectedField.value === "organization") {
-    invoice.userClientProfile.clientDataOrganization.country = option.label; // Update the country in the organization client data
+    invoice.userClientProfile.clientDataOrganization.country = option.label;
   }
-  hideDropdown(); // Hide the dropdown after selecting an option
+  hideDropdown(); 
 };
 
 const showDropdown = () => {
   showOptions.value = true;
-  // console.log("showDropdown", showOptions.value);
 };
 const hideDropdown = () => {
   setTimeout(() => {
-    showOptions.value = false;
-  // console.log("Selected client:", showOptions.value); 
+    showOptions.value = false; 
   }, 100); 
 };
 </script>
@@ -611,7 +547,7 @@ const hideDropdown = () => {
                 />
               </div>
               <div class="">
-                <p class="text-left ml-2 font-medium text-[14px]">State</p>
+                <p class="text-left font-medium text-[14px]"> <span class="text-[#ff0000]">*</span>State</p>
                 <a-input
                   v-model:value="
                     invoice.userClientProfile.clientDataindividual.state
@@ -852,7 +788,7 @@ const hideDropdown = () => {
                 />
               </div>
               <div class="">
-                <p class="text-left ml-2 font-medium text-[14px]">State</p>
+                <p class="text-left font-medium text-[14px]"> <span class="text-[#ff0000]">*</span>State</p>
                 <a-input
                   v-model:value="
                     invoice.userClientProfile.clientDataOrganization.state

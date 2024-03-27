@@ -145,7 +145,7 @@ window.addEventListener("offline", () => {
         :menuItems="menuItems"
         :isSearch="disableSearch"
         :isExitButton="enableExitButton"
-        @button-exit-clicked="handleExitButtonClick"
+        @button-exit-clicked="false"
         :isUsedVueRouter="true"
       >
       </VueSidebarMenuAkahon>
@@ -161,17 +161,17 @@ window.addEventListener("offline", () => {
       
       <!-- You can style this message as needed -->
     </div>
-    <div class="fixed bottom-[28px] right-[28px] z-[999]">
-      <div v-if="invoice.userProfileData.userRole !== 'iSuperAdmin'">
-      <a-button
-      type="primary"
-  v-if="invoice.userProfileData.userRole"
-  @click="upgradeAccount"
-  class="mb-[8px] flex items-center bg-blue-600 justify-center h-[40px] rounded ] cursor-pointer tran  shadow-lg "
+    <div class="fixed bottom-0 w-full left-0  z-[999]" v-if="enableSidebar && online">
+      <!-- <div v-if="invoice.userProfileData.userRole !== 'iSuperAdmin'"> -->
+        <!-- v-if="invoice.userProfileData.userRole"-->
+          <button
+          @click="handleExitButtonClick" 
+          type="primary"
+  class="flex items-center text-red-600 py-8 justify-center h-[40px] rounded ] cursor-pointer trans  shadow-lg "
 >
-  <span class="mx-4">Upgrade</span>
-</a-button>
-</div>
+  <span class="mx-4 text-lg "><i class="fas fa-user mr-2"></i>Logout</span>
+</button>
+<!-- </div> -->
     </div>
   </div>
   <div class="block md:hidden overflow-auto  justify-center items-center bg-[#10C0CB] text-white  p-32">
@@ -188,31 +188,52 @@ Thanks</h1>
   padding: 0;
   box-sizing: border-box;
 }
+.sidebar.open .profile #log_out{
+  width:100%;
+  background: #10C0CB;
+}
 @media (max-width: 1023px) {
   .sidebar {
     width: 195px !important;
   }
+  .trans {
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  width:195px !important;  
+}
 }
 @media (max-width: 1023px) {
   .sidebar div.profile {
     width: 195px !important;
   }
+  .trans {
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  width:195px !important;  
+
 }
-.sidebar div.profile .job {
-    font-size: 10px !important;
-  }
-@media (max-width: 1023px) {
-  .sidebar div.profile .job {
-    font-size: 8px !important;
-  }
 }
+.sidebar div.profile  {
+background-color: transparent !important;
+  }
+
+  .sidebar div.profile {
+    display: none !important;
+  }
+
 button:focus {
   outline: none;
 }
 .sidebar {
   transition: none !important;
 }
-.tran {
+.trans {
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  width:250px;  
+
+}
+..trans {
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
 }

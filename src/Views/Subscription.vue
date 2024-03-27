@@ -5,6 +5,8 @@ import { getUserDetailsApi } from "../service/LoginService";
 import Swal from "sweetalert2";
 import { useInvoiceStore } from "../stores/index";
 import { updateSignUpData } from "../service/SignUpService";
+import { notification } from "ant-design-vue";
+
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
 const router = useRouter();
@@ -26,25 +28,23 @@ async function updateFree() {
       const body = { userId: userid, planeName: "Free" };
       const response = await updateSignUpData(body);
       invoice.updateUserData(response.data);
-      Swal.fire({
-        icon: "success",
-        title: " Plan Updated",
-        text: " Plan has been Updated Successfully.",
-      }).then(() => {
+      openNotificationWithIcon("success"," Payment Method  Updated successfully.")
         // Fetch updated user data after plan update
         getUserDetailsAndRedirect();
-      });
+     
     } catch (error) {
       console.log("error", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: ("Error During Plan Change:", error),
-        footer: "Please try again ",
-      });
+      openNotificationWithIcon("error", error || "Error During Payment Method  Updation.")
     }
   }
 }
+const openNotificationWithIcon = (type, message) => {
+  notification[type]({
+    message: type === "success" ? "Success" : "Error",
+    description: message,
+    duration: 3, 
+  });
+};
 async function updateBasic() {
   const result = await Swal.fire({
     title: "Basic Plan",
@@ -62,22 +62,14 @@ async function updateBasic() {
       const body = { userId: userid, planeName: "Basic" };
       const response = await updateSignUpData(body);
       invoice.updateUserData(response.data);
-      Swal.fire({
-        icon: "success",
-        title: " Plan Updated",
-        text: " Plan has been Updated Successfully.",
-      }).then(() => {
+      openNotificationWithIcon("success"," Payment Method  Updated successfully.")
         // Fetch updated user data after plan update
         getUserDetailsAndRedirect();
-      });
+
     } catch (error) {
       console.log("error", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: ("Error During Plan Change:", error),
-        footer: "Please try again ",
-      });
+      openNotificationWithIcon("error", error || "Error During Payment Method  Updation.")
+
     }
   }
 }
@@ -100,22 +92,13 @@ async function updateStandard() {
       const body = { userId: userid, planeName: "Standard" };
       const response = await updateSignUpData(body);
       invoice.updateUserData(response.data);
-      Swal.fire({
-        icon: "success",
-        title: " Plan Updated",
-        text: " Plan has been Updated Successfully.",
-      }).then(() => {
+      openNotificationWithIcon("success"," Payment Method  Updated successfully.")
         // Fetch updated user data after plan update
         getUserDetailsAndRedirect();
-      });
     } catch (error) {
       console.log("error", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: ("Error During Plan Change:", error),
-        footer: "Please try again ",
-      });
+      openNotificationWithIcon("error", error || "Error During Payment Method  Updation.")
+
     }
   }
 }
@@ -137,22 +120,13 @@ async function updatePremium() {
       const body = { userId: userid, planeName: "Premium" };
       const response = await updateSignUpData(body);
       invoice.updateUserData(response.data);
-      Swal.fire({
-        icon: "success",
-        title: " Plan Updated",
-        text: " Plan has been Updated Successfully.",
-      }).then(() => {
+      openNotificationWithIcon("success"," Payment Method  Updated successfully.")
         // Fetch updated user data after plan update
         getUserDetailsAndRedirect();
-      });
     } catch (error) {
       console.log("error", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: ("Error During Plan Change:", error),
-        footer: "Please try again ",
-      });
+      openNotificationWithIcon("error", error || "Error During Payment Method  Updation.")
+
     }
   }
 }
@@ -166,13 +140,11 @@ async function getUserDetailsAndRedirect() {
 
     // After updating user data, navigate to the root route ("/")
     router.push("/");
+    
   } catch (error) {
     console.error("Error Fetching User Details:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Error Fetching User Details. Please try again.",
-    });
+    openNotificationWithIcon("error",  "Error During fetching User Role.")
+
   }
 }
 // Define functions to handle plan selection
@@ -226,32 +198,13 @@ onMounted(async () => {
     }
     // showPopup();
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Getting Account:", error),
-      footer: "Please try again ",
-    });
+    openNotificationWithIcon("error", error || "Error During fetching User Role.")
+
     console.error("Error During getting Business Profile:", error);
   } finally {
     isLoading.value = false;
   }
 });
-// async function showPopup() {
-//   if (
-//     userRole.value === "user" ||
-//     userRole.value === undefined ||
-//     userRole.value === ""
-//   ) {
-//     console.log("userRole.value", userRole.value);
-//     await Swal.fire({
-//       title: "Free Mode",
-//       text: "Can Create up to 3 Clients & 3 Invoices",
-//       icon: "info",
-//       confirmButtonText: "OK",
-//     });
-//   }
-// }
 const plans = [
   {
     name: "Free",

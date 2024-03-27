@@ -5,7 +5,6 @@ import { notification } from "ant-design-vue";
 import Button from "../components/Button.vue";
 import { Colors } from "../utils/color";
 import { signUpUserApi } from "../service/SignUpService";
-import Swal from "sweetalert2";
 import { useInvoiceStore } from "../stores/index";
 const isLoading =ref(false);
 const router = useRouter();
@@ -102,11 +101,8 @@ const signUpUser = async () => {
         localStorage.setItem("accessToken", data.data.access_token);
         localStorage.setItem("UserId", data.data.data._id);
         router.push({ name: "Accounts" });
-        Swal.fire({
-          icon: "success",
-          title: "User SignUp",
-          text: data.message || "User has been SignedUp successfully.",
-        });
+        openNotificationWithIcon("success", data.message || "SignUp successfully.")
+
       } else {
         console.error("Incomplete response data:", data);
         openNotificationWithIcon("error", "Incomplete response data received.");
@@ -114,11 +110,8 @@ const signUpUser = async () => {
     } else {
       // Handle signup failure
       console.error("Error During SignUp :", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error During SignUp",
-        text: error || "An error occurred while SignUp.",
-      });
+      openNotificationWithIcon("error", error || "error During SignUp.")
+
       if (error === "Your subscription plan has expired. Please update your plan.") {
         router.push("/subscription");
       } else {

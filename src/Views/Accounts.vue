@@ -6,7 +6,6 @@ import { useRouter } from "vue-router";
 import { PostBusinessProfilerIndiviualApi } from "../service/BusinessProfileService";
 import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";
-import Swal from "sweetalert2";
 
 const invoice = useInvoiceStore();
 const proceedClicked = ref(false);
@@ -80,12 +79,6 @@ const validateFields = () => {
       openNotificationWithIcon("error", "Address is required");
       valid = false;
     } 
-    // else if (!/^[a-z A-Z 0-9\s ,]+$/.test(invoice.userProfileData.address1)) {
-    //   errors.address1 = "Address must contain only alphanumeric characters and spaces.";
-    //   openNotificationWithIcon("error", "Address must be valid and contain only alphanumeric characters and spaces.");
-    //   valid = false;
-    // }
-
     if (invoice.userProfileData.companyName && !/^[a-zA-Z0-9\s]+$/.test(invoice.userProfileData.companyName)) {
         errors.companyName = "Company Name must contain only alphanumeric characters and spaces.";
         openNotificationWithIcon("error", "Company Name must be valid and contain only alphanumeric characters and spaces.");
@@ -125,18 +118,9 @@ if (success) {
   invoice.userProfileData={}
   invoice.updateUserProfileAndBusinessProfile(data);
     router.push("/Subscription");
-  Swal.fire({
-    icon: "success",
-    title: "Profile Created",
-    text: data.message || "Profile has been Created successfully.",
-  });
+    openNotificationWithIcon("success", data.message || "Profile has been Created successfully.");
 } else {
-  console.error("Error During Profile Creation:", error);
-  Swal.fire({
-    icon: "error",
-    title: "Error During Profile creation",
-    text: error || "An error occurred while creating the Profile.",
-  });
+  console.error("Error During Profile Creation:", error || "An error occurred while creating the Profile.");
   if (error === "Your subscription plan has expired. Please update your plan.") {
     router.push("/subscription");
   } else {
@@ -145,7 +129,7 @@ if (success) {
 }
 } catch (error) {
 console.error("Error During Profile creation:", error);
-openNotificationWithIcon("error", "An error occurred while creating the Profile.");
+openNotificationWithIcon("error",error || "An error occurred while creating the Profile.");
 } finally {
 isLoading.value = false;
 }

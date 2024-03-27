@@ -10,7 +10,6 @@ import { getAllClient } from "../service/ClientService";
 import { Colors } from "../utils/color";
 import { updateInvoiceData } from '../service/MainService';
 import {getSingleInvoice} from "../service/invoiceService";
-import Swal  from "sweetalert2";
 import { notification } from "ant-design-vue";
 import {uploadImage} from "../service/UploadImage"
 import { getUserDetailsApi } from "../service/LoginService";
@@ -39,11 +38,8 @@ const handleSaveDraftButtonClick = async (Id) => {
 if (success) {
   router.push("/Index");
     invoice.resetFormData();
-  Swal.fire({
-    icon: "success",
-    title: "Invoice updated",
-    text: data.message || "Invoice has been updated successfully.",
-  });
+      openNotificationWithIcon("success", data.message || "invoice has been Updated successfully.")
+
 } else {
   console.error("Error During Invoice updation:", error);
   if (error === "Your subscription plan has expired. Please update your plan.") {
@@ -177,24 +173,11 @@ const filteredClients = computed(() => {
     return clients.value.filter((client) => client.paymentStatus === filterStatus.value);
   }
 });
-const calculateAmount = (item) => {
-    // Calculate the amount
-    const amount = item.quantity * item.rate;
-    // Update the item's amount property
-    item.amount = amount;
-    // Return the calculated amount
-    return amount;
-};
+
 const deleteItem = (index) => {
   if (invoice.formData.items.length > 1) {
     invoice.formData.items.splice(index, 1);
   } else {
-    // Swal.fire({
-    //   icon: 'warning',
-    //   title: 'Cannot Delete Item',
-    //   text: 'At least one item must remain in the invoice.',
-    //   footer: 'Please make sure there is at least Two item before deleting.'
-    // });
       openNotificationWithIcon("error", "Cannot Delete All Items");
 
   }
@@ -213,12 +196,8 @@ const ClientProfile = async () => {
     }
   } catch (error) {
     console.error("Error fetching Clients:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Error fetching Clients: " + error.message,
-      footer: "Please try again",
-    });
+    openNotificationWithIcon("error", error || "An error occurred while fetching the client.")
+
   } finally {
     isLoading.value = false; // Set isLoading back to false after fetching data
   }
@@ -290,12 +269,8 @@ const BusinessProfile = async () => {
       router.push("/login");
     }
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error Submitting Invoice:", error),
-      footer: "Please try again ",
-    });
+    openNotificationWithIcon("error", error || "An error occurred while getting the Business Profile.")
+
     console.error("Error getting account in Invoice", error);
   } finally {
   };
