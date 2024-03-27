@@ -1,13 +1,12 @@
 <script setup>
-import { ref, watch, computed, onMounted, watchEffect, onUnmounted } from "vue";
+import { ref, watch, computed, onMounted, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
 import Button from "../components/Button.vue";
 import Client from "./Client.vue";
 import { Colors } from "../utils/color";
-import {updateInvoiceStatus} from "../service/invoiceService";
-// import Modal from "../components/Modal.vue";
+import { updateInvoiceStatus } from "../service/invoiceService";
 import { getAllClient } from "../service/ClientService";
 // import InvoiceService from "../service/InvoiceService";
 import { getUserDetailsApi } from "../service/LoginService";
@@ -15,11 +14,8 @@ import Swal from "sweetalert2";
 import { notification } from "ant-design-vue";
 import { postInvoiceData } from "../service/MainService";
 import { uploadImage } from "../service/UploadImage";
-// import {  Input } from "ant-design-vue";
-
 const route = useRoute();
 const router = useRouter();
-const invoiceId = route.params.id;
 const invoice = useInvoiceStore();
 const isLoadingImg = ref(false);
 const isLoader = ref(false);
@@ -33,9 +29,6 @@ watchEffect(() => {
     },
     { deep: true }
   );
-
-  // Cleanup function to stop watching when component is unmounted
-  // onUnmounted(unwatch);
 });
 
 const invoiceSubmit = async () => {
@@ -50,18 +43,21 @@ const invoiceSubmit = async () => {
     if (!validateDueDate()) {
       return;
     }
-    const {success,data,error} = await postInvoiceData(invoice.formData);
-if(success){
-    //console.log('Invoice submitted successfully:', response);
-    invoice.resetFormData();
-    Swal.fire({
-      icon: "success",
-      title: " Invoice Created ",
-      text: " Invoice has been Created successfully.",
-    })
-    return data._id; // Return the ID of the created invoice
+    const { success, data, error } = await postInvoiceData(invoice.formData);
+    if (success) {
+      //console.log('Invoice submitted successfully:', response);
+      invoice.resetFormData();
+      Swal.fire({
+        icon: "success",
+        title: " Invoice Created ",
+        text: " Invoice has been Created successfully.",
+      });
+      return data._id; // Return the ID of the created invoice
     } else {
-      openNotificationWithIcon("error", error || "An error occurred while creating the invoice");
+      openNotificationWithIcon(
+        "error",
+        error || "An error occurred while creating the invoice"
+      );
       return null; // Return null indicating failure
     }
   } catch (error) {
@@ -241,13 +237,9 @@ const deleteItem = (index) => {
     openNotificationWithIcon("error", "Cannot Delete All Items");
   }
 };
-
-// const dropdownOpen = ref(new Array(invoice.formData.items.length).fill(true).map(() => ref(true)));
-
 const addMoreItem = () => {
   invoice.addMoreItem();
 };
-
 const SubTotal = computed(() => {
   let subtotal = 0;
   invoice.formData.items.forEach((item) => {
@@ -255,7 +247,6 @@ const SubTotal = computed(() => {
   });
   return subtotal;
 });
-
 watch(SubTotal, (newSubtotal, oldSubtotal) => {
   invoice.formData.subtotal = newSubtotal;
 });
@@ -266,7 +257,6 @@ const Total = computed(() => {
   });
   return total;
 });
-
 watch(Total, (newTotal, oldtotal) => {
   invoice.formData.total = newTotal;
 });
@@ -279,10 +269,9 @@ watch(Total, (newTotal, oldtotal) => {
 //     console.error("Error updating invoice status:", error);
 //   }
 // };
-
 const handleSaveDraftButtonClick = async () => {
   try {
-    const invoiceId =await invoiceSubmit();
+    const invoiceId = await invoiceSubmit();
     if (invoiceId) {
       router.push("/Index");
     }
@@ -296,54 +285,54 @@ const handleSaveDraftButtonClick = async () => {
     console.error("Error Submitting Invoice:", error);
   }
 };
-const invoiceID=ref("");
+const invoiceID = ref("");
 const handleDropdownItemClick = async (clickedItem) => {
   if (clickedItem.title === "Save") {
     try {
-    const invoiceId =await invoiceSubmit();
-    if (invoiceId) {
-      router.push("/Index");
+      const invoiceId = await invoiceSubmit();
+      if (invoiceId) {
+        router.push("/Index");
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: ("Error Submitting Invoice:", error),
+        footer: "Please try again ",
+      });
+      console.error("Error Submitting Invoice:", error);
     }
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error Submitting Invoice:", error),
-      footer: "Please try again ",
-    });
-    console.error("Error Submitting Invoice:", error);
-  }
   } else if (clickedItem.title === "Save & Send") {
     try {
-    const invoiceId =await invoiceSubmit();
-    if (invoiceId) {
-      router.push(`/GetInvoice/${invoiceId}/send`);
+      const invoiceId = await invoiceSubmit();
+      if (invoiceId) {
+        router.push(`/GetInvoice/${invoiceId}/send`);
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: ("Error Submitting Invoice:", error),
+        footer: "Please try again ",
+      });
+      console.error("Error Submitting Invoice:", error);
     }
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error Submitting Invoice:", error),
-      footer: "Please try again ",
-    });
-    console.error("Error Submitting Invoice:", error);
-  }
   } else if (clickedItem.title === "Save & Mark Send") {
     try {
- invoiceID.value =await invoiceSubmit();
-    console.log("invoiceId",invoiceID.value);
-    if (invoiceID.value) {
-      changeStatus(invoiceID.value);
+      invoiceID.value = await invoiceSubmit();
+      console.log("invoiceId", invoiceID.value);
+      if (invoiceID.value) {
+        changeStatus(invoiceID.value);
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: ("Error Submitting Invoice:", error),
+        footer: "Please try again ",
+      });
+      console.error("Error Submitting Invoice:", error);
     }
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error Submitting Invoice:", error),
-      footer: "Please try again ",
-    });
-    console.error("Error Submitting Invoice:", error);
-  }
   }
 };
 const changeStatus = async () => {
@@ -353,7 +342,10 @@ const changeStatus = async () => {
     const updateData = {
       paymentStatus: "Paid",
     };
-    const { success, data, error } = await updateInvoiceStatus(invoiceID.value, updateData);
+    const { success, data, error } = await updateInvoiceStatus(
+      invoiceID.value,
+      updateData
+    );
 
     if (success) {
       router.push("/Index");
@@ -377,16 +369,17 @@ const changeStatus = async () => {
     }
   } catch (error) {
     console.error("Error During Payment Method Updation:", error);
-    openNotificationWithIcon("error", "An error occurred while updating the Payment Method.");
+    openNotificationWithIcon(
+      "error",
+      "An error occurred while updating the Payment Method."
+    );
   } finally {
     isLoading.value = false;
   }
 };
 const isLoading = ref(false);
 const filterStatus = ref("All");
-const client = ref([]);
 const clients = ref([]);
-const profile = ref({});
 const BusinessProfile = async () => {
   try {
     invoice.resetFormData();
@@ -396,7 +389,7 @@ const BusinessProfile = async () => {
 
     if (UserId) {
       const userProfileData = await getUserDetailsApi(UserId);
-      invoice.userProfileData.userRole=userProfileData.userRole;
+      invoice.userProfileData.userRole = userProfileData.userRole;
       //console.log("userProfileType >>>", invoice.selectedProfileType);
       if (invoice.selectedProfileType === "individual") {
         const individualData = userProfileData.individualProfile;
@@ -444,56 +437,20 @@ const ClientProfile = async () => {
       footer: "Please try again",
     });
   } finally {
-    isLoading.value = false; // Set isLoading back to false after fetching data
+    isLoading.value = false;
   }
 };
 onMounted(async () => {
   BusinessProfile();
   ClientProfile();
 });
-
-const invoiceName = ref("");
-const upcomingDueDate = ref(new Date());
-const formattedDueDate = computed(() => {
-  if (invoice.formData.invoiceDue instanceof Date) {
-    const upcomingDueDate = invoice.formData.invoiceDue;
-    return `${upcomingDueDate.getDate()}-${
-      upcomingDueDate.getMonth() + 1
-    }-${upcomingDueDate.getFullYear()}`;
-  }
-  return null;
-});
-
-// const calculateUpcomingDueDate = () => {
-//   const selectedDueDate = invoice.formData.invoiceDueDate;
-//   if (selectedDueDate) {
-//     const currentDate = new Date(invoice.formData.date);
-//     const upcomingDate = new Date(currentDate);
-//     upcomingDate.setDate(currentDate.getDate() + parseInt(selectedDueDate));
-//     // Check if upcomingDate is a valid date object
-//     if (!isNaN(upcomingDate.getTime())) {
-//  const formattedDate = upcomingDate.toLocaleDateString('en-GB', {  year: 'numeric' , month: '2-digit',day: '2-digit'});
-// invoice.formData.invoiceDueDate=formattedDate;
-// console.log("upcomingDate", formattedDate);
-//     } else {
-//       alert("Invalid upcoming date:", invoice.formData.invoiceDueDate);
-//     }
-//   } else {
-//     upcomingDueDate.value = null;
-//   }
-// };
 const validateDueDate = () => {
-  const invoiceDate = new Date(invoice.formData.date); // Get formData.date
-
-  // Check if formData.date is provided
+  const invoiceDate = new Date(invoice.formData.date);
   if (!invoiceDate || isNaN(invoiceDate.getTime())) {
     openNotificationWithIcon("error", "Please select an invoice date first");
     return false;
   }
-
   const dueDate = new Date(invoice.formData.invoiceDueDate);
-
-  // Check if due date is before the invoice date or is more than 60 days ahead
   if (dueDate < invoiceDate) {
     openNotificationWithIcon(
       "error",
@@ -501,11 +458,8 @@ const validateDueDate = () => {
     );
     return false;
   }
-
-  const maxDueDate = new Date(invoiceDate); // Set maxDueDate as a copy of invoiceDate
+  const maxDueDate = new Date(invoiceDate);
   maxDueDate.setDate(maxDueDate.getDate() + 60);
-
-  // Check if due date is more than 60 days in the future relative to invoice date
   if (dueDate > maxDueDate) {
     openNotificationWithIcon(
       "error",
@@ -513,22 +467,47 @@ const validateDueDate = () => {
     );
     return false;
   }
-
-  return true; // Due date is valid
+  return true;
 };
-
-// const formatDate = (date) => {
-//   const day = date.getDate().toString().padStart(2, '0');
-//   const month = (date.getMonth() + 1).toString().padStart(2, '0');
-//   const year = date.getFullYear();
-//   return `${year}/${month}/${day}`;
-// };
 const profileType = ref(invoice.selectedProfileType);
-
 const switchProfileType = (type) => {
   invoice.selectProfileType(type);
   profileType.value = type;
   BusinessProfile();
+};
+const showOptions = ref(false);
+const filterOptions = (event) => {
+  const input = event.target.value.trim().toLowerCase();
+  filteredOptions.value =
+    input === ""
+      ? []
+      : clients.value.filter((client) => {
+          const fullName =
+            `${client.firstName} ${client.lastName}`.toLowerCase();
+          return fullName.includes(input);
+        });
+};
+const emptyReciever = () => {
+  invoice.formData.receiver = "";
+};
+const filteredOptions = ref(clients.value);
+
+const selectOption = (client,event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  console.log("Selected clien:", client);
+  invoice.formData.receiver = client;
+  hideDropdown();
+};
+const showDropdown = () => {
+  showOptions.value = true;
+  console.log("Selected clients:", showOptions.value);
+};
+const hideDropdown = () => {
+  setTimeout(() => {
+    showOptions.value = false;
+    console.log(" client:", showOptions.value);
+  }, 100);
 };
 </script>
 
@@ -545,7 +524,7 @@ const switchProfileType = (type) => {
         dropdownTitle="Save"
         :onDropdownItemClick="handleDropdownItemClick"
         saveDraftButtonText=" Save Draft"
-        :saveDraftButtonColor="Colors.saveDraft"
+        :saveDraftButtonColor="Colors.draft"
         :onSaveDraftButtonClick="handleSaveDraftButtonClick"
         :showDropdown="true"
         :showBackButton="false"
@@ -578,7 +557,7 @@ const switchProfileType = (type) => {
                 <span class="text-[#ff0000] mr-1">*</span>
                 <a-textarea
                   v-model:value="invoice.formData.description"
-                  placeholder="Enter Description"
+                  placeholder="Enter Brief Description "
                   name=""
                   id=""
                   cols="60"
@@ -615,19 +594,19 @@ const switchProfileType = (type) => {
         </div>
         <div class="mt-10 lg:mt-10 md:mt-2 flex w-full">
           <div class="">
-            <p class="ml-auto mr-6">
+            <p class="ml-auto mr-16 font-medium text-[14px]">
               <span class="text-[#ff0000]">*</span>Invoice No.
             </p>
             <a-input-number
               required
               type="number"
               v-model:value="invoice.formData.invoiceNumber"
-              class="ml-2 w-[100px]"
+              class="ml-2 w-full"
             />
           </div>
           <div class="flex items-end justify-end w-full">
             <div class="">
-              <p class="text-left ml-4">Language</p>
+              <p class="text-left ml-4 font-medium text-[14px]">Language</p>
               <a-select
                 size="medium"
                 v-model:value="invoice.formData.language"
@@ -643,7 +622,7 @@ const switchProfileType = (type) => {
               </a-select>
             </div>
             <div>
-              <p class="text-left ml-4">Currency</p>
+              <p class="text-left ml-4 font-medium text-[14px]">Currency</p>
               <a-select
                 size="medium"
                 v-model:value="invoice.formData.currency"
@@ -664,21 +643,17 @@ const switchProfileType = (type) => {
         <br />
         <hr />
       </div>
-      <div class="container flex">
+      <div class="container flex my-4">
         <div class="flex-left lg:w-[45%] md:w-[50%] justify-center">
           <div class="mt-4 text-left">
-            <div
-              v-if="isLoading"
-              class="flex justify-center flex-col items-center"
-            >
-              <a-space class="w-full">
-                <a-spin size="large" />
-              </a-space>
-            </div>
-            <div v-else>
-              <div class="flex w-full">
-                <p><span class="text-[#ff0000] ml-2">*</span>From:</p>
-                <p class="justify-end flex w-full text-left">
+            <div>
+              <div class="grid md:flex md:flex-row lg:grid-cols-5 w-full">
+                <div
+                  class="font-medium text-[14px] col-span-2 w-full justify-start"
+                >
+                  <span class="text-[#ff0000] ml-2">*</span>Billed From:
+                </div>
+                <div class="justify-end col-span-3 w-full text-right">
                   <button
                     @click="switchProfileType('individual')"
                     v-if="profileType === 'organization'"
@@ -693,9 +668,17 @@ const switchProfileType = (type) => {
                   >
                     Switch to Organization
                   </button>
-                </p>
+                </div>
               </div>
-              <div class="ml-2 border rounded-lg">
+              <div
+                v-if="isLoading"
+                class="flex justify-center flex-col items-center"
+              >
+                <a-space class="w-full">
+                  <a-spin size="large" />
+                </a-space>
+              </div>
+              <div class="ml-2 my-1 border rounded-lg" v-else>
                 <div
                   v-if="invoice.selectedProfileType === 'individual'"
                   class="pl-2 border-gray-100 rounded-2"
@@ -780,10 +763,12 @@ const switchProfileType = (type) => {
                 </div>
               </div>
             </div>
-            <div class="flex mt-2">
-              <p class="text-right ml-2">
-                <span class="text-[#ff0000]">*</span>To:
-              </p>
+            <div class="flex mt-4 my-1">
+              <div
+                class="ml-2 justify-start flex w-full font-medium text-start text-[14px]"
+              >
+                <span class="text-[#ff0000]">*</span>Bill To:
+              </div>
               <div class="justify-end flex w-full text-left">
                 <!-- <div  @click="toggleModal" class="">New Client</div> -->
                 <div
@@ -796,33 +781,81 @@ const switchProfileType = (type) => {
                 <div class="home">
                   <!-- <Modal @close="toggleModal" :modalActive="modalActive">
                 </Modal> -->
-                  <a-modal v-model:open="open" width="80%" class="max-w-[100%] md:max-w-[100%]  lg:max-w-[60%]  xl:max-w-[50%] 2xl:max-w-[40%] ">
+                  <a-modal
+                    v-model:open="open"
+                    width="80%"
+                    class="max-w-[100%] md:max-w-[100%] lg:max-w-[60%] xl:max-w-[50%] 2xl:max-w-[40%]"
+                  >
                     <Client />
                   </a-modal>
                 </div>
               </div>
             </div>
-
-            <a-select
-              size="medium"
-              v-model:value="invoice.formData.receiver"
-              class="ml-2 w-[100%]"
-              :loading="isLoading"
-              style="text-align: left"
-            >
-              <a-select-option
-                v-for="client in filteredClients"
-                :key="client._id"
+            <div class="flex ml-2 border relative px-2 rounded-lg" v-if="invoice.formData.receiver">
+              <span class="absolute right-2 text-red-600 hover:text-red-400 cursor-pointer text" @click="emptyReciever">X</span>
+              <div class="borde rounded-lg">
+                <span v-if="invoice.formData.receiver.firstName" class="mr-2">{{
+                      invoice.formData.receiver.firstName
+                    }}</span> 
+                    <span v-if="invoice.formData.receiver.lastName">{{
+                      invoice.formData.receiver.lastName
+                    }}</span>
+                <br />
+                    <span v-if="invoice.formData.receiver.address1"
+                      >{{ invoice.formData.receiver.address1 }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.receiver.address2">{{
+                      invoice.formData.receiver.address2
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.receiver.postalCode"
+                      >{{ invoice.formData.receiver.postalCode }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.receiver.city"
+                      >{{ invoice.formData.receiver.city }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.receiver.state">{{
+                      invoice.formData.receiver.state
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.receiver.email">{{
+                      invoice.formData.receiver.email
+                    }}</span>
+              </div>
+              
+            </div>
+            <div class="relative ml-2" v-else-if="!invoice.formData.receiver">
+              <a-input
+              readonly
+                v-model:value="invoice.formData.receiver"
+                @focus="showDropdown"
+                @blur="hideDropdown"
+                @input="filterOptions"
+                placeholder="Select Client"
+                class="w-full"
+              />
+              <ul
+                v-show="showOptions"
+                class="dropdown absolute border rounded mt-2 overflow-y-auto w-full max-h-44 flex gap-2 flex-col bg-white text-left"
               >
-                {{ client.firstName }} {{ client.lastName }}
-              </a-select-option>
-            </a-select>
+                <li
+                  v-for="client in filteredClients"
+                  :key="client._id"
+                  @click="selectOption(client,$event)"
+                  class="ml-2"
+                >
+                  {{ client.firstName }} {{ client.lastName }}
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="flex flex-col items-end mt-4 ml-auto">
+        <div class="flex flex-col items-end mt-1 ml-auto">
           <div class="flex items-end mb-2">
             <div>
-              <p class="w-4/5 mb-0 ml-1 text-start">
+              <p
+                class="w-4/5 mb-0 ml-1 py-1 text-start font-medium text-[14px]"
+              >
                 <span class="text-[#ff0000]">*</span>Date
               </p>
               <a-input
@@ -834,7 +867,7 @@ const switchProfileType = (type) => {
           </div>
           <div class="flex items-end mb-2">
             <div>
-              <p class="w-4/5 ml-2 text-start" ml-2 text-start>
+              <p class="w-4/5 ml-2 text-start py-1 font-medium text-[14px]">
                 <span class="text-[#ff0000]">*</span>Invoice Due
               </p>
               <a-input
@@ -842,21 +875,16 @@ const switchProfileType = (type) => {
                 v-model:value="invoice.formData.invoiceDueDate"
                 class="ml-2 w-[200px]"
               />
-
-              <!-- <a-select v-model:value="invoice.formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate">
-        
-              <a-select-option value="07">After 07 days</a-select-option>
-              <a-select-option value="15">After 15 days</a-select-option>
-              <a-select-option value="30">After 30 days</a-select-option>
-              <a-select-option value="45">After 45 days</a-select-option>
-              <a-select-option value="60">After 60 days</a-select-option>
-            </a-select> -->
             </div>
           </div>
 
           <div class="flex items-end">
             <div>
-              <p class="w-3/3 mb-0 ml-3 text-start">Purchase Order Number</p>
+              <p
+                class="w-3/3 mb-0 ml-3 py-1 text-start font-medium text-[14px]"
+              >
+                Purchase Order Number
+              </p>
               <a-input-number
                 v-model:value="invoice.formData.purchaseOrderNumber"
                 class="ml-2 w-[200px]"
@@ -869,16 +897,18 @@ const switchProfileType = (type) => {
       <br />
       <hr />
       <div class="">
-        <table class="table-auto w-full">
+        <table class="table-auto w-full my-4">
           <tr class="text-left text-black">
             <th class="align-top md:hidden lg:block"></th>
             <th class="p-2 w-1/2 align-top">Description</th>
-            <th class="p-2 align-top">Quantity</th>
-            <th class="p-2 align-top"><span class="ml-4">Rate</span></th>
-            <th class="p-2 w-[150px] text-right pr-5 align-top">
+            <th class="p-2 align-top text-right">Quantity</th>
+            <th class="p-2 align-top text-right">
+              <span class="ml-4">Rate</span>
+            </th>
+            <th class="p-2 w-[150px] text-right align-top">
               <span class="ml-4">Amount</span>
             </th>
-            <th class="p-2 w-[30px] text-right pr-5 align-top">Options</th>
+            <th class="p-2 w-[30px] text-right align-top">Options</th>
           </tr>
 
           <tr
@@ -913,7 +943,7 @@ const switchProfileType = (type) => {
                 v-model:value="item.description"
                 name=""
                 id=""
-                cols="70"
+                cols="50"
               ></a-textarea>
             </td>
             <td class="align-top">
@@ -924,25 +954,24 @@ const switchProfileType = (type) => {
                 placeholder="0"
               />
             </td>
-            <td class="align-top flex flex-col">
+            <td class="align-top">
               <a-input-number
                 v-model:value="item.rate"
-                class="w-full ml-4"
+                class="w-full mx-4"
                 type="number"
                 placeholder="0"
               />
               <a-select
-                size="large"
+                size="medium"
                 v-model:value="item.unit"
-                class="mt-1 mb-2 flex ml-6"
+                class="mt-1 mb-2 text-left flex ml-6"
                 @change="() => handleUnitChange(index, item.unit)"
-                style="text-align: left"
               >
                 <a-select-option
                   v-for="unit in invoice.unitOptions"
                   :key="unit.value"
                   :value="unit.value"
-                  class="w-12"
+                  class=""
                 >
                   {{ unit.value }}
                 </a-select-option>
@@ -950,10 +979,17 @@ const switchProfileType = (type) => {
             </td>
             <td class="align-top">
               <!-- <a-textarea v-model:value="item.amount" readonly class="" cols="10" rows="1" placeholder="Amount" >{{ item.quantity * item.rate }}</a-textarea> -->
-              <div readonly class="ml-12 xl:ml-12 md:ml-8 text-left">
-                {{ calculateAmount(item) }}
+              <a-input-number
+                readonly
+                v-model:value="item.amount"
+                class="w-24 ml-6"
+                type="number"
+                placeholder="0"
+              />
+
+              <div readonly class="hidden ml-12">
+                {{ (item.amount = item.quantity * item.rate) }}
               </div>
-              <!-- <div readonly class=" ml-12" >{{ item.quantity * item.rate }}</div> -->
             </td>
             <td class="align-top">
               <a-button
@@ -995,35 +1031,37 @@ const switchProfileType = (type) => {
         </div>
         <div class="flex justify-between items-center">
           <div class="flex-y-5 text-right space-y-3 w-full">
-            <p class="">
-              <span>SubTotal</span>
+            <div class="my-4">
+              <span class="font-medium text-[14px]">SubTotal</span>
               <a-input
                 v-model:value="SubTotal"
                 readonly
                 class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 border-0 2xl:w-[440px] xl:w-[350px] lg:w-[230px] md:w-[200px]"
                 placeholder="Subtotal"
               />
-            </p>
+            </div>
 
-            <p>
-              <span class="mr-6">Total</span>
+            <div class="">
+              <span class="mr-6 font-medium text-[14px]">Total</span>
               <a-input
                 v-model:value="Total"
                 readonly
                 class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 border-0 2xl:w-[440px] xl:w-[350px] lg:w-[230px] md:w-[200px]"
                 placeholder="Total"
               />
-            </p>
+            </div>
           </div>
         </div>
       </div>
       <br />
-      <div class="container flex">
+      <div class="container flex my-4">
         <div class="flex-left">
           <div class="text-left space-y-3">
             <div>
               <div class="flex w-full">
-                <p class="ml-1">Invoice Notes<a href="#">(Default Note)</a></p>
+                <p class="ml-1 font-medium text-[14px]">
+                  Invoice Notes<a href="#">(Default Note)</a>
+                </p>
               </div>
               <a-textarea
                 class="border-none"

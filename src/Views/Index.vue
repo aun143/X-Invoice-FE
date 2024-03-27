@@ -51,7 +51,7 @@ const AllInvoice = async () => {
 
     const invoicesWithReceiverNames = await Promise.all(invoicesData.map(async (invoice) => {
       try {
-        const { success, data, error } = await getSingleClient(invoice.receiver);
+        const { success, data, error } = await getSingleClient(invoice.receiver._id);
         
         if (success) {
           const receiverDetails = data;

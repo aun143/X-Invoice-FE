@@ -11,7 +11,7 @@ import {
 import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
 import { useInvoiceStore } from "../stores/index";
-import { getSingleClient } from "../service/ClientService";
+// import { getSingleClient } from "../service/ClientService";
 import Swal from "sweetalert2";
 // import { BASE_URL } from "../utils/config";
 import axiosInstance from "../service/axios"; 
@@ -143,12 +143,9 @@ onMounted(async () => {
     invoiceDetails.value = response.data;
     // console.log("response", response);
     business.value = invoiceDetails.value.sender;
-    // console.log("invoiceDetails.sender._id",invoiceDetails.value.sender._id)
-    clientId.value = invoiceDetails.value.receiver;
-    const clientResponse = await getSingleClient(clientId.value);
-    clientDetails.value = clientResponse.data;
-    // console.log("clientDetails.value", clientDetails.value);
-    //console.log("invoiceDetails.receiver",clientDetails.value)
+    clientId.value = invoiceDetails.value.receiver._id;
+    // const clientResponse = await getSingleClient(clientId.value);
+    // clientDetails.value = clientResponse.data;
     invoice.updateFormData(invoiceDetails);
     logoPreview.value = invoiceDetails.logoPreview;
     //console.log("Invoice details fetched successfully:", invoiceDetails);
@@ -230,14 +227,14 @@ const info=()=>{
     <section
       class="w-[100%] 2xl:w-[50%] md:w-[93%] lg:w-[85%] xl:w-[63%] pt-4 px-4"
     >
-      <form @submit.prevent class="p-4 bg-white">
+      <form @submit.prevent class="p-4 bg-gray-100">
         <div class="grid grid-cols-2 items-center">
-          <div class="flex w-full mt-8 ">
+          <div class="flex w-full mt-8 pl-6">
             <div
               class="flex mr-5 items-center justify-center text-xl w-[60px] max-h-12 text-black"
             >
               <span
-                class="px-[15px] py-[4px] rounded"
+                class="px-[15px] py-[4px] rounded "
                 :class="{
                   'bg-[#10C0CB] text-white text-[12px] ':
                     invoiceDetails.paymentStatus === 'Paid',
@@ -261,7 +258,7 @@ const info=()=>{
             <img :src="imageUrl" alt="Logo" />
           </div>
         </div>
-        <div class="flex mb-8 mt-4">
+        <div class="flex mb-8 mt-4 pl-4">
           <div class="flex flex-col mb-2">
             <p class="font-semibold">From:</p>
             <div class="text-left">
@@ -297,29 +294,29 @@ const info=()=>{
             <p class="font-semibold">To:</p>
 
             <div class="text-left">
-              <p class="" v-if="clientDetails">
-                <span v-if="clientDetails.firstName"
-                  >{{ clientDetails.firstName }}&nbsp;</span
+              <p class="" v-if="invoiceDetails.receiver">
+                <span v-if="invoiceDetails.receiver.firstName"
+                  >{{ invoiceDetails.receiver.firstName }}&nbsp;</span
                 >
-                <span v-if="clientDetails.lastName"
-                  >{{ clientDetails.lastName }}<br
+                <span v-if="invoiceDetails.receiver.lastName"
+                  >{{ invoiceDetails.receiver.lastName }}<br
                 /></span>
-                <span v-if="clientDetails.address1"
-                  >{{ clientDetails.address1 }}&nbsp;</span
+                <span v-if="invoiceDetails.receiver.address1"
+                  >{{ invoiceDetails.receiver.address1 }}&nbsp;</span
                 >
-                <span v-if="clientDetails.address2">{{
-                  clientDetails.address2
+                <span v-if="invoiceDetails.receiver.address2">{{
+                  invoiceDetails.receiver.address2
                 }}</span
                 ><br />
-                <span v-if="clientDetails.postalCode"
-                  >{{ clientDetails.postalCode }}&nbsp;<br
+                <span v-if="invoiceDetails.receiver.postalCode"
+                  >{{ invoiceDetails.receiver.postalCode }}&nbsp;<br
                 /></span>
-                <span v-if="clientDetails.city"
-                  >{{ clientDetails.city }}&nbsp;</span
+                <span v-if="invoiceDetails.receiver.city"
+                  >{{ invoiceDetails.receiver.city }}&nbsp;</span
                 >
-                <span v-if="clientDetails.state">{{ clientDetails.state }}</span
+                <span v-if="invoiceDetails.receiver.state">{{ invoiceDetails.receiver.state }}</span
                 ><br />
-                <span v-if="clientDetails.email">{{ clientDetails.email }}</span
+                <span v-if="invoiceDetails.receiver.email">{{ invoiceDetails.receiver.email }}</span
                 ><br />
               </p>
               <p v-else>Receiver Details Unavailable </p>
@@ -349,7 +346,7 @@ const info=()=>{
           </div>
         </div>
         <br />
-        <hr />
+        <div class="border mx-6"></div>
         <br />
         <div class="flex lg:flex-row 2xl:flex-row xl:flex-row flex-col px-4">
   <table class="w-full">
@@ -387,8 +384,7 @@ const info=()=>{
 </div>
 
         <br />
-        <hr />
-
+        <div class="border mx-6"></div>
         <!-- <div
             style="text-align: left; margin-left: 10px"
             class="w-[50%]"
@@ -452,7 +448,7 @@ const info=()=>{
 
         <br />
 
-        <div class="container flex">
+        <div class="container flex pl-6">
           <div class="flex-left">
             <div class="text-left mt-8">
               <div>
@@ -465,10 +461,10 @@ const info=()=>{
             </div>
           </div>
         </div>
-        <hr class="mt-10" />
-        <div class="flex">
-          <div class="text-left mt-8 mb-8 font-semibold">Email :</div>
-          <div class="text-left mt-8 mb-8 mx-2">
+        <div class="border mx-6 my-8"></div>
+        <div class="flex pl-6">
+          <div class="text-left font-semibold">Email :</div>
+          <div class="text-left mx-2">
             {{ business.email }}
           </div>
         </div>

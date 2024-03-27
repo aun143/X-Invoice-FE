@@ -12,6 +12,7 @@
 
 export const Colors = {
   orange: "#10C0CB",
+  primary: "#1717ff",
   selectField: "#d8d8da",
   draft: "#878787",
   saveDraft: "#bababa",

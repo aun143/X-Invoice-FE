@@ -9,25 +9,14 @@ import { useInvoiceStore } from "../stores/index";
 import { notification } from "ant-design-vue";  
 import Swal from "sweetalert2";
 import {uploadImage} from "../service/UploadImage"
-
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
 const isLoader = ref(false);
 const isLoadingImg = ref(false);
-
 const route = useRoute();
 const router = useRouter();
 const clientId = route.params.clientId;
-const clientDetails = ref("");
-const showMore = ref(false);
-
 const selectedField = ref("individual");
-const selectField = (field) => {
-  selectedField.value = field;
-};
-
-const dropdownTitle = "Actions";
-
 const handleSaveDraftButtonClick = async () => {
   if(isLoadingImg.value){
   openNotificationWithIcon("error", "Please Wait To upload Image First");
@@ -91,40 +80,6 @@ const openNotificationWithIcon = (type, message) => {
     duration: 5, 
   });
 };
-// const validateFormOrg = () => {
-//   const emptyFields = [];
-
-// if (!invoice.userClientProfile.clientDataindividual.firstName) {
-//     emptyFields.push("FirstName must be Alphaetic");
-//   }
-//   if (!invoice.userClientProfile.clientDataindividual.lastName) {
-//     emptyFields.push("LastName must be Alphaetic");
-//   }
-//   if (!invoice.userClientProfile.clientDataindividual.phone) {
-//     emptyFields.push("Phone Number");
-//   }
-//   if (!invoice.userClientProfile.clientDataindividual.email) {
-//     emptyFields.push(" Email must contain '@'");
-//   }if (!invoice.userClientProfile.clientDataindividual.state) {
-//     emptyFields.push(" State must be Alphabetic");
-//   }if (!invoice.userClientProfile.clientDataindividual.city) {
-//     emptyFields.push(" City must be Alphaetic");
-//   }
-//   if (!invoice.userClientProfile.clientDataindividual.address1) {
-//     emptyFields.push(" Address1 must be AlphNeumeric");
-//   }
-//   if (!invoice.userClientProfile.clientDataindividual.country) {
-//     emptyFields.push("Country must be Alphaetic");
-//   }
-
-//   if (emptyFields.length > 0) {
-//     const alertMessage = `Please fill in the following required fields: and ${emptyFields.join(", ")}`;
-//     openNotificationWithIcon("error", alertMessage);
-//     return false;
-//   }
-
-//   return true;
-// };
 const validateFormInd = () => {
   const emptyFields = [];
 
@@ -143,9 +98,6 @@ const validateFormInd = () => {
   }if (!invoice.userClientProfile.clientDataindividual.city) {
     emptyFields.push(" City must be Alphabetic");
   }
-  // if (!invoice.userClientProfile.clientDataindividual.address1) {
-  //   emptyFields.push(" Address1 must be AlphNeumeric");
-  // }
   if (!invoice.userClientProfile.clientDataindividual.country) {
     emptyFields.push("Country must be Alphabetic");
   }
@@ -161,19 +113,16 @@ const validateFormInd = () => {
 const fetchclientDetails = async () => {
   try {
     isLoading.value = true;
-        //console.log("Client details fetched successfully:", clientDetails);
     const { success, data, error } = await getSingleClient(clientId);
 
 if (success) {
   const clientDetails = data;
 
 if (selectedField.value === "individual") {
-// Update individual data
 invoice.userClientProfile.clientDataindividual = {
     ...clientDetails,
 };
 } else if (selectedField.value === "organization") {
-// Update organization data
 invoice.userClientProfile.clientDataOrganization = {
     ...clientDetails,
 };
@@ -226,7 +175,6 @@ const displayImage = (input, imageUrl) => {
 onMounted(() => {
   fetchclientDetails();
 });
-/////
 const logoInputRef = ref(null);
 const handleFileInputChange = async () => {
   const file = logoInputRef.value.files[0];
@@ -252,10 +200,32 @@ const handleFileInputChange = async () => {
     }
   }
 };
-
-
-
-const fontSize = "12px";
+const showOptions = ref(false);
+const filterOptions = (event) => {
+  const input = event.target.value.toLowerCase();
+  filteredOptions.value = invoice.countryOptions.filter(
+    (option) => option.label.toLowerCase().indexOf(input) > -1
+  );
+};
+const filteredOptions = ref(invoice.countryOptions);
+const selectOption = (option, event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  if (selectedField.value === "individual") {
+    invoice.userClientProfile.clientDataindividual.country = option.label; 
+  } else if (selectedField.value === "organization") {
+    invoice.userClientProfile.clientDataOrganization.country = option.label;
+  }
+  hideDropdown(); 
+};
+const showDropdown = () => {
+  showOptions.value = true;
+};
+const hideDropdown = () => {
+  setTimeout(() => {
+    showOptions.value = false;
+  }, 100); 
+};
 </script>
 
 
@@ -269,14 +239,14 @@ const fontSize = "12px";
         backButtonText="&nbsp &lt Back &nbsp  &nbsp"
         backRoute="Invoice"
         saveDraftButtonText=" Save Changes"
-        :saveDraftButtonColor="Colors.orange"
+        :saveDraftButtonColor="Colors.primary"
         :onSaveDraftButtonClick="handleSaveDraftButtonClick"
         :showDropdown="false"
         :showBackButton="false"
       />
 </div>
 <!-- {{invoice.userClientProfile.clientDataindividual.clientType}} -->
-  <div class="modal-content max-h-full flex max-w-[800px] p-4 justify-start">
+  <div class="modal-content max-h-full flex w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] p-4 justify-start">
       <div class="flex">
         <div class="w-full p-8 bg-white">
           <div class="mb-4 flex ml-4">
@@ -321,7 +291,7 @@ const fontSize = "12px";
             </label>
 
             <div class="flex-right w-48 ml-6">
-              <table class=" border mt-6">
+              <table class=" border border-black mt-6">
                
                 <tr  v-if="invoice.userClientProfile.clientDataindividual.clientType === 'individual'" >
                   <td>
@@ -329,14 +299,14 @@ const fontSize = "12px";
                       class="flex pl-4 my-2 cursor-pointer"
                       >
                       <!-- @click="selectField('individual')" -->
-                      <p class="mb-1  mr-12">Individual</p>
+                      <p class="mb-1  mr-12 font-medium text-[14px] mt-2">Individual</p>
                     </div>
                   </td>
                   <td>
                     <span
                      
-                      class="text-orange-500 mr-4"
-                      >&#10003;</span
+                    class="text-orange-600 fa-solid fas fa-check mr-2"
+></span
                     >
                   </td>
                 </tr><tr  v-if="invoice.userClientProfile.clientDataindividual.clientType === 'organization'">
@@ -345,14 +315,14 @@ const fontSize = "12px";
                       class="flex pl-4 my-2 cursor-pointer"
                       >
                       <!-- @click="selectField('organization')" -->
-                      <p class="mb-1  mr-12">Organization</p>
+                      <p class="mb-1  mr-12 font-medium text-[14px] mt-2">Organization</p>
                     </div>
                   </td>
                   <td>
                     <span
                      
-                      class="text-orange-500 mr-4"
-                      >&#10003;</span
+                    class="text-orange-600 fa-solid fas fa-check mr-2"
+></span
                     >
                   </td>
                 </tr>
@@ -365,7 +335,7 @@ const fontSize = "12px";
             <div class="">
               <hr class="mb-4" />
               <div v-if="invoice.userClientProfile.clientDataindividual.clientType === 'organization'">
-                <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>Organization Name</p>
+                <p class="justify-start flex font-medium text-[14px]"> <span class="text-[#ff0000]">*</span>Organization Name</p>
                 <a-input
                   v-model:value="invoice.userClientProfile.clientDataindividual.organizationName"
                   type="text"
@@ -375,7 +345,7 @@ const fontSize = "12px";
               </div>
               <div class="grid grid-cols-2 gap-4 mt-2">
                 <div>
-                  <p class="justify-start flex"> <span class="text-[#ff0000]">*</span>First Name</p>
+                  <p class="justify-start flex font-medium text-[14px]"> <span class="text-[#ff0000]">*</span>First Name</p>
                   <a-input
                     v-model:value="invoice.userClientProfile.clientDataindividual.firstName"
                     type="text"
@@ -384,7 +354,7 @@ const fontSize = "12px";
                   />
                 </div>
                 <div>
-                  <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Last Name</p>
+                  <p class="justify-start flex font-medium text-[14px]"><span class="text-[#ff0000]">*</span>Last Name</p>
                   <a-input
                     v-model:value="invoice.userClientProfile.clientDataindividual.lastName"
                     type="text"
@@ -397,7 +367,7 @@ const fontSize = "12px";
             </div>
             <div class="grid grid-cols-2 gap-4 mt-2">
               <div>
-                <p class="text-left ml-2">Currency</p>
+                <p class="text-left ml-2 font-medium text-[14px]">Currency</p>
                 <a-select
                   v-model:value="invoice.userClientProfile.clientDataindividual.currency"
                   class="w-full text-left" size="large"
@@ -413,7 +383,7 @@ const fontSize = "12px";
               </div>
               
               <div class="">
-                <p class="text-left ml-2">Language</p>
+                <p class="text-left ml-2 font-medium text-[14px]">Language</p>
                 <a-select 
                   v-model:value="invoice.userClientProfile.clientDataindividual.language"
                   class=" w-full text-left" size="large"
@@ -430,7 +400,7 @@ const fontSize = "12px";
             </div>
             <hr class="mb-2 mt-4" />
             <div>
-              <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Email Address</p>
+              <p class="justify-start flex font-medium text-[14px]"><span class="text-[#ff0000]">*</span>Email Address</p>
               <a-input
                 v-model:value="invoice.userClientProfile.clientDataindividual.email"
                 type="email"
@@ -440,7 +410,7 @@ const fontSize = "12px";
             </div>
             <hr class="mb-2 mt-4" />
             <div>
-              <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Phone Number</p>
+              <p class="justify-start flex font-medium text-[14px]"><span class="text-[#ff0000]">*</span>Phone Number</p>
               <a-input
                 v-model:value="invoice.userClientProfile.clientDataindividual.phone"
                 type="string"
@@ -450,7 +420,7 @@ const fontSize = "12px";
             </div>
             <hr class="mb-2 mt-4" />
             <div>
-              <p class="justify-start flex"><span class="text-[#ff0000]">*</span>Address(Line 1)</p>
+              <p class="justify-start flex font-medium text-[14px]"><span class="text-[#ff0000]">*</span>Address(Line 1)</p>
               <a-input
                 v-model:value="invoice.userClientProfile.clientDataindividual.address1"
                 type="text"
@@ -467,26 +437,38 @@ const fontSize = "12px";
             </div>
             <div class="flex justify-between items-center mt-3 gap-2">
               <div class="">
-                <p class="text-left">
+                <p class="text-left  font-medium text-[14px]">
                   <span class="text-[#ff0000]">*</span>Country
                 </p>
-                <a-select
-                  v-model:value="
-                    invoice.userClientProfile.clientDataindividual.country
-                  " size="medium"
-                  class=""
-                >
-                  <a-select-option
-                    v-for="country in invoice.countryOptions"
-                    :key="country.value"
-                    :value="country.label"
+                <div class="relative">
+                  <a-input
+                    v-model:value="
+                      invoice.userClientProfile.clientDataindividual.country
+                    "
+                    @focus="showDropdown"
+                    @blur="hideDropdown"
+                    @input="filterOptions"
+                    placeholder="Select Country"
+                    class="w-full"
+                  />
+
+                  <ul
+                    v-show="showOptions"
+                    class="dropdown absolute border rounded mt-2 overflow-y-auto w-full max-h-44 flex gap-2 flex-col bg-white text-left"
                   >
-                    {{ country.label }}
-                  </a-select-option>
-                </a-select>
+                    <li
+                      v-for="option in filteredOptions"
+                      :key="option.value"
+                      @click="selectOption(option, $event)"
+                      class="ml-2"
+                    >
+                      {{ option.label }}
+                    </li>
+                  </ul>
+                </div>
               </div>
               <div class="">
-                <p class="text-left ml-1">
+                <p class="text-left ml-1  font-medium text-[14px]">
                   Postal Code
                 </p>
                 <a-input
@@ -499,7 +481,7 @@ const fontSize = "12px";
                 />
               </div> 
               <div class="">
-                <p class="text-left"><span class="text-[#ff0000]">*</span>
+                <p class="text-left  font-medium text-[14px]"><span class="text-[#ff0000]">*</span>
                   State
                 </p>
                 <a-input
@@ -512,7 +494,7 @@ const fontSize = "12px";
                 />
               </div>
               <div class="">
-                <p class="text-left ml-1">
+                <p class="text-left ml-1  font-medium text-[14px]">
              City
                 </p>
                 <a-input
@@ -530,7 +512,7 @@ const fontSize = "12px";
 
             <div>
               <div>
-                <p class="justify-start flex">Fax Number</p>
+                <p class="justify-start flex font-medium text-[14px]">Fax Number</p>
                 <a-input
                   v-model:value="invoice.userClientProfile.clientDataindividual.faxNumber"
                   type="number"
@@ -539,7 +521,7 @@ const fontSize = "12px";
               </div>
               <hr class="my-4" />
               <div>
-                <p class="justify-start flex">Website URL</p>
+                <p class="justify-start flex font-medium text-[14px]">Website URL</p>
                 <a-input
                   v-model:value="invoice.userClientProfile.clientDataindividual.websiteURL"
                   type="number"
@@ -548,7 +530,7 @@ const fontSize = "12px";
               </div>
               <hr class="my-4" />
               <div>
-                <p class="justify-start flex">Notes</p>
+                <p class="justify-start flex font-medium text-[14px]">Notes</p>
                 <a-textarea
                   v-model:value="invoice.userClientProfile.clientDataindividual.notes"
                   type="text"

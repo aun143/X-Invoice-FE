@@ -10,6 +10,7 @@ import Chart from "chart.js/auto";
 const totalClients = ref(0); // Initialize total clients count
 const totalInvoices = ref(0);
 const pieChart = ref(null);
+const isLoading = ref("");
 const lineGraph = ref(null);
 const barChart = ref(null); // Initialize total invoices count
 const invoice = useInvoiceStore();
@@ -19,21 +20,25 @@ const dropdownItems = [{ title: "Create Invoice" }, { title: "Create Client" }];
 const handleSaveDraftButtonClick = () => {
   router.push("/new");
 };
-const createBarChart = (data) => {
+const createBarChart = () => {
   const ctx = barChart.value.getContext("2d");
 
   new Chart(ctx, {
     type: "bar",
     data: {
-      labels: ['January', 'February', 'March', 'April', 'May'], // Example labels (replace with your data)
+      // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], 
+    labels: [` `],
       datasets: [{
-        label: 'Data',
-        
-        data: [totalClients.value, totalInvoices.value],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.5)', 
-          'rgba(54, 162, 235, 0.5)', 
-        ],
+        label: 'Total Clients',
+        data: [totalClients.value],
+
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        borderWidth: 1,
+      }, {
+        label: 'Total Invoices',
+        data: [ totalInvoices.value],
+
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
         borderWidth: 1,
       }],
     },
@@ -55,13 +60,14 @@ const createLineGraph = (data) => {
   new Chart(ctx, {
     type: "line",
     data: {
-      labels: ['2023-12', '2024-1','2024-2'], // Example labels (replace with your data)
+      // labels: ['2024', '2023'], 
+    labels: [`Total Clients `, `Total Invoices  `],
       datasets: [{
-        label: 'Data', // Example dataset label
-        data: [totalClients.value, totalInvoices.value],// Example dataset data (replace with your data)
+        label: 'Data', 
+        data: [totalClients.value, totalInvoices.value],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.5)', // Red for Total Clients
-          'rgba(54, 162, 235, 0.5)', // Blue for Total Invoices
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(54, 162, 235, 0.5)',
         ],        borderWidth: 1,
         fill: false,
       }],
@@ -78,19 +84,21 @@ const createLineGraph = (data) => {
     },
   });
 };
-const createPieChart = (data) => {
+const createPieChart = () => {
   const ctx = pieChart.value.getContext('2d');
+  const total = totalClients.value + totalInvoices.value;
+  const invoicesPercentage = ((totalInvoices.value / total) * 100).toFixed(2);
 
   new Chart(ctx, {
-    type: "pie",
+    type: 'pie',
     data: {
-      labels: ['Total Clients', 'Total Invoices'],
+      labels: [`Total Clients (${100 - invoicesPercentage}%)`, `Total Invoices (${invoicesPercentage}%) `],
       datasets: [{
         label: 'Data',
         data: [totalClients.value, totalInvoices.value],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.5)', // Red for Total Clients
-          'rgba(54, 162, 235, 0.5)', // Blue for Total Invoices
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(54, 162, 235, 0.5)', 
         ],
         borderWidth: 1,
       }],
@@ -100,7 +108,6 @@ const createPieChart = (data) => {
 
 const handleDropdownItemClickParent = (clickedItem) => {
   if (clickedItem.title === "Create Invoice") {
-    // invoice.formData.$reset;
     router.push("/new");
   } else if (clickedItem.title === "Create Client") {
     router.push("/Client");
@@ -108,6 +115,7 @@ const handleDropdownItemClickParent = (clickedItem) => {
 };
 const fetchClients = async () => {
   try {
+    isLoading.value=true;
     const { success, data, error } = await getAllClient();
     if (success) {
       totalClients.value = data.totalItems; // Set total clients count
@@ -116,20 +124,26 @@ const fetchClients = async () => {
     }
   } catch (error) {
     console.error("Error fetching clients:", error);
+  }finally{
+    isLoading.value=false;
   }
 };
 const fetchUserProfile = async () => {
   try {
+    isLoading.value=true;
     const userId = localStorage.getItem("UserId");
     const userProfileData = await getUserDetailsApi(userId);
 
     invoice.userProfileData = userProfileData;
   } catch (error) {
     console.error("Error Fetching User Details:", error);
+  }finally{
+    isLoading.value=false;
   }
 };
 const fetchInvoices = async () => {
   try {
+    isLoading.value=true;
     const { success, data, error } = await getAllInvoice();
     if (success) {
       totalInvoices.value = data.length;
@@ -138,6 +152,8 @@ const fetchInvoices = async () => {
     }
   } catch (error) {
     console.error("Error fetching invoices:", error);
+  }finally{
+    isLoading.value=false;
   }
 };
 
@@ -179,7 +195,8 @@ onMounted(async () => {
       :showDropdown="true"
       :onDropdownItemClick="handleDropdownItemClickParent"
     />
-    <div class="mx-4 py-8">
+    <div v-if="isLoading" class=""><a-spin size="large" ></a-spin></div>
+    <div class="mx-4 py-8" v-else>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
           class="bg-white rounded-lg shadow-md p-4 card"

@@ -37,7 +37,7 @@ const handleSaveDraftButtonClick = async (Id) => {
       const { success, data, error } = await updateInvoiceData(invoiceId, invoice.formData);
 
 if (success) {
-  router.push("/");
+  router.push("/Index");
     invoice.resetFormData();
   Swal.fire({
     icon: "success",
@@ -342,21 +342,37 @@ const validateDueDate = () => {
 
   return true; // Due date is valid
 };
-const calculateUpcomingDueDate = () => {
-  const selectedDueDate = invoice.formData.invoiceDueDate;
-  if (selectedDueDate) {
-    const currentDate = new Date(invoice.formData.date);
-    const upcomingDate = new Date(currentDate);
-    upcomingDate.setDate(currentDate.getDate() + parseInt(selectedDueDate));
-    invoice.formData.invoiceDueDate = upcomingDate;
-    //console.log("upcomingDate",upcomingDate);
-  } else {
-    invoice.formData.invoiceDueDate = null;
-  }
+const showOptions = ref(false);
+const filterOptions = (event) => {
+  const input = event.target.value.trim().toLowerCase();
+  filteredOptions.value =
+    input === ""
+      ? []
+      : clients.value.filter((client) => {
+          const fullName =
+            `${client.firstName} ${client.lastName}`.toLowerCase();
+          return fullName.includes(input);
+        });
 };
-// watch(invoice.formData, (newValue) => {
-//  invoice.updateFormData(newValue);
-// });
+const emptyReciever = () => {
+  invoice.formData.receiver = "";
+};
+const filteredOptions = ref(clients.value);
+const selectOption = (client, event) => {
+  // console.log("Selected client:", client);
+  invoice.formData.receiver = client;
+  hideDropdown();
+};
+const showDropdown = () => {
+  showOptions.value = true;
+  // console.log("Selected client:", showOptions.value);
+};
+const hideDropdown = () => {
+  setTimeout(() => {
+    showOptions.value = false;
+    // console.log("Selected client:", showOptions.value);
+  }, 100);
+};
  </script>
 <template>
 <div v-if="isLoading">
@@ -374,7 +390,7 @@ const calculateUpcomingDueDate = () => {
     :dropdownTitle="false"
     saveButtonText="&nbsp;&nbsp; Save &nbsp;&nbsp;"
     saveDraftButtonText="&nbsp; Save Changes"
-    :saveDraftButtonColor="Colors.orange"
+    :saveDraftButtonColor="Colors.primary"
     :onSaveDraftButtonClick="handleSaveDraftButtonClick"
     
    
@@ -440,57 +456,65 @@ const calculateUpcomingDueDate = () => {
         </div>
       </div>
       <div class="mt-10 lg:mt-10 md:mt-2 flex w-full">
-        <div class="">
-          <p class="ml-auto  mr-4"> <span class="text-[#ff0000]">*</span>Invoice No.</p>
-          <a-input-number
-          required
-            type="number"
-            v-model:value="invoice.formData.invoiceNumber"
-            class="ml-2 w-[100px]"
-          />
-        </div>
-        <div class="flex items-end justify-end w-full">
           <div class="">
-            <p class="text-left ml-4 ">Language</p>
-            <a-select  v-model:value="invoice.formData.language" class="ml-2  text-left lg:w-[150px] w-[150px] md:w-[130px]"   size="medium">
-              <a-select-option
-                v-for="language in invoice.languageOptions"
-                :key="language.value"
-              >
-                {{ language.label }}
-              </a-select-option>
-            </a-select>
+            <p class="ml-auto mr-6 font-medium text-[14px]">
+              <span class="text-[#ff0000]">*</span>Invoice No.
+            </p>
+            <a-input-number
+              required
+              type="number"
+              v-model:value="invoice.formData.invoiceNumber"
+              class="ml-2 w-[100px]"
+            />
           </div>
-          <div>
-            <p class="text-left ml-3">Currency</p>
-            <a-select  v-model:value="invoice.formData.currency" class="ml-2 text-left  lg:w-[200px] w-[200px] md:w-[170px]"  size="medium">
-              <a-select-option
-                v-for="currency in invoice.currencyOptions"
-                :key="currency.value"
-                :value="currency.value"
+          <div class="flex items-end justify-end w-full">
+            <div class="">
+              <p class="text-left ml-4 font-medium text-[14px]">Language</p>
+              <a-select
+                size="medium"
+                v-model:value="invoice.formData.language"
+                class="ml-2 lg:w-[200px] w-[150px] md:w-[130px]"
+                style="text-align: left"
               >
-                {{ currency.label }}
-              </a-select-option>
-            </a-select>
+                <a-select-option
+                  v-for="language in invoice.languageOptions"
+                  :key="language.value"
+                >
+                  {{ language.label }}
+                </a-select-option>
+              </a-select>
+            </div>
+            <div>
+              <p class="text-left ml-4 font-medium text-[14px]">Currency</p>
+              <a-select
+                size="medium"
+                v-model:value="invoice.formData.currency"
+                class="ml-2 lg:w-[200px] w-[200px] md:w-[170px]"
+                style="text-align: left"
+              >
+                <a-select-option
+                  v-for="currency in invoice.currencyOptions"
+                  :key="currency.value"
+                  :value="currency.value"
+                >
+                  {{ currency.label }}
+                </a-select-option>
+              </a-select>
+            </div>
           </div>
         </div>
-       
+        <br />
+        <hr />
       </div>
-      <br />
-      <hr />
-    </div>
- <div class="container flex">
-      <div class="flex-left lg:w-[45%] md:w-[50%] justify-center">
-        <div class="mt-4 text-left ">
-          <div v-if="isLoading" class="flex justify-center flex-col items-center">
-      <a-space class="w-full ">
-        <a-spin size="large" />
-      </a-space>
-    </div>
-    <div v-else>
-              <div class="flex w-full">
-                <p><span class="text-[#ff0000] ml-2">*</span>From:</p>
-                <p class="justify-end flex w-full text-left">
+      <div class="container flex my-4">
+        <div class="flex-left lg:w-[45%] md:w-[50%] justify-center">
+          <div class="mt-4 text-left">
+            
+            <div >
+              <div class="grid md:flex md:flex-row lg:grid-cols-5 w-full">
+                <div class="font-medium text-[14px] col-span-2 w-full justify-start">
+                  <span class="text-[#ff0000] ml-2">*</span>Billed From:</div>
+                <div class="justify-end col-span-3 w-full  text-right">
                   <button
                     @click="switchProfileType('individual')"
                     v-if="profileType === 'organization'"
@@ -501,16 +525,24 @@ const calculateUpcomingDueDate = () => {
                   <button
                     @click="switchProfileType('organization')"
                     v-if="profileType === 'individual'"
-                    class="text-[#10C0CB]"
+                    class="text-[#10C0CB] "
                   >
                     Switch to Organization
                   </button>
-                </p>
+                </div>
               </div>
-              <div class="ml-2 border rounded-lg">
+              <div
+              v-if="isLoading"
+              class="flex justify-center flex-col items-center"
+            >
+              <a-space class="w-full">
+                <a-spin size="large" />
+              </a-space>
+            </div>
+              <div class="ml-2 my-1 border rounded-lg" v-else>
                 <div
                   v-if="invoice.selectedProfileType === 'individual'"
-                  class=" pl-2 border-gray-100 rounded-2"
+                  class="pl-2 border-gray-100 rounded-2"
                 >
                   <!-- <span class="ml-2">{{ invoice.formData.sender.profileType }}</span><br> -->
                   <p class="">
@@ -550,7 +582,7 @@ const calculateUpcomingDueDate = () => {
                 </div>
                 <div
                   v-if="invoice.selectedProfileType === 'organization'"
-                  class=" pl-2 border-gray-300 rounded-2"
+                  class="pl-2 border-gray-300 rounded-2"
                 >
                   <p class="">
                     <span class="">
@@ -559,10 +591,8 @@ const calculateUpcomingDueDate = () => {
                     ><br />
 
                     <span v-if="invoice.formData.sender.organizationName"
-                      >{{
-                        invoice.formData.sender.organizationName
-                      }}<br></span
-                    >
+                      >{{ invoice.formData.sender.organizationName }}<br
+                    /></span>
                     <span v-if="invoice.formData.sender.firstName"
                       >{{ invoice.formData.sender.firstName }}&nbsp;</span
                     >
@@ -580,9 +610,9 @@ const calculateUpcomingDueDate = () => {
                     <span v-if="invoice.formData.sender.postalCode"
                       >{{ invoice.formData.sender.postalCode }}&nbsp;</span
                     >
-                    <span v-if="invoice.formData.sender.city">{{
-                      invoice.formData.sender.city
-                    }}&nbsp;</span>
+                    <span v-if="invoice.formData.sender.city"
+                      >{{ invoice.formData.sender.city }}&nbsp;</span
+                    >
                     <span v-if="invoice.formData.sender.state">{{
                       invoice.formData.sender.state
                     }}</span
@@ -594,59 +624,113 @@ const calculateUpcomingDueDate = () => {
                 </div>
               </div>
             </div>
-          <div class="flex mt-2">
-            <p class="text-right ml-3"> <span class="text-[#ff0000]">*</span>To</p>
-            <div class="justify-end flex w-full text-left">
-              <!-- <div  @click="toggleModal" class="">New Client</div> -->
-              <div type="primary" class="text-[#10C0CB] cursor-pointer" @click="showModal">New Client</div>
-              <div class="home">
-                <!-- <Modal @close="toggleModal" :modalActive="modalActive">
+            <div class="flex mt-4 my-1">
+              <div class="ml-2 justify-start flex w-full font-medium text-start text-[14px]">
+                <span class="text-[#ff0000]">*</span>Bill To:
+              </div>
+              <div class="justify-end flex w-full text-left">
+                <!-- <div  @click="toggleModal" class="">New Client</div> -->
+                <div
+                  type="primary"
+                  class="text-[#10C0CB] cursor-pointer"
+                  @click="showModal"
+                >
+                  New Client
+                </div>
+                <div class="home">
+                  <!-- <Modal @close="toggleModal" :modalActive="modalActive">
                 </Modal> -->
-                <a-modal v-model:open="open"   >
-                  <Client/> 
-    </a-modal>
-  </div>
-</div>
-          </div>
-          
-         <a-select
-              size="medium"
-              v-model:value="invoice.formData.receiver"
-              class="ml-2 w-[100%]"
-              :loading="isLoading"
-              style="text-align: left"
-            >
-              <a-select-option
-                v-for="client in filteredClients"
-                :key="client._id"
+                  <a-modal v-model:open="open" width="80%" class="max-w-[100%] md:max-w-[100%]  lg:max-w-[60%]  xl:max-w-[50%] 2xl:max-w-[40%] ">
+                    <Client />
+                  </a-modal>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex ml-2 border relative px-2 rounded-lg" v-if="invoice.formData.receiver">
+              <span class="absolute right-2 text-red-600 hover:text-red-400 cursor-pointer text" @click="emptyReciever">X</span>
+              <div class="borde rounded-lg">
+                <span v-if="invoice.formData.receiver.firstName" class="mr-2">{{
+                      invoice.formData.receiver.firstName
+                    }}</span> 
+                    <span v-if="invoice.formData.receiver.lastName">{{
+                      invoice.formData.receiver.lastName
+                    }}</span>
+                <br />
+                    <span v-if="invoice.formData.receiver.address1"
+                      >{{ invoice.formData.receiver.address1 }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.receiver.address2">{{
+                      invoice.formData.receiver.address2
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.receiver.postalCode"
+                      >{{ invoice.formData.receiver.postalCode }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.receiver.city"
+                      >{{ invoice.formData.receiver.city }}&nbsp;</span
+                    >
+                    <span v-if="invoice.formData.receiver.state">{{
+                      invoice.formData.receiver.state
+                    }}</span
+                    ><br />
+                    <span v-if="invoice.formData.receiver.email">{{
+                      invoice.formData.receiver.email
+                    }}</span>
+              </div>
+              
+            </div>
+            <div class="relative ml-2" v-else-if="!invoice.formData.receiver">
+              <a-input
+              readonly
+                v-model:value="invoice.formData.receiver"
+                @focus="showDropdown"
+                @blur="hideDropdown"
+                @input="filterOptions"
+                placeholder="Select Client"
+                class="w-full"
+              />
+              <ul
+                v-show="showOptions"
+                class="dropdown absolute border rounded mt-2 overflow-y-auto w-full max-h-44 flex gap-2 flex-col bg-white text-left"
               >
-                {{ client.firstName }} {{ client.lastName }}
-              </a-select-option>
-            </a-select>
-
-
-        </div>
-      </div>
-      <div class="flex flex-col items-end mt-4 ml-auto ">
-        <div class="flex items-end mb-2">
-          <div>
-            <p class="w-4/5 mb-0 ml-3 text-start">Date</p>
-            <a-input
-              type="Date"
-              v-model:value="invoice.formData.date"
-              class="ml-2 w-[200px]"
-            />
+                <li
+                  v-for="client in filteredClients"
+                  :key="client._id"
+                  @click="selectOption(client, $event)"
+                  class="ml-2"
+                >
+                  {{ client.firstName }} {{ client.lastName }}
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="flex items-end mb-2">
-          <div>
-            <p class="w-4/5 ml-3 text-start" ml-2 text-start>Invoice Due</p>
-            <a-input
+        <div class="flex flex-col items-end mt-1 ml-auto">
+          <div class="flex items-end mb-2">
+            <div>
+              <p class="w-4/5 mb-0 ml-1 py-1 text-start font-medium text-[14px]">
+                <span class="text-[#ff0000]">*</span>Date
+              </p>
+              <a-input
+                type="Date"
+                v-model:value="invoice.formData.date"
+                class="ml-2 w-[200px]"
+              />
+            </div>
+          </div>
+          <div class="flex items-end mb-2">
+            <div>
+              <p class="w-4/5 ml-2 text-start py-1 font-medium text-[14px]">
+                <span class="text-[#ff0000]">*</span>Invoice Due
+              </p>
+              <a-input
                 type="Date"
                 v-model:value="invoice.formData.invoiceDueDate"
                 class="ml-2 w-[200px]"
               />
-            <!-- <a-select v-model:value="invoice.formData.invoiceDueDate"  size="medium" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate" style="text-align: left;">
+
+              <!-- <a-select v-model:value="invoice.formData.invoiceDueDate" class="ml-2 w-[200px]" @change="calculateUpcomingDueDate">
         
               <a-select-option value="07">After 07 days</a-select-option>
               <a-select-option value="15">After 15 days</a-select-option>
@@ -654,34 +738,34 @@ const calculateUpcomingDueDate = () => {
               <a-select-option value="45">After 45 days</a-select-option>
               <a-select-option value="60">After 60 days</a-select-option>
             </a-select> -->
+            </div>
           </div>
-        </div>
-       
-        <div class="flex items-end">
-          <div>
-            <p class="w-3/3 mb-0 ml-3 text-start">Purchase Order Number</p>
-            <a-input-number
-            v-model:value="invoice.formData.purchaseOrderNumber"
-              class="ml-2 w-[200px]"
-              type="number"
-            />
+
+          <div class="flex items-end">
+            <div>
+              <p class="w-3/3 mb-0 ml-3 py-1 text-start font-medium text-[14px]">Purchase Order Number</p>
+              <a-input-number
+                v-model:value="invoice.formData.purchaseOrderNumber"
+                class="ml-2 w-[200px]"
+                type="number"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <br />
-    <hr />
-    <div class="">
-        <table class="table-auto w-full">
-          <tr class="text-left text-black">
+      <br />
+      <hr />
+      <div class="">
+        <table class="table-auto w-full my-4 ">
+          <tr class="text-left text-black ">
             <th class="align-top md:hidden lg:block"></th>
             <th class="p-2 w-1/2 align-top">Description</th>
-            <th class="p-2 align-top">Quantity</th>
-            <th class="p-2 align-top"><span class="ml-4">Rate</span></th>
-            <th class="p-2 w-[150px] text-right pr-5 align-top">
+            <th class="p-2 align-top text-right">Quantity</th>
+            <th class="p-2 align-top text-right"><span class="ml-4 ">Rate</span></th>
+            <th class="p-2 w-[150px] text-right align-top">
               <span class="ml-4">Amount</span>
             </th>
-            <th class="p-2 w-[30px] text-right pr-5 align-top">Options</th>
+            <th class="p-2 w-[30px] text-right  align-top">Options</th>
           </tr>
 
           <tr
@@ -716,7 +800,7 @@ const calculateUpcomingDueDate = () => {
                 v-model:value="item.description"
                 name=""
                 id=""
-                cols="70"
+                cols="50"
               ></a-textarea>
             </td>
             <td class="align-top">
@@ -726,37 +810,42 @@ const calculateUpcomingDueDate = () => {
                 type="number"
                 placeholder="0"
               />
-            </td>
-            <td class="align-top flex flex-col">
+            </td> 
+            <td class="align-top">
               <a-input-number
                 v-model:value="item.rate"
-                class="w-full ml-4 "
+                class="w-full mx-4"
                 type="number"
                 placeholder="0"
               />
               <a-select
                 size="medium"
                 v-model:value="item.unit"
-                class="mt-1 mb-2 flex ml-4 w-full"
+                class="mt-1 mb-2 text-left flex ml-6"
                 @change="() => handleUnitChange(index, item.unit)"
-                style="text-align: left"
+                
               >
                 <a-select-option
                   v-for="unit in invoice.unitOptions"
                   :key="unit.value"
                   :value="unit.value"
-                  class="w-12"
+                  class=""
+                  
                 >
                   {{ unit.value }}
                 </a-select-option>
               </a-select>
             </td>
-            <td class="align-top">
+           <td class="align-top">
               <!-- <a-textarea v-model:value="item.amount" readonly class="" cols="10" rows="1" placeholder="Amount" >{{ item.quantity * item.rate }}</a-textarea> -->
-              <div readonly class="ml-12 xl:ml-12 md:ml-8 text-left">
-                {{ calculateAmount(item) }}
-              </div>
-              <!-- <div readonly class=" ml-12" >{{ item.quantity * item.rate }}</div> -->
+              <a-input-number readonly 
+                v-model:value="item.amount"
+                class="w-24 ml-6"
+                type="number"
+                placeholder="0"
+              />
+              
+              <div  readonly class="hidden ml-12" >{{ item.amount = item.quantity * item.rate }}</div>
             </td>
             <td class="align-top">
               <a-button
@@ -798,46 +887,44 @@ const calculateUpcomingDueDate = () => {
         </div>
         <div class="flex justify-between items-center">
           <div class="flex-y-5 text-right space-y-3 w-full">
-            <p class="">
-              <span>SubTotal</span>
+            <div class="my-4">
+              <span class="font-medium text-[14px]">SubTotal</span>
               <a-input
                 v-model:value="SubTotal"
                 readonly
                 class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 border-0 2xl:w-[440px] xl:w-[350px] lg:w-[230px] md:w-[200px]"
                 placeholder="Subtotal"
               />
-            </p>
+            </div>
 
-            <p>
-              <span class="mr-6">Total</span>
+            <div class="">
+              <span class="mr-6 font-medium text-[14px]">Total</span>
               <a-input
                 v-model:value="Total"
                 readonly
                 class="focus:ring-0 focus:ring-offset-0 text-right ml-2 pr-4 border-0 2xl:w-[440px] xl:w-[350px] lg:w-[230px] md:w-[200px]"
                 placeholder="Total"
               />
-            </p>
+            </div>
           </div>
         </div>
       </div>
-    <br />
-    <div class="container flex">
-      <div class="flex-left">
-        <div class="mt- lg:mt- md:mt-4 text-left space-y-3">
-          <div>
-            <div class="flex w-full">
-              <p class="ml-1">Invoice Notes<a href="#">(Default Note)</a></p>
+      <br />
+      <div class="container flex my-4">
+        <div class="flex-left">
+          <div class="text-left space-y-3">
+            <div>
+              <div class="flex w-full">
+                <p class="ml-1 font-medium text-[14px]">Invoice Notes<a href="#">(Default Note)</a></p>
+              </div>
+              <a-textarea
+                class="border-none"
+                cols="60"
+                v-model:value="invoice.formData.notes"
+              ></a-textarea>
             </div>
-            <a-textarea
-              class="border-none"
-              cols="60"
-              v-model:value="invoice.formData.notes"
-            ></a-textarea>
-          </div>
           </div>
         </div>
-     
-   
       </div>
     </form>
   </div>

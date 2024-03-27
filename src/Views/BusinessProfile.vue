@@ -2,7 +2,6 @@
 import { ref, onMounted } from "vue";
 import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
-// import Button from "../components/Button.vue";
 import { useRouter, useRoute } from "vue-router";
 import Swal from "sweetalert2";
 import { useInvoiceStore } from "../stores/index";
@@ -11,8 +10,8 @@ import {
   PatchBusinessProfilerOrganizationApi,
 } from "../service/BusinessProfileService";
 import { getUserDetailsApi } from "../service/LoginService";
-// import Modal from "../components/Modal.vue";
 import { uploadImage } from "../service/UploadImage";
+import Button from "../components/Button.vue";
 import { notification } from "ant-design-vue";
 const isLoading = ref(false);
 const isLoader = ref(false);
@@ -332,9 +331,10 @@ const displayImage = (input, imageUrl) => {
         backButtonText="&nbsp &lt Back &nbsp  &nbsp"
         backRoute="Invoice"
         saveDraftButtonText=" Save Changes"
-        :saveDraftButtonColor="Colors.orange"
+        :saveDraftButtonColor="Colors.primary"
         :onSaveDraftButtonClick="handleSaveDraftButtonClick"
         :showDropdown="false"
+        :showDraftButton="false"
         :showBackButton="false"
       />
     </div>
@@ -362,7 +362,7 @@ const displayImage = (input, imageUrl) => {
                   "
                   ref="logoPreview"
                   alt="Logo for Individual"
-                  class="w-20 mb-4 h-20 cursor-pointer"
+                  class="w-20 mb-4 h-20 p-2 cursor-pointer"
                 />
                 <img
                   v-if="profileType === 'organization'"
@@ -373,7 +373,7 @@ const displayImage = (input, imageUrl) => {
                   "
                   alt="Logo for Organization"
                   ref="logoPreview"
-                  class="w-20 mb-4 h-20 cursor-pointer"
+                  class="w-20 mb-4 h-20 p-2 cursor-pointer"
                 />
               </div>
             </div>
@@ -389,40 +389,37 @@ const displayImage = (input, imageUrl) => {
           </label>
 
           <div class="flex-right w-48 ml-6">
-            <table class="border">
-              <tr class="border">
+            <table class="border border-black">
+              <tr class="border-black border">
                 <td>
                   <div
-                    class="flex pl-4 cursor-pointer"
+                    class="flex pl-4 cursor-pointer bg-gray-100"
                     @click="switchProfileType('individual')"
                   >
-                    <p class="mb-1 mt-4 mr-12">Individual</p>
+                    <p class="mb-1 mt-4 mr-12 font-medium text-[14px]">Individual</p>
                   </div>
                 </td>
-                <div></div>
-                <td>
+                <td class="bg-gray-100">
                   <span
                     v-if="profileType === 'individual'"
-                    class="text-orange-500"
-                    >&#10003;</span
-                  >
+                    class="text-orange-600 fa-solid fas fa-check mr-2"></span>
                 </td>
               </tr>
               <tr>
                 <td>
                   <div
-                    class="flex pl-4 cursor-pointer"
+                    class="flex pl-4 cursor-pointer bg-gray-100"
                     @click="switchProfileType('organization')"
                   >
-                    <p class="mb-1 mt-3 mr-12">Organization</p>
+                    <p class="mb-1 mt-3 mr-12 font-medium text-[14px]">Organization</p>
                     <!-- <span v-if="selectedField === 'organization'" class="text-orange-500">&#10003;</span> -->
                   </div>
                 </td>
-                <td>
+                <td class="bg-gray-100">
                   <span
                     v-if="profileType === 'organization'"
-                    class="text-orange-500"
-                    >&#10003;</span
+                    class="text-orange-600 fa-solid fas fa-check mr-2"
+                    ></span
                   >
                 </td>
               </tr>
@@ -439,14 +436,14 @@ const displayImage = (input, imageUrl) => {
         <div v-if="profileType === 'individual'" :key="1">
           <div class="mb-4">
             <div class="bg-[lightgray] py-2">
-              <label class="flex font-bold mb-2 ml-4 mt-2 c"
+              <label class="flex font-bold mb-2 ml-4 mt-2 "
                 >Personal Information
               </label>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 mt-4 gap-4">
               <div>
-                <p class="justify-start flex">
-                  <span class="text-[#ff0000]">*</span>First Name
+                <p class="justify-start flex font-medium text-[14px]">
+                  <span class="text-[#ff0000] ">*</span>First Name
                 </p>
                 <a-input
                   v-model:value="
@@ -461,7 +458,7 @@ const displayImage = (input, imageUrl) => {
                 </p>
               </div>
               <div>
-                <p class="justify-start flex">
+                <p class="justify-start flex font-medium text-[14px]">
                   <span class="text-[#ff0000]">*</span>Last Name
                 </p>
                 <a-input
@@ -477,7 +474,7 @@ const displayImage = (input, imageUrl) => {
                 </p>
               </div>
               <div>
-                <p class="justify-start flex">
+                <p class="justify-start flex font-medium text-[14px]">
                   <span class="text-[#ff0000]">*</span>Email Address
                 </p>
                 <a-input
@@ -491,7 +488,7 @@ const displayImage = (input, imageUrl) => {
                 <p v-if="emailError" class="text-red-500">{{ emailError }}</p>
               </div>
               <div>
-                <p class="justify-start flex">Website URL</p>
+                <p class="justify-start flex font-medium text-[14px]">Website URL</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.individualProfile.websiteURL
@@ -505,14 +502,14 @@ const displayImage = (input, imageUrl) => {
           </div>
 
           <div class="">
-            <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-2 c"> Address</label>
+            <div class="bg-[lightgray] py-2">
+              <label class="flex font-bold mb-2 ml-4  mt-2 c"> Contact Details</label>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 mt-4 gap-4">
               <div class="col-span-2">
                 <div class="flex">
                   <div class="w-1/2 pr-2">
-                    <p class="justify-start flex">
+                    <p class="justify-start flex font-medium text-[14px]">
                       <span class="text-[#ff0000]">*</span>Address(Line 1)
                     </p>
                     <a-input
@@ -521,21 +518,22 @@ const displayImage = (input, imageUrl) => {
                       "
                       type="text"
                       placeholder="Address"
-                      class="w-full border p-2"
+                      class="w-full p-2"
+
                     />
                     <p v-if="address1Error" class="text-red-500">
                       {{ address1Error }}
                     </p>
                   </div>
-                  <div class="w-1/2">
-                    <p class="justify-start flex">Address (Line 2)</p>
+                  <div class="w-1/2 pl-2">
+                    <p class="justify-start flex font-medium text-[14px]">Address (Line 2)</p>
                     <a-input
                       v-model:value="
                         invoice.userProfileData.individualProfile.address2
                       "
                       type="text"
                       placeholder="Address2"
-                      class="w-full border p-2"
+                      class="w-full p-2"
                     />
                     <p v-if="address2Error" class="text-red-500">
                       {{ address2Error }}
@@ -543,9 +541,9 @@ const displayImage = (input, imageUrl) => {
                   </div>
                 </div>
 
-                <div class="flex">
+                <div class="flex mt-4">
                   <div class="w-1/2 pr-2">
-                    <p class="justify-start flex">Postal Code</p>
+                    <p class="justify-start flex font-medium text-[14px]">Postal Code</p>
                     <a-input
                       v-model:value="
                         invoice.userProfileData.individualProfile.postalCode
@@ -554,8 +552,8 @@ const displayImage = (input, imageUrl) => {
                       class="w-full border p-2"
                     />
                   </div>
-                  <div class="w-1/2">
-                    <p class="justify-start flex">State</p>
+                  <div class="w-1/2 pl-2">
+                    <p class="justify-start flex font-medium text-[14px]">State</p>
                     <a-input
                       v-model:value="
                         invoice.userProfileData.individualProfile.state
@@ -565,9 +563,9 @@ const displayImage = (input, imageUrl) => {
                     />
                   </div>
                 </div>
-                <div class="flex">
+                <div class="flex  mt-4">
                   <div class="w-1/2 pr-2">
-                    <p class="justify-start flex">
+                    <p class="justify-start flex font-medium text-[14px]">
                       <span class="text-[#ff0000]">*</span>City
                     </p>
                     <a-input
@@ -579,8 +577,8 @@ const displayImage = (input, imageUrl) => {
                     />
                     <p v-if="cityError" class="text-red-500">{{ cityError }}</p>
                   </div>
-                  <div class="w-1/2">
-                    <p class="justify-start flex">
+                  <div class="w-1/2 pl-2">
+                    <p class="justify-start flex font-medium text-[14px]">
                       <span class="text-[#ff0000]">*</span>Country
                     </p>
                     <a-select
@@ -605,14 +603,14 @@ const displayImage = (input, imageUrl) => {
           </div>
 
           <div class="my-4 flex flex-col">
-            <div class="bg-[lightgray] pt-2 pb-2">
+            <div class="bg-[lightgray] py-2">
               <label class="flex font-bold mb-2 ml-4 mt-2">
                 Additional Information
               </label>
             </div>
-            <div class="grid grid-cols-2 gap-4 mb-2">
+            <div class="grid grid-cols-2 mt-4 gap-4 mb-2">
               <div>
-                <p class="justify-start flex">Phone Number</p>
+                <p class="justify-start flex font-medium text-[14px]">Phone Number</p>
 
                 <a-input
                   v-model:value="
@@ -623,7 +621,7 @@ const displayImage = (input, imageUrl) => {
                 />
               </div>
               <div>
-                <p class="justify-start flex">Fax Number</p>
+                <p class="justify-start flex font-medium text-[14px]">Fax Number</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.individualProfile.faxNumber
@@ -633,7 +631,7 @@ const displayImage = (input, imageUrl) => {
                 />
               </div>
               <div>
-                <p class="justify-start flex">Tax Identification Number</p>
+                <p class="justify-start flex font-medium text-[14px]">Tax Identification Number</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.individualProfile.taxId
@@ -643,21 +641,21 @@ const displayImage = (input, imageUrl) => {
                 />
               </div>
               <div>
-                <p class="justify-start flex">Notes</p>
+                <p class="justify-start flex font-medium text-[14px]">Notes</p>
                 <a-textarea
                   v-model:value="
                     invoice.userProfileData.individualProfile.notes
                   "
                   type="text"
-                  class="w-full p-2"
+                                    class="w-full p-2"
                 />
               </div>
             </div>
 
-            <hr />
-            <div class="grid grid-cols-2 gap-4 mt-2">
+            <hr class="my-4"/>
+            <div class="grid grid-cols-2 gap-4">
               <div>
-                <p class="justify-start flex">Custom Field</p>
+                <p class="justify-start flex font-medium text-[14px]">Custom Field</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.individualProfile.customFieldName
@@ -678,14 +676,8 @@ const displayImage = (input, imageUrl) => {
                 />
               </div>
             </div>
-            <div class="flex justify-between items-center">
-              <div
-                style="text-align: left; margin-left: 10px; margin-top: 10px"
-              ></div>
-            </div>
           </div>
         </div>
-
         <div v-else-if="profileType === 'organization'" :key="2">
           <div class="">
             <div class="bg-[lightgray] py-2">
@@ -693,8 +685,8 @@ const displayImage = (input, imageUrl) => {
                 Personal Information
               </label>
             </div>
-            <div>
-              <p class="justify-start flex">Organization Name</p>
+            <div class=" mt-4">
+              <p class="justify-start flex font-medium text-[14px]">Organization Name</p>
               <a-input
                 v-model:value="
                   invoice.userProfileData.organizationProfile.organizationName
@@ -706,7 +698,7 @@ const displayImage = (input, imageUrl) => {
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <p class="justify-start flex">
+                <p class="justify-start flex font-medium text-[14px]">
                   <span class="text-[#ff0000]">*</span>First Name
                 </p>
                 <a-input
@@ -722,7 +714,7 @@ const displayImage = (input, imageUrl) => {
                 </p>
               </div>
               <div>
-                <p class="justify-start flex">
+                <p class="justify-start flex font-medium text-[14px]">
                   <span class="text-[#ff0000]">*</span>Last Name
                 </p>
                 <a-input
@@ -738,7 +730,7 @@ const displayImage = (input, imageUrl) => {
                 </p>
               </div>
               <div>
-                <p class="justify-start flex">
+                <p class="justify-start flex font-medium text-[14px]">
                   <span class="text-[#ff0000]">*</span>Email Address
                 </p>
                 <a-input
@@ -752,7 +744,7 @@ const displayImage = (input, imageUrl) => {
                 <p v-if="emailError" class="text-red-500">{{ emailError }}</p>
               </div>
               <div>
-                <p class="justify-start flex">Website URL</p>
+                <p class="justify-start flex font-medium text-[14px]">Website URL</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.websiteURL
@@ -766,14 +758,14 @@ const displayImage = (input, imageUrl) => {
           </div>
 
           <div class="my-4 flex flex-col">
-            <div class="bg-[lightgray] pt-2 pb-2">
-              <label class="flex font-bold mb-2 ml-4 mt-2 c"> Address</label>
+            <div class="bg-[lightgray] py-2">
+              <label class="flex font-bold mb-2 ml-4 mt-2 c"> Contact Details</label>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2  mt-4 gap-4">
               <div class="col-span-2">
                 <div class="flex">
                   <div class="w-1/2 pr-4">
-                    <p class="justify-start flex">
+                    <p class="justify-start flex font-medium text-[14px]">
                       <span class="text-[#ff0000]">*</span>Address(Line 1)
                     </p>
                     <a-input
@@ -789,7 +781,7 @@ const displayImage = (input, imageUrl) => {
                     </p>
                   </div>
                   <div class="w-1/2">
-                    <p class="justify-start flex">Address (Line 2)</p>
+                    <p class="justify-start flex font-medium text-[14px]">Address (Line 2)</p>
                     <a-input
                       v-model:value="
                         invoice.userProfileData.organizationProfile.address2
@@ -803,9 +795,9 @@ const displayImage = (input, imageUrl) => {
                     </p>
                   </div>
                 </div>
-                <div class="flex">
+                <div class="flex  my-4">
                   <div class="w-1/2 pr-4">
-                    <p class="justify-start flex">Postal Code</p>
+                    <p class="justify-start flex font-medium text-[14px]">Postal Code</p>
                     <a-input
                       v-model:value="
                         invoice.userProfileData.organizationProfile.postalCode
@@ -815,7 +807,7 @@ const displayImage = (input, imageUrl) => {
                     />
                   </div>
                   <div class="w-1/2">
-                    <p class="justify-start flex">State</p>
+                    <p class="justify-start flex font-medium text-[14px]">State</p>
                     <a-input
                       v-model:value="
                         invoice.userProfileData.organizationProfile.state
@@ -825,9 +817,9 @@ const displayImage = (input, imageUrl) => {
                     />
                   </div>
                 </div>
-                <div class="flex">
+                <div class="flex ">
                   <div class="w-1/2 pr-4">
-                    <p class="justify-start flex">
+                    <p class="justify-start flex font-medium text-[14px]">
                       <span class="text-[#ff0000]">*</span>City
                     </p>
                     <a-input
@@ -840,7 +832,7 @@ const displayImage = (input, imageUrl) => {
                     <p v-if="cityError" class="text-red-500">{{ cityError }}</p>
                   </div>
                   <div class="w-1/2">
-                    <p class="justify-start flex">
+                    <p class="justify-start flex font-medium text-[14px]">
                       <span class="text-[#ff0000]">*</span>Country
                     </p>
                     <a-select
@@ -866,14 +858,14 @@ const displayImage = (input, imageUrl) => {
           </div>
 
           <div class="mb-">
-            <div class="bg-[lightgray] pt-2 pb-2">
+            <div class="bg-[lightgray] py-2">
               <label class="flex font-bold mb-2 ml-4 mt-2 c">
                 Additional Information
               </label>
             </div>
-            <div class="grid grid-cols-2 gap-4 mb-2">
+            <div class="grid grid-cols-2  mt-4 gap-4 mb-2">
               <div>
-                <p class="justify-start flex">Phone Number</p>
+                <p class="justify-start flex font-medium text-[14px]">Phone Number</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.phone
@@ -883,7 +875,7 @@ const displayImage = (input, imageUrl) => {
                 />
               </div>
               <div>
-                <p class="justify-start flex">Fax Number</p>
+                <p class="justify-start flex font-medium text-[14px]">Fax Number</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.faxNumber
@@ -893,7 +885,7 @@ const displayImage = (input, imageUrl) => {
                 />
               </div>
               <div>
-                <p class="justify-start flex">Tax Identification Number</p>
+                <p class="justify-start flex font-medium text-[14px]">Tax Identification Number</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.taxId
@@ -903,20 +895,20 @@ const displayImage = (input, imageUrl) => {
                 />
               </div>
               <div>
-                <p class="justify-start flex">Notes</p>
+                <p class="justify-start flex font-medium text-[14px]">Notes</p>
                 <a-textarea
                   v-model:value="
                     invoice.userProfileData.organizationProfile.notes
-                  "
+                  " 
                   type="text"
                   class="w-full p-2"
                 />
               </div>
             </div>
-            <hr clas="" />
-            <div class="grid grid-cols-2 gap-4 mt-2">
+            <hr class="my-4" />
+            <div class="grid grid-cols-2 gap-4 ">
               <div>
-                <p class="justify-start flex">Custom Field</p>
+                <p class="justify-start flex font-medium text-[14px]">Custom Field</p>
                 <a-input
                   v-model:value="
                     invoice.userProfileData.organizationProfile.customFieldName
@@ -938,17 +930,18 @@ const displayImage = (input, imageUrl) => {
               </div>
             </div>
           </div>
-          <!-- <div style="text-align: left; margin-left: 10px; margin-top: 10px">
-            <Button
-              :bgColor="Colors.addMore"
-              :textColor="Colors.white"
-              :fontSize="fontSize"
-              buttonText="save Changes"
-              class=""
-              @click="addNewLine()"
-            />
-          </div> -->
         </div>
+        <div class="flex justify-center mt-8">
+          <div v-if="isLoader"> <a-spin size="large"></a-spin></div>
+          <Button v-else
+          :bgColor="Colors.primary"
+          :textColor="Colors.white"
+          :fontSize="fontSize"
+          buttonText="Save Changes"
+          class="h-12 w-64"
+          @click="handleSaveDraftButtonClick()"
+        />
+  </div>
       </div>
       <!-- </transition> -->
       <!-- <button class="bg-orange-500 text-white py-2 px-4 rounded">Submit</button> -->
@@ -965,6 +958,6 @@ const displayImage = (input, imageUrl) => {
   opacity: 0;
 } */
 .ant-select-selection {
-  background-color: green;
+  background-color: #15bb15;
 }
 </style>

@@ -141,8 +141,7 @@ window.addEventListener("offline", () => {
         :menuLogo="menuLogo"
         :profileImg="profileImg"
         bgColor="#4AA7AD"
-        profileRole="Developed By AccellionX"
-        profileName="X-Invoice"
+        profileName="Logout"
         :menuItems="menuItems"
         :isSearch="disableSearch"
         :isExitButton="enableExitButton"
@@ -163,13 +162,16 @@ window.addEventListener("offline", () => {
       <!-- You can style this message as needed -->
     </div>
     <div class="fixed bottom-[28px] right-[28px] z-[999]">
-      <button
-        v-if="invoice.userProfileData.userRole"
-        @click="upgradeAccount"
-        class="mb-[8px] flex items-center justify-center h-[40px] rounded bg-[#4AA7AD] text-white cursor-pointer tran hover:bg-[#10C0CB] hover:text-white"
-      >
-        <span class="mx-4" > {{ invoice.userProfileData.userRole === 'iSuperAdmin'? 'Downgrade': 'Upgrade' }} </span>
-      </button>
+      <div v-if="invoice.userProfileData.userRole !== 'iSuperAdmin'">
+      <a-button
+      type="primary"
+  v-if="invoice.userProfileData.userRole"
+  @click="upgradeAccount"
+  class="mb-[8px] flex items-center bg-blue-600 justify-center h-[40px] rounded ] cursor-pointer tran  shadow-lg "
+>
+  <span class="mx-4">Upgrade</span>
+</a-button>
+</div>
     </div>
   </div>
   <div class="block md:hidden overflow-auto  justify-center items-center bg-[#10C0CB] text-white  p-32">
@@ -196,10 +198,16 @@ Thanks</h1>
     width: 195px !important;
   }
 }
+.sidebar div.profile .job {
+    font-size: 10px !important;
+  }
 @media (max-width: 1023px) {
   .sidebar div.profile .job {
-    font-size: 9px !important;
+    font-size: 8px !important;
   }
+}
+button:focus {
+  outline: none;
 }
 .sidebar {
   transition: none !important;
