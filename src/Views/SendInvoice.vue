@@ -141,8 +141,9 @@ const openNotificationWithIcon = (type, message) => {
       :showDropdown="false"
       :showBackButton="false"
     />
+    
     <div class="mb-4 max-w-[800px]">
-      <div class="m-4 border-gray-400 border p-4">
+      <div class="m-4 border-gray-400 rounded-2xl border p-4">
         <div class="text-left border pl-4 w-full bg-gray-300 p-1 font-medium">
           Send Invoice
         </div>

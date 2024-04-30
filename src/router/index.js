@@ -11,11 +11,13 @@ import SignUp from "../Views/SignUp.vue";
 import Accounts from "../Views/Accounts.vue";
 import ViewClient from "../Views/ViewClient.vue";
 import GetInvoice from "../Views/GetInvoice.vue";
+import ViewInvoice from "../Views/ViewInvoice.vue";
 import EditClient from "../Views/EditClient.vue";
 import EditInvoice from "../Views/EditInvoice.vue";
 import SendInvoice from "../Views/SendInvoice.vue";
 import Subscription from "../Views/Subscription.vue";
 import DashBoard from "../Views/DashBoard.vue";
+import test from "../Views/test.vue";
 
 const routes = [
   { path: "/", redirect: "/DashBoard" },
@@ -23,6 +25,11 @@ const routes = [
     name: "Invoice",
     path: "/New",
     component: Invoice,
+    meta: { public: false },
+  }, {
+    name: "test",
+    path: "/test",
+    component: test,
     meta: { public: false },
   },
   { name: "Index", path: "/Index", component: Index, meta: { public: false } },
@@ -67,6 +74,11 @@ const routes = [
     path: "/GetInvoice/:_id",
     component: GetInvoice,
     meta: { public: false },
+  }, {
+    name: "ViewInvoice",
+    path: "/invoice/:_id",
+    component: ViewInvoice,
+    meta: { public: true },
   },
   // {
   //   name: "GetInvoice",
@@ -143,8 +155,9 @@ router.beforeEach((to, from, next) => {
       if (
         to.path === "/login" ||
         to.path === "/signup" ||
-        to.path === "/ForgetPass"
-        // to.path === "/accounts"
+        to.path === "/ForgetPass"||
+        to.path === "/invoice/:_id" ||
+        to.path === "/accounts"
       ) {
         next({ name: "Index" });
       } else {

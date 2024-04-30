@@ -85,8 +85,8 @@ const upgradeAccount = () => {
         };
         </script>
 <template>
-  <nav class="p-4 flex justify-between items-center shadow-md">
-    <div class="flex items-center">
+  <nav class="p-4 flex justify-between items-center shadow-md " >
+    <div class="flex items-center justify-center">
       <div v-if="!showBackButton">
         <!-- Check isLoader to hide the back button when loading -->
         <Button
@@ -99,7 +99,7 @@ const upgradeAccount = () => {
           @click="onBackButtonClick"
         />
       </div>
-      <p class="font-bold ml-6 text-black text-[24px]">{{ headerTitle }}</p>
+      <p class="font-bold ml-6 text-black lg:text-[24px] md:text-[18px]">{{ headerTitle }}</p>
     </div>
     <div class="inline-flex items-center justify-center">
       <div v-if="!showUpgradeButton ">
@@ -128,7 +128,7 @@ const upgradeAccount = () => {
         <a-spin v-else size="medium" class="mx-2" /> 
       </div>
       
-      <a-dropdown v-if="showDropdown && !isLoader" @click="handleDropdownClick" class="mr-8 hover w-28 h-9 bg-[#1717ff] text-white ">
+      <a-dropdown v-if="showDropdown && !isLoader" @click="handleDropdownClick" class="hover w-28 h-9 bg-[#1717ff] text-white mr-4">
         <template #overlay>
           <a-menu >
             <a-menu-item v-for="item in dropdownItems" :key="item.key" @click="handleMenuItemClick(item)">
@@ -152,12 +152,10 @@ nav {
   align-items: center;
   justify-content: center;
 }
-
-n.nav .button:hover, .nav .dropdown:hover {
+.nav .button:hover, .nav .dropdown:hover {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
   transition: box-shadow 0.3s ease;
 }
-
 .nav .button, .nav .dropdown {
   transition: box-shadow 0.3s ease;
 }
@@ -165,7 +163,6 @@ n.nav .button:hover, .nav .dropdown:hover {
   background-color: #3700ffbb !important;
 color: white !important;
 }
-
 nav .menu-item {
   color: #000000;
   position: relative;
@@ -173,10 +170,17 @@ nav .menu-item {
   border-bottom: 3px solid transparent;
   display: flex;
 }
-
 nav .menu-item a {
   color: rgb(1, 1, 1);
   text-decoration: none;
+}
+.sticky-header {
+  position: fixed;
+  top: 0;
+  left: 250px; 
+  right: 0;
+  background-color: white;
+  z-index: 1000;
 }
 
 </style>

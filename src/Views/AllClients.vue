@@ -107,7 +107,6 @@ const columns = [
     title: 'First Name',
     dataIndex: 'firstName',
     key: 'firstName',
-    // sorter: true,
     onCell: (record) => ({
         onClick: () => handleClientItemClick(record.id),
       }),
@@ -116,7 +115,6 @@ const columns = [
     title: 'Last Name',
     dataIndex: 'lastName',
     key: 'lastName',
-    // sorter: true
   },
   {
     title: 'Email',
@@ -128,11 +126,6 @@ const columns = [
     dataIndex: 'phone',
     key: 'phone'
   },
-  // {
-  //   title: 'Client Type',
-  //   dataIndex: 'clientType',
-  //   key: 'phone'
-  // }
 ];
 
 const filteredClients = computed(() => {
@@ -149,7 +142,6 @@ const filteredClients = computed(() => {
     });
 
     if (filtered.length === 0) {
-      // If no search results are found, display a message
       console.log("No results found");
     }
 
@@ -172,7 +164,7 @@ const filteredClients = computed(() => {
     />
   </div>
 
-  <div class="content-center  xl:px-6 2xl:px-10 mt-2">
+  <div class="content-center  xl:px-6 mt-2">
     <div class="flex-col m-auto flex p-4 max-w-full ">
       <div class="flex flex-col ">
         <span class="" style="display: inline"></span>
@@ -183,10 +175,6 @@ const filteredClients = computed(() => {
               placeholder="Search clients..."
               class="w-[150px] my-4"
             />
-            <!-- <a-button type="primary" @click="handleSearch" class="ml-2 bg-[#10C0CB]">
-              Filter
-            </a-button> -->
-            
           </div>
         </div>
 
@@ -201,16 +189,10 @@ const filteredClients = computed(() => {
             showQuickJumper: false,
             pageSize: pageSize,
             total: totalItems,
-            // current: currentPage.value, 
-            // onChange: handlePageChange,
-            // onShowSizeChange: handlePageSizeChange
           }"
         >
         </a-table>
-
-        <!-- Message for no search results -->
-        
-      </div>
+     </div>
     </div>
   </div>
 </div>

@@ -355,7 +355,7 @@ const hideDropdown = () => {
       <a-spin size="large" />
     </a-space>
   </div>
-  <div class="bg-gray-100 " v-else>
+  <div v-else>
      <div class="bg-white">
     <Header
     headerTitle="New Invoice"
@@ -372,7 +372,9 @@ const hideDropdown = () => {
 
   />
 </div>
- <form @submit.prevent class="container mt-6 ml-6 bg-white 2xl:w-[50%] xl:w-[60%] w-[50%] lg:w-[70%] md:w-[90%] p-6">
+<div class="bg-gray-200 h-[max-content] p-4">
+
+ <form @submit.prevent class="container  bg-white 2xl:w-[50%] xl:w-[60%] w-[50%] lg:w-[70%] md:w-[90%] p-6">
     <div class="container">
       <div class="flex justify-between">
         <div class="flex flex-col space-y-5 w-1/2s sm:flex sm:space-x-4">
@@ -902,6 +904,7 @@ const hideDropdown = () => {
         </div>
       </div>
     </form>
+  </div>
   </div>
 </template>
 <style>

@@ -29,6 +29,7 @@ const handle401Error = () => {
       localStorage.removeItem('userRole');
       localStorage.removeItem('accessToken');
       localStorage.removeItem('UserId');
+      localStorage.removeItem("selectedMenuItem");
       window.location.reload();
     });
   } else {
