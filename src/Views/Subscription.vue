@@ -4,12 +4,17 @@ import { useRouter } from "vue-router";
 import { getUserDetailsApi } from "../service/LoginService";
 import Swal from "sweetalert2";
 import { useInvoiceStore } from "../stores/index";
-import { updateSignUpData } from "../service/SignUpService";
+import { selectPlan } from "../service/SignUpService";
 import { notification } from "ant-design-vue";
+import paymentPlan from "./paymentPlan.vue";
 
 const invoice = useInvoiceStore();
 const isLoading = ref(false);
 const router = useRouter();
+const open = ref(false);
+const showModal = () => {
+  open.value = true;
+};
 
 async function updateFree() {
   const result = await Swal.fire({
@@ -19,30 +24,37 @@ async function updateFree() {
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Choose Free Plan",
+    confirmButtonText: "Choose Basic Plan",
   });
   if (result.isConfirmed) {
     try {
       //console.log("Stored id:", invoice.signupData.data._id);
       const userid = localStorage.getItem("UserId");
-      const body = { userId: userid, planeName: "Free" };
-      const response = await updateSignUpData(body);
+      const body = { userId: userid, planName: "Free" };
+      const response = await selectPlan(body);
       invoice.updateUserData(response.data);
-      openNotificationWithIcon("success"," Payment Method  Updated successfully.")
-        // Fetch updated user data after plan update
-        getUserDetailsAndRedirect();
-     
+      // showModal();
+      openNotificationWithIcon(
+        "success",
+        "Subscription Plan updated Successfully."
+      );
+      // Fetch updated user data after plan update
+      getUserDetailsAndRedirect();
     } catch (error) {
       console.log("error", error);
-      openNotificationWithIcon("error", error || "Error During Payment Method  Updation.")
+      openNotificationWithIcon(
+        "error",
+        error || "Error During Payment Method  Updation."
+      );
     }
   }
 }
+
 const openNotificationWithIcon = (type, message) => {
   notification[type]({
     message: type === "success" ? "Success" : "Error",
     description: message,
-    duration: 3, 
+    duration: 3,
   });
 };
 async function updateBasic() {
@@ -59,17 +71,22 @@ async function updateBasic() {
     try {
       //console.log("Stored id:", invoice.signupData.data._id);
       const userid = localStorage.getItem("UserId");
-      const body = { userId: userid, planeName: "Basic" };
-      const response = await updateSignUpData(body);
+      const body = { userId: userid, planName: "Basic" };
+      const response = await selectPlan(body);
       invoice.updateUserData(response.data);
-      openNotificationWithIcon("success"," Payment Method  Updated successfully.")
-        // Fetch updated user data after plan update
-        getUserDetailsAndRedirect();
+      showModal();
+      // openNotificationWithIcon(
+      //   "success",
+      //   " Payment Method  Updated successfully."
+      // );
 
+      // Fetch updated user data after plan update
     } catch (error) {
       console.log("error", error);
-      openNotificationWithIcon("error", error || "Error During Payment Method  Updation.")
-
+      openNotificationWithIcon(
+        "error",
+        error || "Error During Payment Method  Updation."
+      );
     }
   }
 }
@@ -89,16 +106,21 @@ async function updateStandard() {
       //console.log("Stored id:", invoice.signupData.data._id);
       const userid = localStorage.getItem("UserId");
 
-      const body = { userId: userid, planeName: "Standard" };
-      const response = await updateSignUpData(body);
+      const body = { userId: userid, planName: "Standard" };
+      const response = await selectPlan(body);
       invoice.updateUserData(response.data);
-      openNotificationWithIcon("success"," Payment Method  Updated successfully.")
-        // Fetch updated user data after plan update
-        getUserDetailsAndRedirect();
+      showModal();
+      // openNotificationWithIcon(
+      //   "success",
+      //   " Payment Method  Updated successfully."
+      // );
+      // Fetch updated user data after plan update
     } catch (error) {
       console.log("error", error);
-      openNotificationWithIcon("error", error || "Error During Payment Method  Updation.")
-
+      openNotificationWithIcon(
+        "error",
+        error || "Error During Payment Method  Updation."
+      );
     }
   }
 }
@@ -117,16 +139,21 @@ async function updatePremium() {
       //console.log("Stored id:", invoice.signupData.data._id);
       const userid = localStorage.getItem("UserId");
 
-      const body = { userId: userid, planeName: "Premium" };
-      const response = await updateSignUpData(body);
+      const body = { userId: userid, planName: "Premium" };
+      const response = await selectPlan(body);
       invoice.updateUserData(response.data);
-      openNotificationWithIcon("success"," Payment Method  Updated successfully.")
-        // Fetch updated user data after plan update
-        getUserDetailsAndRedirect();
+      showModal();
+      // openNotificationWithIcon(
+      //   "success",
+      //   " Payment Method  Updated successfully."
+      // );
+      // Fetch updated user data after plan update
     } catch (error) {
       console.log("error", error);
-      openNotificationWithIcon("error", error || "Error During Payment Method  Updation.")
-
+      openNotificationWithIcon(
+        "error",
+        error || "Error During Payment Method  Updation."
+      );
     }
   }
 }
@@ -140,11 +167,9 @@ async function getUserDetailsAndRedirect() {
 
     // After updating user data, navigate to the root route ("/")
     router.push("/");
-    
   } catch (error) {
     console.error("Error Fetching User Details:", error);
-    openNotificationWithIcon("error",  "Error During fetching User Role.")
-
+    openNotificationWithIcon("error", "Error During fetching User Role.");
   }
 }
 // Define functions to handle plan selection
@@ -198,7 +223,10 @@ onMounted(async () => {
     }
     // showPopup();
   } catch (error) {
-    openNotificationWithIcon("error", error || "Error During fetching User Role.")
+    openNotificationWithIcon(
+      "error",
+      error || "Error During fetching User Role."
+    );
 
     console.error("Error During getting Business Profile:", error);
   } finally {
@@ -224,14 +252,14 @@ const plans = [
     name: "Basic",
     description:
       "Ideal for individuals that need a custom solution with custom tools.",
-    price: "30",
+    price: "50",
     timeSpan: "/month",
     gradientClass: "bg-gradient-to-tr from-[#10C0CB] to-[#4AA7AD]",
     included: [
-      "Create 30 Clients",
-      "Create 30 Invoices",
-      "Generate 30 Pdf ",
-      "Send 30 Emails",
+      "Create 100 Clients",
+      "Create 100 Invoices",
+      "Generate 100 Pdf ",
+      "Send 100 Emails",
     ],
   },
   {
@@ -243,10 +271,10 @@ const plans = [
 
     gradientClass: "bg-gradient-to-tr from-blue-500 to-blue-300",
     included: [
-      "Create 100 Clients",
-      "Create 100 Invoices",
-      "Generate 100 Pdf ",
-      "Send 100 Emails",
+      "Create 300 Clients",
+      "Create 300 Invoices",
+      "Generate 300 Pdf ",
+      "Send 300 Emails",
     ],
   },
   {
@@ -392,6 +420,9 @@ watch(userRole, (newValue) => {
               >
                 Select Plan
               </button>
+              <a-modal v-model:open="open" width="50%" class="mt-[10%]">
+                <paymentPlan />
+              </a-modal>
             </div>
             <!-- Plan Details -->
             <div class="px-5 pt-4 pb-5">
