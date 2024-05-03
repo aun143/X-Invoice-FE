@@ -7,6 +7,9 @@ import Button from "../components/Button.vue";
 import {
   getSingleInvoice,
 } from "../service/invoiceService";
+import {
+  updateInvoiceData,
+} from "../service/MainService";
 import { useInvoiceStore } from "../stores/index";
 import Swal from "sweetalert2";
 import axiosInstance from "../service/axios"; 
@@ -28,9 +31,12 @@ const openNotificationWithIcon = (type, message) => {
 const dropdownTitle = "Actions";
 const dropdownItems = [
   { title: "Download as Pdf" },
-  { title: "Pay Now" }
+  // { title: "Pay Now" }
 ];
-const invoiceDetails = ref("");
+// const invoiceDetails = ref("");
+const invoiceDetails = ref({
+  downloadCount: 0 // Initialize downloadCount
+});
 const imageUrl = computed(() => {
   return invoiceDetails.value.url
     ? invoiceDetails.value.url
@@ -58,7 +64,24 @@ const info=()=>{
     confirmButtonText: 'Close',
   });
 };
-const handleDropdownItemClickParent = (clickedItem) => {
+// const handleDropdownItemClickParent = (clickedItem) => {
+//   if (clickedItem.title === "Download as Pdf") {
+//     const url = new URL(axiosInstance.defaults.baseURL);
+//     url.pathname = "/api/pdf/X-Invoice";
+//     url.searchParams.append("clientId", clientId.value);
+//     url.searchParams.append("businessId", business.value._id);
+//     url.searchParams.append("invoiceId", invoiceId);
+//     window.open(url.toString(), "_blank");
+//     invoiceDetails.value.downloadCount++;
+
+//     console.log("invoiceDetails.value.downloadCount",invoiceDetails.value.downloadCount)
+
+//   } else if (clickedItem.title === "Pay Now") {
+//     alert("PayNow Clicked");
+//   }
+// }
+
+const handleDropdownItemClickParent = async (clickedItem) => {
   if (clickedItem.title === "Download as Pdf") {
     const url = new URL(axiosInstance.defaults.baseURL);
     url.pathname = "/api/pdf/X-Invoice";
@@ -66,28 +89,47 @@ const handleDropdownItemClickParent = (clickedItem) => {
     url.searchParams.append("businessId", business.value._id);
     url.searchParams.append("invoiceId", invoiceId);
     window.open(url.toString(), "_blank");
+    invoiceDetails.value.downloadCount++;
+    console.log("??",invoiceDetails.value.downloadCount)
+    try {
+      const updateResponse = await updateInvoiceData(invoiceDetails.value._id, { downloadCount: invoiceDetails.value.downloadCount });
+    } catch (error) {
+      console.error("Error updating download count:", error);
+    }
   } else if (clickedItem.title === "Pay Now") {
     alert("PayNow Clicked");
   }
 }
+
 const UserId=localStorage.getItem("UserId");
 console.log("UserId",UserId)
 const isAuthenticated = ref(!!UserId); 
-const submitPassword = () => {
-  console.log("invoiceDetails.pdfPassword",invoiceDetails.value.pdfPassword)
-  if(invoiceDetails.value.pdfPassword === password.value){
-    isAuthenticated.value = true;
-    openNotificationWithIcon("success", "Password Authenticated");
 
-  }else{
+const submitPassword = async () => {
+  console.log("invoiceDetails.pdfPassword", invoiceDetails.value);
+  
+  if (invoiceDetails.value.pdfPassword === password.value) {
+    isAuthenticated.value = true;
+    invoiceDetails.value.viewCount++;
+
+    console.log("password.value",password.value)
+    try {
+      const updateResponse = await updateInvoiceData(invoiceDetails.value._id, { viewCount: invoiceDetails.value.viewCount });
+      console.log("Invoice data updated successfully", updateResponse);
+    } catch (error) {
+      console.error("Error updating invoice data:", error);
+    }
+
+    openNotificationWithIcon("success", "Password Authenticated");
+  } else {
     openNotificationWithIcon("error", "Wrong Password");
   }
 };
+
 </script>
   <template>
-      <div v-if="!isAuthenticated || !UserId">
-
-    <!-- <div v-if="!isAuthenticated || !UserId"> -->
+      <!-- <div v-if="!isAuthenticated"> -->
+        <div v-if="!isAuthenticated">
       <div id="password-modal" class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full h-full flex items-center justify-center">
       <div class="relative p-2 w-full max-w-md max-h-full">
           <!-- Modal content -->
@@ -120,7 +162,7 @@ const submitPassword = () => {
       </a-space>
     </div>
   <div v-else>
-    <div class="w-full">
+    <div class="">
     <Header
         :headerTitle="invoiceDetails.invoiceName"
         :dropdownTitle="dropdownTitle"
@@ -163,8 +205,9 @@ const submitPassword = () => {
               </div>
             </div>
 
+            <!-- class="w-48 mt-4 lg:ml-[25%] 2xl:ml-[30%] h-auto flex justify-end items-end" -->
             <div
-              class="w-48 mt-4 lg:ml-[25%] 2xl:ml-[30%] h-auto flex justify-end items-end"
+              class="w-48 mt-4 lg:ml-[37%] 2xl:ml-[40%] h-auto flex justify-end items-end"
             >
               <img :src="imageUrl" alt="Logo" />
             </div>
@@ -234,7 +277,7 @@ const submitPassword = () => {
               </div>
             </div>
             <div
-              class="flex flex-col md:ml-[10%] lg:ml-[30%] xl:ml-[38%] 2xl:ml-[40%] mt-4"
+              class="flex flex-col md:ml-[10%] lg:ml-[30%] xl:ml-[%] 2xl:ml-[33%] mt-4"
             >
               <div>
                 <p class="font-semibold">Invoice No</p>
@@ -279,11 +322,6 @@ const submitPassword = () => {
           </td>
           <td style="width: 25%;">
             <input disabled class="w-full h-full text-center" v-model="item.rate" />
-            <!-- <select disabled class="w-full h-full mt-2">
-              <option v-for="unit in item.unit" :key="unit" :value="unit">
-                {{ unit.name }}
-              </option>
-            </select> -->
           </td>
           <td style="width: 25%;">
             <input disabled class="w-full h-full text-center" v-model="item.amount" />
@@ -296,21 +334,6 @@ const submitPassword = () => {
 
           <br />
           <div class="border mx-6"></div>
-          <!-- <div
-              style="text-align: left; margin-left: 10px"
-              class="w-[50%]"
-            ></div> -->
-
-          <!-- <div class=" ">
-                  <span class="">Date</span>
-
-                  <input
-                    readonly
-                    class="w-[53vw] text-right border-0 bg-white"
-                    placeholder="68970.00"
-                  />
-                </div>
-                <hr /> -->
           <div class="flex flex-col max-w-full items-end xl:mr-20 ">
             <div
               class="flex justify-between xl:w-[70%] md:w-[75%] 2xl:w-[70%] items-end"
@@ -325,11 +348,6 @@ const submitPassword = () => {
               <div class="pb-2 pt-4 mr-8">
                 {{ invoiceDetails.subtotal }} {{ invoiceDetails.currency }}
               </div>
-              <!-- <div class="text-black">
-                <span class=""> Total </span>
-              </div> -->
-
-              <!-- :value="getSubtotal()" -->
             </div>
 
             <div

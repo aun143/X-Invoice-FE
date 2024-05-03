@@ -21,8 +21,12 @@ const isLoading = ref(false);
     if (UserId) {
       const userProfileData = await getUserDetailsApi(UserId);
       invoice.userProfileData.userRole = userProfileData.userRole;
-    } else {
-      router.push("/login");
+    } else if(!UserId){
+      if (router.currentRoute.value.name === "ViewInvoice") {
+        router.push({ name: "ViewInvoice" });
+      }else{
+       router.push("/login");
+    }
     }
     // showPopup();
   } catch (error) {

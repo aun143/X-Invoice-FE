@@ -134,7 +134,7 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-}); 
+});
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("accessToken");
@@ -143,7 +143,7 @@ router.beforeEach((to, from, next) => {
     // Page requires authentication
     if (!token) {
       // User does not have token, redirect to login
-      // next({ name: "Login" });
+      next({ name: "Login" });
     } else {
       // User has token, allow access to authenticated routes
       next();
@@ -154,8 +154,9 @@ router.beforeEach((to, from, next) => {
       // If user has token and tries to access public routes that should be restricted, redirect to main or another authenticated route
       if (
         to.path === "/login" ||
-        to.path === "/  " ||
-        to.path === "/forgetPass"||
+        to.path === "/signup" ||
+        to.path === "/ForgetPass"||
+        to.path === "/invoice/:_id" ||
         to.path === "/accounts"
       ) {
         next({ name: "Index" });

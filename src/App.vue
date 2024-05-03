@@ -20,8 +20,6 @@ const componentsWithSidebar = [
   "Subscription",
   "DashBoard",
 ];
-
-// Computed property to determine if sidebar is enabled based on current route
 const isSidebarEnabled = computed(() => {
   if (
     invoice.userProfileData.userRole === undefined ||
@@ -59,22 +57,28 @@ const UserRole = async () => {
     if (UserId) {
       const userProfileData = await getUserDetailsApi(UserId);
       invoice.userProfileData.userRole = userProfileData.userRole;
-    } else {
-      router.push("/login");
+    } else{
+      const id = localStorage.getItem("id");
+       if(id){
+        router.push({name: "ViewInvoice"})
+       }else{
+        router.push("/login")
+       }
     }
     // showPopup();
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: ("Error During Getting Account User Role:", error),
-      footer: "Please try again ",
-    });
+    // Swal.fire({
+    //   icon: "error",
+    //   title: "Oops...",
+    //   text: ("Error During Getting Account User Role:", error),
+    //   footer: "Please try again ",
+    // });
     console.error("Error During getting Getting User Role:", error);
   }
 };
 onMounted(async () => {
   UserRole();
+  localStorage.setItem("id",1);
 });
 
 const menuItems = [
@@ -104,9 +108,6 @@ router.afterEach((to) => {
   if (menuItem) {
     selectedMenuItem.value = menuItem.key;
     localStorage.setItem("selectedMenuItem", menuItem.key);
-
-    // Apply specific styling for Dashboard menu item when not selected
-    
   }
 });
 
