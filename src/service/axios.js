@@ -29,6 +29,7 @@ const handle401Error = () => {
       localStorage.removeItem('userRole');
       localStorage.removeItem('accessToken');
       localStorage.removeItem('UserId');
+      localStorage.removeItem("selectedMenuItem");
       window.location.reload();
     });
   } else {
@@ -39,28 +40,6 @@ const handle401Error = () => {
 
   }
 };
-// axiosInstance.interceptors.response.use(
-//     (response) => {
-//       return response.data;
-//     },
-//     (error) => {
-//       if (error.response) {
-//         if (error.response.status === 401) {
-//           handle401Error();
-//           return Promise.reject({ message: 'Session expired' });
-//         } else {
-//           console.error('Error response from server:', error.response.data);
-//           return Promise.reject(error.response.data);
-//         }
-//       } else if (error.request) {
-//         console.error('No response from server:', error.request);
-//         return Promise.reject({ message: 'No response from server' });
-//       } else {
-//         console.error('Request failed:', error.message);
-//         return Promise.reject({ message: 'Request failed' });
-//       }
-//     }
-//   );
 axiosInstance.interceptors.response.use(
   (response) => handleResponse(response),
   (error) => {

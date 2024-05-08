@@ -2,12 +2,12 @@ import axiosInstance from './axios';
 // const BASE_URL = "http://localhost:3010/invoices/getInvoice";
 export const getSingleInvoice = async (invoiceId) => {
   try {
-    const token = localStorage.getItem('accessToken');
+    // const token = localStorage.getItem('accessToken');
 
     const response = await axiosInstance.get(`/invoice/getInvoice/${invoiceId}`, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${token}`,
       },
     });
     // console.log("response",response)

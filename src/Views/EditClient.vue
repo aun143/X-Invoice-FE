@@ -216,12 +216,17 @@ const hideDropdown = () => {
     showOptions.value = false;
   }, 100); 
 };
+const getProfileData = () => {
+  return selectedField.value === "individual"
+    ? invoice.userClientProfile.clientDataindividual
+    : invoice.userClientProfile.clientDataOrganization;
+};
 </script>
 
 
 <template>
 
- <div class="bg-gray-200">
+ <div>
     <div class="bg-white">
   <Header
         headerTitle="Client"
@@ -235,8 +240,10 @@ const hideDropdown = () => {
         :showBackButton="false"
       />
 </div>
+<div class="bg-gray-200 h-[max-content]">
+
 <!-- {{invoice.userClientProfile.clientDataindividual.clientType}} -->
-  <div class="modal-content max-h-full flex w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] p-4 justify-start">
+  <div class="modal-content max-h-full w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] p-4 justify-start">
       <div class="flex">
         <div class="w-full p-8 bg-white">
           <div class="mb-4 flex ml-4">
@@ -253,21 +260,19 @@ const hideDropdown = () => {
               
               <div v-else>
                 <img
-                id="imagePreview"
-                  v-if="selectedField === 'individual'"
-                  :src="invoice.userClientProfile.clientDataindividual.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
-                  ref="logoPreview"
-                  alt="Logo for Individual"
-                  class="w-20 mb-4 h-20 cursor-pointer"
-                />
-                <img
-                id="imagePreview"
-                  v-if="selectedField === 'organization'"
-                  :src="invoice.userClientProfile.clientDataOrganization.url || 'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'"
-                  alt="Logo for Organization"
-                  ref="logoPreview"
-                  class="w-20 mb-4 h-20 cursor-pointer"
-                /></div>
+                    id="imagePreview"
+                    :src="
+                      selectedField === 'individual'
+                        ? invoice.userClientProfile.clientDataindividual.url ||
+                          'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'
+                        : invoice.userClientProfile.clientDataOrganization.url ||
+                          'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe'
+                    "
+                    alt="Logo"
+                    ref="logoPreview"
+                    class="w-20 mb-4 h-20 p-2 cursor-pointer"
+                  />
+              </div>
               </div>
               <input
                 id="logoInput"
@@ -283,7 +288,7 @@ const hideDropdown = () => {
             <div class="flex-right w-48 ml-6">
               <table class=" border border-black mt-6">
                
-                <tr  v-if="invoice.userClientProfile.clientDataindividual.clientType === 'individual'" >
+                <tr  v-if="getProfileData().clientType === 'individual'" >
                   <td>
                     <div
                       class="flex pl-4 my-2 cursor-pointer"
@@ -299,7 +304,7 @@ const hideDropdown = () => {
 ></span
                     >
                   </td>
-                </tr><tr  v-if="invoice.userClientProfile.clientDataindividual.clientType === 'organization'">
+                </tr><tr  v-if="getProfileData().clientType === 'organization'">
                   <td>
                     <div
                       class="flex pl-4 my-2 cursor-pointer"
@@ -321,13 +326,13 @@ const hideDropdown = () => {
           </div>
           <br />
 
-          <div v-if="selectedField === 'individual' || invoice.userClientProfile.clientDataindividual.clientType === 'individual'" :key="1">
+          <div v-if="selectedField === 'individual' || getProfileData().clientType === 'individual'" :key="1">
             <div class="">
               <hr class="mb-4" />
-              <div v-if="invoice.userClientProfile.clientDataindividual.clientType === 'organization'">
+              <div v-if="getProfileData().clientType === 'organization'">
                 <p class="justify-start flex font-medium text-[14px]"> <span class="text-[#ff0000]">*</span>Organization Name</p>
                 <a-input
-                  v-model:value="invoice.userClientProfile.clientDataindividual.organizationName"
+                  v-model:value="getProfileData().organizationName"
                   type="text"
                   placeholder="Organization Name"
                   class="w-full border p-2"
@@ -337,7 +342,7 @@ const hideDropdown = () => {
                 <div>
                   <p class="justify-start flex font-medium text-[14px]"> <span class="text-[#ff0000]">*</span>First Name</p>
                   <a-input
-                    v-model:value="invoice.userClientProfile.clientDataindividual.firstName"
+                    v-model:value="getProfileData().firstName"
                     type="text"
                     placeholder="First Name"
                     class="w-full border p-2"
@@ -346,7 +351,7 @@ const hideDropdown = () => {
                 <div>
                   <p class="justify-start flex font-medium text-[14px]"><span class="text-[#ff0000]">*</span>Last Name</p>
                   <a-input
-                    v-model:value="invoice.userClientProfile.clientDataindividual.lastName"
+                    v-model:value="getProfileData().lastName"
                     type="text"
                     placeholder="Last Name"
                     class="w-full border p-2"
@@ -359,7 +364,7 @@ const hideDropdown = () => {
               <div>
                 <p class="text-left ml-2 font-medium text-[14px]">Currency</p>
                 <a-select
-                  v-model:value="invoice.userClientProfile.clientDataindividual.currency"
+                  v-model:value="getProfileData().currency"
                   class="w-full text-left" size="large"
                 >
                   <a-select-option
@@ -375,7 +380,7 @@ const hideDropdown = () => {
               <div class="">
                 <p class="text-left ml-2 font-medium text-[14px]">Language</p>
                 <a-select 
-                  v-model:value="invoice.userClientProfile.clientDataindividual.language"
+                  v-model:value="getProfileData().language"
                   class=" w-full text-left" size="large"
                 >
                   <a-select-option
@@ -392,7 +397,7 @@ const hideDropdown = () => {
             <div>
               <p class="justify-start flex font-medium text-[14px]"><span class="text-[#ff0000]">*</span>Email Address</p>
               <a-input
-                v-model:value="invoice.userClientProfile.clientDataindividual.email"
+                v-model:value="getProfileData().email"
                 type="email"
                 placeholder="Email"
                 class="w-full border p-2"
@@ -402,7 +407,7 @@ const hideDropdown = () => {
             <div>
               <p class="justify-start flex font-medium text-[14px]"><span class="text-[#ff0000]">*</span>Phone Number</p>
               <a-input
-                v-model:value="invoice.userClientProfile.clientDataindividual.phone"
+                v-model:value="getProfileData().phone"
                 type="string"
                 placeholder="Phone Number"
                 class="w-full border p-2"
@@ -412,20 +417,20 @@ const hideDropdown = () => {
             <div>
               <p class="justify-start flex font-medium text-[14px]"><span class="text-[#ff0000]">*</span>Address(Line 1)</p>
               <a-input
-                v-model:value="invoice.userClientProfile.clientDataindividual.address1"
+                v-model:value="getProfileData().address1"
                 type="text"
                 placeholder="Streeet Line 1"
                 class="w-full border p-2"
               />
 
               <a-input
-                v-model:value="invoice.userClientProfile.clientDataindividual.address2"
+                v-model:value="getProfileData().address2"
                 type="text"
                 placeholder="Street Line 2"
                 class="w-full mt-2 border p-2"
               />
             </div>
-            <div class="flex justify-between items-center mt-3 gap-2">
+            <div class=" justify-between items-center grid grid-cols-2 mt-1 gap-2">
               <div class="">
                 <p class="text-left  font-medium text-[14px]">
                   <span class="text-[#ff0000]">*</span>Country
@@ -433,7 +438,7 @@ const hideDropdown = () => {
                 <div class="relative">
                   <a-input
                     v-model:value="
-                      invoice.userClientProfile.clientDataindividual.country
+                      getProfileData().country
                     "
                     @focus="showDropdown"
                     @blur="hideDropdown"
@@ -463,7 +468,7 @@ const hideDropdown = () => {
                 </p>
                 <a-input
                   v-model:value="
-                    invoice.userClientProfile.clientDataindividual.postalCode
+                    getProfileData().postalCode
                   "
                   type="number"
                   class=""
@@ -476,7 +481,7 @@ const hideDropdown = () => {
                 </p>
                 <a-input
                   v-model:value="
-                    invoice.userClientProfile.clientDataindividual.state
+                    getProfileData().state
                   "
                   type="text"
                   class=""
@@ -489,7 +494,7 @@ const hideDropdown = () => {
                 </p>
                 <a-input
                   v-model:value="
-                    invoice.userClientProfile.clientDataindividual.city
+                    getProfileData().city
                   "
                   placeholder="City"
                   type="text"
@@ -499,12 +504,18 @@ const hideDropdown = () => {
             
             </div>
             <hr class="my-4" />
-
             <div>
               <div>
+                <p class="justify-start flex font-medium text-[14px]"> Tax Identification Number</p>
+                <a-input
+                  v-model:value="getProfileData().taxId"
+                  type="number"
+                  class="w-full border p-2"
+                />
+              </div><div>
                 <p class="justify-start flex font-medium text-[14px]">Fax Number</p>
                 <a-input
-                  v-model:value="invoice.userClientProfile.clientDataindividual.faxNumber"
+                  v-model:value="getProfileData().faxNumber"
                   type="number"
                   class="w-full border p-2"
                 />
@@ -513,7 +524,7 @@ const hideDropdown = () => {
               <div>
                 <p class="justify-start flex font-medium text-[14px]">Website URL</p>
                 <a-input
-                  v-model:value="invoice.userClientProfile.clientDataindividual.websiteURL"
+                  v-model:value="getProfileData().websiteURL"
                   type="number"
                   class="w-full border p-2"
                 />
@@ -522,7 +533,7 @@ const hideDropdown = () => {
               <div>
                 <p class="justify-start flex font-medium text-[14px]">Notes</p>
                 <a-textarea
-                  v-model:value="invoice.userClientProfile.clientDataindividual.notes"
+                  v-model:value="getProfileData().notes"
                   type="text"
                   class="w-full border p-2"
                 />
@@ -533,7 +544,7 @@ const hideDropdown = () => {
                     <p class="justify-start">Custom Field</p>
 
                     <a-input
-                      v-model:value="invoice.userClientProfile.clientDataindividual.customFieldName"
+                      v-model:value="getProfileData().customFieldName"
                       type="text"
                       class="w-full border p-2"
                       placeholder="Custom Field Name"
@@ -542,7 +553,7 @@ const hideDropdown = () => {
                   <div class="">
                    <a @click="addNewLine" class="ml-32">Add Custom Field</a>
                     <a-input
-                      v-model:value="invoice.userClientProfile.clientDataindividual.customFieldValue"
+                      v-model:value="getProfileData().customFieldValue"
                       type="text"
                       class="w-full border p-2 mt-6"
                       placeholder="Custom Field Value"
@@ -557,6 +568,7 @@ const hideDropdown = () => {
          
         </div>
       </div>
+    </div>
     </div>
     </div>
 </template>

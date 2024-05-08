@@ -2,7 +2,6 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { clientApi } from "../service/ClientService";
-// import Button from "../components/Button.vue";
 import { Colors } from "../utils/color";
 import Header from "../components/Header.vue";
 import { useInvoiceStore } from "../stores/index";
@@ -20,7 +19,7 @@ const submitclientDataOrganization = async () => {
 
   try {
     isLoader.value = true;
-    if (!validateFormOrg()) return;
+    if (!validateForm()) return;
     const clientData = {
       ...invoice.userClientProfile.clientDataOrganization,
       clientType: "organization",
@@ -28,8 +27,8 @@ const submitclientDataOrganization = async () => {
     const { success, data, error } = await clientApi(clientData);
 
     if (success) {
-      router.push("/AllClients");
       openNotificationWithIcon("success", data.message || "Client has been Created successfully.")
+      return true;
     } else {
       console.error("Error During Client organization:", error);
       openNotificationWithIcon("error", error || "An error occurred while creating the client.")
@@ -39,7 +38,7 @@ const submitclientDataOrganization = async () => {
         router.push("/subscription");
       } else {
         openNotificationWithIcon("error", error);
-      }
+      } return false;
     }
   } catch (error) {
     console.error("Error During Client organization:", error);
@@ -59,7 +58,7 @@ const submitclietDataindividual = async () => {
 
   try {
     isLoader.value = true;
-    if (!validateFormInd()) return;
+    if (!validateForm()) return;
     const clientData = {
       ...invoice.userClientProfile.clientDataindividual,
       clientType: "individual",
@@ -67,8 +66,8 @@ const submitclietDataindividual = async () => {
     const { success, data, error } = await clientApi(clientData);
 
     if (success) {
-      router.push("/AllClients");
       openNotificationWithIcon("success", data.message || "Client has been Created successfully.")
+      return true;
     } else {
       console.error("Error During Client individual:", error);
       openNotificationWithIcon("error", error || "An error occurred while creating the client.")
@@ -76,8 +75,9 @@ const submitclietDataindividual = async () => {
         router.push("/subscription");
       } else {
         openNotificationWithIcon("error", error);
-      }
+      }return false;
     }
+    
   } catch (error) {
     console.error("Error During Client individual:", error);
     openNotificationWithIcon(
@@ -89,77 +89,38 @@ const submitclietDataindividual = async () => {
   }
 };
 const invoice = useInvoiceStore();
-const validateFormOrg = () => {
+const validateForm = () => {
   const emptyFields = [];
 
-  if (!invoice.userClientProfile.clientDataOrganization.firstName) {
+  if (!getProfileData().firstName) {
     emptyFields.push("FirstName ");
   }
-  if (!invoice.userClientProfile.clientDataOrganization.lastName) {
+  if (!getProfileData().lastName) {
     emptyFields.push("LastName ");
   }
-  if (!invoice.userClientProfile.clientDataOrganization.phone) {
+  if (!getProfileData().phone) {
     emptyFields.push("Phone Number");
   }
-  if (!invoice.userClientProfile.clientDataOrganization.email) {
+  if (!getProfileData().email) {
     emptyFields.push(" Email must contain '@'");
   } else if (
-    !invoice.userClientProfile.clientDataOrganization.email.includes("@") ||
-    !/.+\@.+\..+/.test(invoice.userClientProfile.clientDataOrganization.email)
+    !getProfileData().email.includes("@") ||
+    !/.+\@.+\..+/.test(getProfileData().email)
   ) {
     emptyFields.push("Email must be valid and contain '@'.");
   }
-  if (!invoice.userClientProfile.clientDataOrganization.state) {
+  if (!getProfileData().state) {
     emptyFields.push(" State ");
   }
-  if (!invoice.userClientProfile.clientDataOrganization.city) {
+  if (!getProfileData().city) {
     emptyFields.push(" City ");
   }
-  if (!invoice.userClientProfile.clientDataOrganization.country) {
+  if (!getProfileData().country) {
     emptyFields.push("Country ");
   }
 
   if (emptyFields.length > 0) {
     const alertMessage = `Please fill in the following required fields: and ${emptyFields.join(
-      ", "
-    )}`;
-    openNotificationWithIcon("error", alertMessage);
-    return false;
-  }
-
-  return true;
-};
-const validateFormInd = () => {
-  const emptyFields = [];
-
-  if (!invoice.userClientProfile.clientDataindividual.firstName) {
-    emptyFields.push("FirstName  ");
-  }
-  if (!invoice.userClientProfile.clientDataindividual.lastName) {
-    emptyFields.push("LastName  ");
-  }
-  if (!invoice.userClientProfile.clientDataindividual.phone) {
-    emptyFields.push("Phone Number");
-  }
-  if (!invoice.userClientProfile.clientDataindividual.email) {
-    emptyFields.push(" Email must contain '@'");
-  } else if (
-    !invoice.userClientProfile.clientDataindividual.email.includes("@") ||
-    !/.+\@.+\..+/.test(invoice.userClientProfile.clientDataindividual.email)
-  ) {
-    emptyFields.push("Email must be valid and contain '@'.");
-  }
-  if (!invoice.userClientProfile.clientDataindividual.state) {
-    emptyFields.push(" State ");
-  }if (!invoice.userClientProfile.clientDataindividual.city) {
-    emptyFields.push(" City ");
-  }
-  if (!invoice.userClientProfile.clientDataindividual.country) {
-    emptyFields.push("Country  ");
-  }
-
-  if (emptyFields.length > 0) {
-    const alertMessage = `Please fill in the following required fields: ${emptyFields.join(
       ", "
     )}`;
     openNotificationWithIcon("error", alertMessage);
@@ -179,15 +140,40 @@ const openNotificationWithIcon = (type, message) => {
     duration: 5,
   });
 };
-const handleSaveDraftButtonClick = () => {
-  if (selectedField.value === "individual") {
-    submitclietDataindividual();
-  } else if (selectedField.value === "organization") {
-    submitclientDataOrganization();
-  } else {
-    console.log("Error>>>", error);
+const handleSaveDraftButtonClick = async () => {
+  try {
+    if (selectedField.value === "individual") {
+      const success = await submitclietDataindividual();
+      if(success){
+        router.push("/AllClients")
+      }
+    } else if (selectedField.value === "organization") {
+      const success = await submitclientDataOrganization();
+      if(success){
+        router.push("/AllClients")
+      }
+    }
+  } catch (error) {
+    console.error("Error during form submission:", error);
+  }
+};const handleSaveDraftButton = async () => {
+  try {
+    if (selectedField.value === "individual") {
+      const success = await submitclietDataindividual();
+      if(success){
+        router.push("/new")
+      }
+    } else if (selectedField.value === "organization") {
+      const success = await submitclientDataOrganization();
+      if(success){
+        router.push("/new")
+      }
+    }
+  } catch (error) {
+    console.error("Error during form submission:", error);
   }
 };
+
 const logoInputRef = ref(null);
 const logoPreview = ref(null);
 const handleFileInputChange = async () => {
@@ -267,10 +253,19 @@ const hideDropdown = () => {
     showOptions.value = false; 
   }, 100); 
 };
+const getProfileData = () => {
+  return selectedField.value === "individual"
+    ? invoice.userClientProfile.clientDataindividual
+    : invoice.userClientProfile.clientDataOrganization;
+};
+const props = defineProps(["showHeader","width","createButton"]);
 </script>
+
+
+
 <template>
-  <div class="bg-gray-200 mt-2">
-    <div class="bg-white">
+   <div >
+    <div class="bg-white" :class="[!showHeader ? '' : 'hidden']">
       <Header
         :isLoader="isLoader"
         headerTitle="Client Profile"
@@ -283,8 +278,9 @@ const hideDropdown = () => {
         :showBackButton="false"
       />
     </div>
-    <div
-      class="modal-content max-h-full flex w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] p-4 justify-start"
+<div class="bg-gray-200 h-[max-content] p-4">
+    <div :class="[width ? '!w-[100%]' : '']"
+      class="modal-content max-h-full w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] justify-start"
     >
       <div class="flex">
         <div class="w-full p-8 bg-white">
@@ -300,27 +296,19 @@ const hideDropdown = () => {
                 </div>
                 <div v-else>
                   <img
-                    v-if="selectedField === 'individual'"
                     id="imagePreview"
                     :src="
-                      invoice.userClientProfile.clientDataindividual.url ||
-                      'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'
+                      selectedField === 'individual'
+                        ? invoice.userClientProfile.clientDataindividual.url ||
+                          'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'
+                        : invoice.userClientProfile.clientDataOrganization.url ||
+                          'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'
                     "
-                    ref="logoPreview"
-                    alt="Logo for Individual"
-                    class="w-20 mb-4 h-20 p-2 cursor-pointer"
-                  />
-                  <img
-                    v-if="selectedField === 'organization'"
-                    id="imagePreview"
-                    :src="
-                      invoice.userClientProfile.clientDataOrganization.url ||
-                      'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'
-                    "
-                    alt="Logo for Organization"
+                    alt="Logo"
                     ref="logoPreview"
                     class="w-20 mb-4 h-20 p-2 cursor-pointer"
                   />
+                  
                 </div>
               </div>
               <input
@@ -376,10 +364,21 @@ const hideDropdown = () => {
             </div>
           </div>
           <br />
-
-          <div v-if="selectedField === 'individual'" :key="1">
+          <div >
             <div class="mb-4">
               <hr class="mb-4" />
+              <div v-if="selectedField === 'organization'" class="mb-2">
+              <p class="justify-start flex font-medium text-[14px] ">
+                <span class="text-[#ff0000]">*</span>Organization Name
+                </p>
+                <a-input
+                  v-model:value="getProfileData().organizationName
+                  "
+                  type="text"
+                  placeholder="First Name"
+                  class="border p-2"
+                />
+              </div>
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <p class="justify-start flex font-medium text-[14px]">
@@ -387,7 +386,7 @@ const hideDropdown = () => {
                   </p>
                   <a-input
                     v-model:value="
-                      invoice.userClientProfile.clientDataindividual.firstName
+                      getProfileData().firstName
                     "
                     type="text"
                     placeholder="First Name"
@@ -400,7 +399,7 @@ const hideDropdown = () => {
                   </p>
                   <a-input
                     v-model:value="
-                      invoice.userClientProfile.clientDataindividual.lastName
+                      getProfileData().lastName
                     "
                     type="text"
                     placeholder="Last Name"
@@ -415,7 +414,7 @@ const hideDropdown = () => {
                 <p class="text-left ml-2 font-medium text-[14px]">Currency</p>
                 <a-select
                   v-model:value="
-                    invoice.userClientProfile.clientDataindividual.currency
+                    getProfileData().currency
                   "
                   size="large"
                   class="w-full text-left"
@@ -434,7 +433,7 @@ const hideDropdown = () => {
                 <p class="text-left ml-2 font-medium text-[14px]">Language</p>
                 <a-select
                   v-model:value="
-                    invoice.userClientProfile.clientDataindividual.language
+                    getProfileData().language
                   "
                   size="large"
                   class="w-full text-left"
@@ -456,7 +455,7 @@ const hideDropdown = () => {
               </p>
               <a-input
                 v-model:value="
-                  invoice.userClientProfile.clientDataindividual.email
+                  getProfileData().email
                 "
                 type="text"
                 placeholder="Email"
@@ -470,7 +469,7 @@ const hideDropdown = () => {
               </p>
               <a-input
                 v-model:value="
-                  invoice.userClientProfile.clientDataindividual.phone
+                  getProfileData().phone
                 "
                 type="text"
                 placeholder="Phone Number"
@@ -484,7 +483,7 @@ const hideDropdown = () => {
               </p>
               <a-input
                 v-model:value="
-                  invoice.userClientProfile.clientDataindividual.address1
+                  getProfileData().address1
                 "
                 type="text"
                 placeholder="Streeet Line 1"
@@ -493,14 +492,14 @@ const hideDropdown = () => {
 
               <a-input
                 v-model:value="
-                  invoice.userClientProfile.clientDataindividual.address2
+                  getProfileData().address2
                 "
                 type="text"
                 placeholder="Street Line 2"
                 class="w-full mt-2 border p-2"
               />
             </div>
-            <div class="flex justify-between items-center mt-3 gap-2">
+            <div class=" justify-between items-center grid grid-cols-2 mt-1 gap-2">
               <div class="">
                 <p class="text-left font-medium text-[14px]">
                   <span class="text-[#ff0000]">*</span>Country
@@ -509,7 +508,7 @@ const hideDropdown = () => {
                 <div class="relative">
                   <a-input
                     v-model:value="
-                      invoice.userClientProfile.clientDataindividual.country
+                      getProfileData().country
                     "
                     @focus="showDropdown"
                     @blur="hideDropdown"
@@ -517,10 +516,9 @@ const hideDropdown = () => {
                     placeholder="Select Country"
                     class="w-full"
                   />
-
                   <ul
                     v-show="showOptions"
-                    class="dropdown absolute border rounded mt-2 overflow-y-auto w-full max-h-48 flex gap-2 flex-col bg-white text-left"
+                    class="dropdown absolute border rounded mt-2 overflow-y-auto flex gap-2 flex-col w-full bg-white text-left"
                   >
                     <li
                       v-for="option in filteredOptions"
@@ -539,7 +537,7 @@ const hideDropdown = () => {
                 </p>
                 <a-input
                   v-model:value="
-                    invoice.userClientProfile.clientDataindividual.postalCode
+                    getProfileData().postalCode
                   "
                   type="number"
                   class=""
@@ -550,7 +548,7 @@ const hideDropdown = () => {
                 <p class="text-left font-medium text-[14px]"> <span class="text-[#ff0000]">*</span>State</p>
                 <a-input
                   v-model:value="
-                    invoice.userClientProfile.clientDataindividual.state
+                    getProfileData().state
                   "
                   type="text"
                   class=""
@@ -561,7 +559,7 @@ const hideDropdown = () => {
                 <p class="text-left ml-2 font-medium text-[14px]">City</p>
                 <a-input
                   v-model:value="
-                    invoice.userClientProfile.clientDataindividual.city
+                    getProfileData().city
                   "
                   placeholder="City"
                   type="text"
@@ -573,13 +571,25 @@ const hideDropdown = () => {
             <hr class="my-4" />
 
             <div>
-              <div>
+              <div  v-if="selectedField === 'organization'">
                 <p class="justify-start flex font-medium text-[14px]">
+                  Tax Identification Number
+                </p>
+                <a-input
+                  v-model:value="
+                    getProfileData().taxId
+                  "
+                  type="number"
+                  class="w-full border p-2"
+                />
+              </div>
+              <div>
+                <p class="justify-start flex font-medium text-[14px] my-2">
                   Fax Number
                 </p>
                 <a-input
                   v-model:value="
-                    invoice.userClientProfile.clientDataindividual.faxNumber
+                    getProfileData().faxNumber
                   "
                   type="number"
                   class="w-full border p-2"
@@ -592,17 +602,26 @@ const hideDropdown = () => {
                 </p>
                 <a-input
                   v-model:value="
-                    invoice.userClientProfile.clientDataindividual.websiteURL
+                    getProfileData().websiteURL
                   "
                   type="text"
                   class="w-full border p-2 mb-4"
                 />
               </div>
+              <div  v-if="selectedField === 'organization'">
+                <p class="justify-start flex font-medium text-[14px]">Notes</p>
+                <a-textarea
+                  v-model:value="
+                    getProfileData().notes
+                  "
+                  type="text"
+                  class="w-full border p-2"
+                />
+              </div>
             </div>
-            <div class="flex justify-between items-center"></div>
           </div>
 
-          <div v-else-if="selectedField === 'organization'" :key="2">
+          <!-- <div v-else-if="selectedField === 'organization'" :key="2">
             <div class="mb-4">
               <hr class="mb-4" />
               <div class="flex flex-col">
@@ -742,7 +761,7 @@ const hideDropdown = () => {
                 class="w-full mt-2 border p-2"
               />
             </div>
-            <div class="flex justify-between items-center mt-3 gap-2">
+            <div class=" justify-between items-center grid grid-cols-2 mt-1 gap-2">
               <div class="">
                 <p class="text-left font-medium text-[14px]">
                   <span class="text-[#ff0000]">*</span>Country
@@ -862,37 +881,21 @@ const hideDropdown = () => {
                   type="text"
                   class="w-full border p-2"
                 />
-                <!-- <div class="grid grid-cols-2 gap-4 mt-6">
-                  <div>
-                    <p class="justify-start flex">Custom Field</p>
-
-                    <a-input
-                      v-model:value="
-                        invoice.userClientProfile.clientDataOrganization.customFieldName
-                      "
-                      type="text"
-                      class="w-full border p-2"
-                      placeholder="Custom Field Name"
-                    />
-                  </div>
-                  <div>
-                    <a-input
-                      v-model:value="
-                        invoice.userClientProfile.clientDataOrganization.customFieldValue
-                      "
-                      type="text"
-                      class="w-full border p-2 mt-6"
-                      placeholder="Custom Field Value"
-                    />
-                  </div>
-                </div> -->
               </div>
             </div>
-            <div class="flex justify-between items-center"></div>
+          </div> -->
+            <div class="flex justify-center  mt-4 "  :class="[createButton ? '' : 'hidden']">
+            <div v-if="isLoader"><a-spin size="large"></a-spin></div>
+            <a-button class="bg-blue-600 text-white w-64 h-12"
+              v-else
+              @click="handleSaveDraftButton()"
+            >Create </a-button>
           </div>
+          
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 

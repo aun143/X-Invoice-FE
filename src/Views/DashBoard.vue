@@ -4,7 +4,7 @@ import { getAllInvoice } from "../service/IndexService"; // Import your API func
 import { getAllClient } from "../service/ClientService"; // Import your API function
 import { getUserDetailsApi } from "../service/LoginService";
 import { useInvoiceStore } from "../stores/index.js";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import Header from "../components/Header.vue";
 import Chart from "chart.js/auto";
 const totalClients = ref(0); // Initialize total clients count
@@ -15,6 +15,7 @@ const lineGraph = ref(null);
 const barChart = ref(null); // Initialize total invoices count
 const invoice = useInvoiceStore();
 const router = useRouter();
+const route = useRoute();
 const dropdownTitle = "Add New";
 const dropdownItems = [{ title: "Create Invoice" }, { title: "Create Client" }];
 const handleSaveDraftButtonClick = () => {
@@ -160,9 +161,8 @@ const fetchInvoices = async () => {
 const handleProfileCard = () => {
   router.push("/BusinessProfile");
 };
-
 const handleClientCard = () => {
-  router.push("/AllClientc");
+  router.push("/AllClients");
 };
 const handleSubscriptionCard = () => {
   router.push("/subscription");
@@ -170,7 +170,9 @@ const handleSubscriptionCard = () => {
 const handleInvoiceCard = () => {
   router.push("/Index");
 };
-
+// router.afterEach(() => {
+//   location.reload();
+// });
 onMounted(async () => {
   await fetchClients();
   await fetchUserProfile();
@@ -179,6 +181,7 @@ onMounted(async () => {
   createLineGraph();
   createBarChart();
 });
+
 </script>
 
 <template>
@@ -195,15 +198,15 @@ onMounted(async () => {
       :showDropdown="true"
       :onDropdownItemClick="handleDropdownItemClickParent"
     />
-    <div v-if="isLoading" class=""><a-spin size="large" ></a-spin></div>
-    <div class="mx-4 py-8" v-else>
+    <div class="mx-4 py-8">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
           class="bg-white rounded-lg shadow-md p-4 card"
           @click="handleSubscriptionCard"
         >
-          <h2 class="text-lg font-semibold mb-4">Current Subscription Plan</h2>
-          <div class="flex flex-col">
+          <h2 class="text-lg font-semibold mb-4">Current Subscription Plan Details</h2>
+          <div v-if="isLoading" class=" mt-8"><a-spin size="large" ></a-spin></div>
+          <div class="flex flex-col" v-else>
             <div class="grid grid-cols-2">
               <strong class="col-span-1"
                 ><i class="fas fa-user-circle"></i> UserRoles:</strong
@@ -243,7 +246,8 @@ onMounted(async () => {
           @click="handleProfileCard"
         >
           <h2 class="text-lg font-semibold mb-4">Profile</h2>
-          <div class="flex flex-col">
+          <div v-if="isLoading" class=" mt-8"><a-spin size="large" ></a-spin></div>
+          <div class="flex flex-col" v-else>
             <div class="grid grid-cols-2">
               <strong class="col-span-1"
                 ><i class="fas fa-user"></i> Username:</strong
@@ -260,10 +264,9 @@ onMounted(async () => {
                 {{ invoice.userProfileData.email }}
               </p>
             </div>
-            <div
+            <!-- <div
               v-if="
-                invoice.userProfileData.individualProfile.phone ||
-                invoice.userProfileData.organizationProfile.phone
+                invoice.userProfileData.individualProfile.phone
               "
               class="grid grid-cols-2"
             >
@@ -272,11 +275,10 @@ onMounted(async () => {
               >
               <p class="col-span-1 items-start justify-start">
                 {{
-                  invoice.userProfileData.individualProfile.phone ||
-                  invoice.userProfileData.organizationProfile.phone
+                  invoice.userProfileData.individualProfile.phone
                 }}
               </p>
-            </div>
+            </div> -->
           </div>
         </div>
         <div
@@ -284,7 +286,8 @@ onMounted(async () => {
           @click="handleClientCard"
         >
           <h2 class="text-lg font-semibold mb-4">Total Clients</h2>
-          <div class="flex items-center justify-center">
+          <div v-if="isLoading" class=" mt-8"><a-spin size="large" ></a-spin></div>
+          <div class="flex items-center justify-center" v-else>
             <i class="fas fa-user mr-2 text-lg"></i>
             <p class="text-xl">{{ totalClients }}</p>
           </div>
@@ -294,25 +297,31 @@ onMounted(async () => {
           @click="handleInvoiceCard"
         >
           <h2 class="text-lg font-semibold mb-4">Total Invoices</h2>
-          <div class="flex items-center justify-center">
+          <div v-if="isLoading" class=" mt-8"><a-spin size="large" ></a-spin></div>
+          <div class="flex items-center justify-center" v-else>
             <i class="fas fa-file-invoice mr-2 text-lg"></i>
             <p class="text-xl">{{ totalInvoices }}</p>
           </div>
         </div>
       </div>
-      <div class="grid">
+      <div class="grid ">
       <div class="rounded-lg shadow-md bg-white my-8 grid">
         <h2 class="text-lg font-semibold">Bar Chart</h2>
-        <canvas ref="barChart" width="100" height="20"></canvas>
+        <div v-if="isLoading" class=" mt-8"><a-spin size="large" ></a-spin></div>
+        <canvas ref="barChart" width="100" height="20" v-else></canvas>
       </div>
       <div class="w-full grid grid-cols-2 gap-5">
         <div class="rounded-lg shadow-md p-2 bg-white grid">
   <h2 class="text-lg font-semibold">Pie Chart</h2>
-  <canvas ref="pieChart" width="100" height="100"></canvas>
+  <div v-if="isLoading" class=" mt-8"><a-spin size="large" ></a-spin></div>
+
+  <canvas ref="pieChart" width="100" height="100" v-else></canvas>
 </div>
         <div class="rounded-lg shadow-md p-2 bg-white grid">
           <h2 class="text-lg font-semibold">Line Graph</h2>
-          <canvas ref="lineGraph" width="200" height="200"></canvas>
+          <div v-if="isLoading" class=" mt-8"><a-spin size="large" ></a-spin></div>
+
+          <canvas ref="lineGraph" width="200" height="200" v-else></canvas>
         </div>
       </div>
       </div>

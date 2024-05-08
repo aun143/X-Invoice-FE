@@ -94,7 +94,7 @@ const validateFields = () => {
   return valid;
 };
 onMounted(()=>{
-    invoice.userProfileData.$reset;
+    invoice.resetaccount();
 })
 const submit = async () => {
    proceedClicked.value = true; 

@@ -104,19 +104,6 @@ const validateForm = () => {
 
   return true;
 };
-const calculateAmount = (item) => {
-  // Calculate the amount
-  const amount = item.quantity * item.rate;
-  // Update the item's amount property
-  item.amount = amount;
-  // Return the calculated amount
-  return amount;
-};
-// const modalActive = ref(false);
-// const toggleModal = () => {
-//   modalActive.value = !modalActive.value;
-// };
-//console.log("invoice",invoice)
 const dropdownItems = [
   { title: "Save", link: "/Index" },
   { title: "Save & Send", link: "#" },
@@ -246,15 +233,6 @@ const Total = computed(() => {
 watch(Total, (newTotal, oldtotal) => {
   invoice.formData.total = newTotal;
 });
-// const changeUnpaidStatus = async () => {
-//   try {
-//     console.log("Changing status for invoiceId:", invoiceId);
-//     const unpaidStatus = await invoiceService.updateUnpaidInvoiceStatus(invoiceId);
-//     console.log("Status updated successfully:", unpaidStatus);
-//   } catch (error) {
-//     console.error("Error updating invoice status:", error);
-//   }
-// };
 const handleSaveDraftButtonClick = async () => {
   try {
     const invoiceId = await invoiceSubmit();
@@ -271,7 +249,7 @@ const handleDropdownItemClick = async (clickedItem) => {
     try {
       const invoiceId = await invoiceSubmit();
       if (invoiceId) {
-        router.push("/Index");
+        router.push(`/GetInvoice/${invoiceId}`);
       }
     } catch (error) {
             console.error("Error Submitting Invoice:", error);
@@ -460,8 +438,8 @@ const hideDropdown = () => {
 </script>
 
 <template>
-  <div class="bg-gray-100">
-    <div class="bg-white">
+  <div >
+    <div class="bg-white sticky-header">
       <Header
         headerTitle="New Invoice"
         :isLoader="isLoader"
@@ -478,10 +456,10 @@ const hideDropdown = () => {
         :showBackButton="false"
       />
     </div>
-    <!-- <form @submit.prevent class="container mt-6 ml-6 bg-white max-w-[1000px]  p-6"> -->
+<div class="bg-gray-200 h-[max-content] p-4">
     <form
       @submit.prevent
-      class="container mt-6 ml-6 bg-white w-[50%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] p-6"
+      class="container  bg-white w-[50%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] p-6"
     >
       <div class="container">
         <div class="flex justify-between">
@@ -727,14 +705,12 @@ const hideDropdown = () => {
                   New Client
                 </div>
                 <div class="home">
-                  <!-- <Modal @close="toggleModal" :modalActive="modalActive">
-                </Modal> -->
                   <a-modal
                     v-model:open="open"
-                    width="80%"
-                    class="max-w-[100%] md:max-w-[100%] lg:max-w-[60%] xl:max-w-[50%] 2xl:max-w-[40%]"
+                    width="100%"
+                    class="max-w-[100%] md:max-w-[80%] lg:max-w-[70%] xl:max-w-[60%] 2xl:max-w-[50%]"
                   >
-                    <Client />
+                    <Client  :showHeader="true" :width="true" :createButton="true" />
                   </a-modal>
                 </div>
               </div>
@@ -1022,10 +998,12 @@ const hideDropdown = () => {
       </div>
     </form>
   </div>
+  </div>
 </template>
 
 <style>
 .ant-modal-footer {
   display: none !important;
 }
+
 </style>

@@ -12,10 +12,10 @@ export const useInvoiceStore = defineStore("invoice", {
       date: getCurrentDate(),
       invoiceDueDate: new Date(),
       file: "",
-      url:"",
+      url: "",
       invoiceDue: "",
       sender: {},
-      receiver:{},
+      receiver: {},
       items: [
         {
           description: "",
@@ -31,6 +31,13 @@ export const useInvoiceStore = defineStore("invoice", {
     },
 
     userProfileData: {
+      country: "Pakistan",
+      customFields: [
+        {
+          customFieldName: "",
+          customFieldValue: "",
+        },
+      ],
       individualProfile: {
         firstName: "",
         lastName: "",
@@ -49,8 +56,12 @@ export const useInvoiceStore = defineStore("invoice", {
         faxNumber: "",
         taxId: "",
         notes: "",
-        customFieldName: "",
-        customFieldValue: "",
+        customFields: [
+          {
+            customFieldName: "Custom",
+            customFieldValue: "",
+          },
+        ]
       },
       organizationProfile: {
         firstName: "",
@@ -71,8 +82,12 @@ export const useInvoiceStore = defineStore("invoice", {
         faxNumber: "",
         taxId: "",
         notes: "",
-        customFieldName: "",
-        customFieldValue: "",
+        customFields: [
+          {
+            customFieldName: "Custom",
+            customFieldValue: "",
+          },
+        ]
       },
     },
     signupData: {
@@ -80,50 +95,49 @@ export const useInvoiceStore = defineStore("invoice", {
       email: "",
       password: "",
     },
-userClientProfile :{
-    clientDataOrganization: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      websiteURL: "",
-      address1: "",
-      address2: "",
-      postalCode: "",
-      state: "",
-      city: "",
-      country: "Pakistan",
-      currency: "PKR",
-      phone: "",
-      language: "English (US)",
-      faxNumber: "",
-      taxId: "",
-      notes: "",
-      organizationName: "",
-      customFieldName: "",
-      customFieldValue: "",
+    userClientProfile: {
+      clientDataOrganization: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        websiteURL: "",
+        address1: "",
+        address2: "",
+        postalCode: "",
+        state: "",
+        city: "",
+        country: "Pakistan",
+        currency: "PKR",
+        phone: "",
+        language: "English (US)",
+        faxNumber: "",
+        taxId: "",
+        notes: "",
+        organizationName: "",
+        customFieldName: "",
+        customFieldValue: "",
+      },
+      clientDataindividual: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        websiteURL: "",
+        address1: "",
+        address2: "",
+        postalCode: "",
+        state: "",
+        city: "",
+        country: "Pakistan",
+        currency: "PKR",
+        phone: "",
+        language: "English (US)",
+        faxNumber: "",
+        taxId: "",
+        notes: "",
+        customFieldName: "",
+        customFieldValue: "",
+      },
     },
-    clientDataindividual: {
-      firstName: "",
-      // clientType: "",
-      lastName: "",
-      email: "",
-      websiteURL: "",
-      address1: "",
-      address2: "",
-      postalCode: "",
-      state: "",
-      city: "",
-      country: "Pakistan",
-      currency: "PKR",
-      phone: "",
-      language: "English (US)",
-      faxNumber: "",
-      taxId: "",
-      notes: "",
-      customFieldName: "",
-      customFieldValue: "",
-    },
-  },
     currencyOptions: [
       { label: "United States Dollar (USD)", value: "USD" },
       { label: "Pakistani Ruppee", value: "PKR" },
@@ -187,7 +201,7 @@ userClientProfile :{
       { label: "lb", value: "lb." },
       { label: "foot", value: "ft." },
     ],
-    
+
 
     // async fetchBusinessProfileDataBasedOnProfileType() {
     //   const profileType = this.selectedProfileType;
@@ -229,7 +243,7 @@ userClientProfile :{
     //     console.error("Error fetching business profile data:", error.message);
     //   }
     // },
-  }),getters: {
+  }), getters: {
     clonedFormData() {
       // Return a deep clone of the formData object
       return JSON.parse(JSON.stringify(this.formData));
@@ -273,13 +287,13 @@ userClientProfile :{
       clientData.clientType = "organization";
       this.userClientProfile.clientDataOrganization = clientData;
     },
-    
+
     updateIndividualProfile(clientData) {
       this.userClientProfile.clientType = "individual";
       clientData.clientType = "individual";
       this.userClientProfile.clientDataindividual = clientData;
     },
-    
+
     // updateClientProfileIndividual(userData) {
     //   this.clientDataIndividual = {
     //     ...this.clientDataIndividual,
@@ -337,88 +351,91 @@ userClientProfile :{
       }
     }, resetFormData() {
       this.$state.formData = {
-      
-          description: "",
-          language: "English (US)",
-          currency: "USD",
-          purchaseOrderNumber: "",
-          invoiceNumber: "",
-          invoiceName: "INV",
-          date: new Date(),
-          invoiceDueDate: "",
-          file: "",
-          url: "",
-          invoiceDue: "",
-          sender: {},
-          receiver:"",
-          items: [
-            {
-              description: "",
-              quantity: 0,
-              rate: 0,
-              unit: "Unit",
-              amount: 0,
-            },
-          ],
-          notes: "",
-          subtotal: 0,
-          total: 0,
+
+        description: "",
+        language: "English (US)",
+        currency: "USD",
+        purchaseOrderNumber: "",
+        invoiceNumber: "",
+        invoiceName: "INV",
+        date: new Date(),
+        invoiceDueDate: "",
+        file: "",
+        url: "",
+        pdfPassword:"",
+        viewCount:0,
+        downloadCount:0,
+        invoiceDue: "",
+        sender: {},
+        receiver: "",
+        items: [
+          {
+            description: "",
+            quantity: 0,
+            rate: 0,
+            unit: "Unit",
+            amount: 0,
+          },
+        ],
+        notes: "",
+        subtotal: 0,
+        total: 0,
       }
     },
-    resetaccount(){
-      this.$state.userProfileData={}
+    resetaccount() {
+      this.$state.userProfileData = {}
     },
     resetState() {
       this.$state.userClientProfile = {
-     clientDataOrganization :{
-        firstName: "",
-        clientType: "",
-        lastName: "",
-        email: "",
-        websiteURL: "",
-        address1: "",
-        address2: "",
-        postalCode: "",
-        state: "",
-        city: "",
-        country: "Pakistan",
-        currency: "USD",
-        phone: "",
-        language: "English (US)",
-        faxNumber: "",
-        taxId: "",
-        notes: "",
-        organizationName: "",
-        customFieldName: "",
-        customFieldValue: "",
-      },
-      clientDataindividual : {
-        firstName: "",
-        clientType: "",
-        lastName: "",
-        email: "",
-        websiteURL: "",
-        address1: "",
-        address2: "",
-        postalCode: "",
-        state: "",
-        city: "",
-        country: "Pakistan",
-        currency: "USD",
-        phone: "",
-        language: "English (US)",
-        faxNumber: "",
-        taxId: "",
-        notes: "",
-        customFieldName: "",
-        customFieldValue: "",
-      },
-    }
-  }, setDate(newValue) {
+        clientDataOrganization: {
+          firstName: "",
+          clientType: "",
+          lastName: "",
+          email: "",
+          websiteURL: "",
+          address1: "",
+          address2: "",
+          postalCode: "",
+          state: "",
+          city: "",
+          country: "Pakistan",
+          currency: "USD",
+          phone: "",
+          language: "English (US)",
+          faxNumber: "",
+          taxId: "",
+          notes: "",
+          organizationName: "",
+          customFieldName: "",
+          customFieldValue: "",
+        },
+        clientDataindividual: {
+          firstName: "",
+          clientType: "",
+          lastName: "",
+          email: "",
+          websiteURL: "",
+          address1: "",
+          address2: "",
+          postalCode: "",
+          state: "",
+          city: "",
+          country: "Pakistan",
+          currency: "USD",
+          phone: "",
+          language: "English (US)",
+          faxNumber: "",
+          taxId: "",
+          notes: "",
+          customFieldName: "",
+          customFieldValue: "",
+        },
+      }
+    }, setDate(newValue) {
       // Set the date to the new value
       this.formData.date = newValue;
     },
-  
+
     // onSelectProfileTypeChange(newProfileType) {
     //  console.log(`Selected profile type changed to: ${newProfileType}`);
     // },
@@ -431,11 +448,10 @@ userClientProfile :{
         amount: "",
       });
     },
-  
     getSubtotal() {
       let subtotal = 0;
       this.formData.items.forEach((item) => {
-    subtotal += item.quantity * item.rate;
+        subtotal += item.quantity * item.rate;
       });
       this.updateFormData({ subtotal });
       return subtotal;

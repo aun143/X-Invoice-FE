@@ -308,25 +308,22 @@ watch(userRole, (newValue) => {
   </div>
   <section
     v-else
-    class="flex flex-col justify-center antialiased bg-gray-100 text-gray-600 min-h-[96vh]"
+    class="flex flex-col justify-center antialiased text-gray-600 min-h-[96vh] "
   >
     <div class="h-full">
       <!-- Pricing -->
-      <div class="max-w-5xl mx-auto" x-data="{ annual: true }">
+      <div class="w-full my-auto">
         <h2 class="text-3xl text-gray-800 font-bold text-center mb-4">
           Subscription Plans
         </h2>
-        <!-- Pricing tabs -->
-        <div class="grid grid-cols-12 gap-6">
-          <!-- Pricing Tab -->
+        <div class="grid grid-cols-12 gap-6 mx-6 xl:my-32 my-0">
           <div
             v-for="(plan, index) in plans"
             :key="index"
-            :class="`relative col-span-full md:col-span-6 lg:col-span-3  bg-white shadow-md rounded-sm border border-gray-200 ${
+            :class="`relative col-span-full md:col-span-6 lg:col-span-3  bg-white shadow-md rounded-sm border ${
               plan.active ? 'border-[#10C0CB]' : ''
             }`"
           >
-            <!-- Plan Header -->
             <div
               class="absolute top-0 left-0 right-0 h-0.5"
               :class="{ 'bg-[#10C0CB]': plan.active }"
@@ -334,7 +331,6 @@ watch(userRole, (newValue) => {
             ></div>
             <div class="px-5 pt-5 pb-6 border-b border-gray-200">
               <header class="flex items-center mb-2">
-                <!-- Plan Icon -->
                 <div
                   :class="`w-6 h-6 rounded-full flex-shrink-0 ${plan.gradientClass} mr-3`"
                 >

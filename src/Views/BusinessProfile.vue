@@ -91,10 +91,16 @@ const submitbusinessProfileDataOrganization = async (id) => {
     if (success) {
       invoice.updateUserProfileAndBusinessProfile(data);
       router.push("/");
-      openNotificationWithIcon("success", data || "Profile has been Updated successfully.");
-          } else {
+      openNotificationWithIcon(
+        "success",
+        data || "Profile has been Updated successfully."
+      );
+    } else {
       console.error("Error During Profile Updation:", error);
-      openNotificationWithIcon("error", error || "An error occurred while Updating the Profile.");
+      openNotificationWithIcon(
+        "error",
+        error || "An error occurred while Updating the Profile."
+      );
       if (
         error === "Your subscription plan has expired. Please update your plan."
       ) {
@@ -129,11 +135,16 @@ const submitbusinessProfileDataindividual = async (Id) => {
     if (success) {
       router.push("/");
       invoice.updateUserProfileAndBusinessProfile(data);
-      openNotificationWithIcon("success", data || "Profile has been Updated successfully.");
-
+      openNotificationWithIcon(
+        "success",
+        data || "Profile has been Updated successfully."
+      );
     } else {
       console.error("Error During Profile individual:", error);
-            openNotificationWithIcon("error", error || "An error occurred while Updating the Profile.");
+      openNotificationWithIcon(
+        "error",
+        error || "An error occurred while Updating the Profile."
+      );
 
       if (
         error === "Your subscription plan has expired. Please update your plan."
@@ -154,7 +165,6 @@ const submitbusinessProfileDataindividual = async (Id) => {
   }
 };
 
-
 onMounted(async () => {
   try {
     isLoading.value = true;
@@ -162,7 +172,6 @@ onMounted(async () => {
     const UserId = localStorage.getItem("UserId");
 
     if (UserId) {
-      
       const UserResponse = await getUserDetailsApi(UserId);
       invoice.userProfileData = UserResponse;
       invoice.updateUser(invoice.userProfileData);
@@ -196,7 +205,10 @@ onMounted(async () => {
       router.push("/login");
     }
   } catch (error) {
-    openNotificationWithIcon("error", error || "An error occurred while getting the Profiles.");
+    openNotificationWithIcon(
+      "error",
+      error || "An error occurred while getting the Profiles."
+    );
 
     console.error("Error During Account Update:", error);
   } finally {
@@ -243,7 +255,10 @@ const handleFileInputChange = async () => {
       }
     } catch (error) {
       console.error("Error uploading image:", error);
-      openNotificationWithIcon("error", error || "Error uploading image. Please try again.");
+      openNotificationWithIcon(
+        "error",
+        error || "Error uploading image. Please try again."
+      );
     } finally {
       isLoadingImg.value = false;
     }
@@ -278,6 +293,33 @@ const displayImage = (input, imageUrl) => {
     }
   }
 };
+const getProfileData = () => {
+  return profileType.value === "individual"
+    ? invoice.userProfileData.individualProfile
+    : invoice.userProfileData.organizationProfile;
+};
+const addingCustomField = ref(false);
+const toggleAddingCustomField = () => {
+  if (!addingCustomField.value) {
+    getProfileData().customFields.push({
+      customFieldName: "",
+      customFieldValue: ""
+    });
+  } else {
+    getProfileData().customFields.pop();
+  }
+  addingCustomField.value = !addingCustomField.value;
+};
+  const toggleCustomField = (index) => {
+  if (index === 0) {
+    getProfileData().customFields.push({
+      customFieldName: "",
+      customFieldValue: ""
+    });
+  } else {
+    getProfileData().customFields.splice(index, 1);
+  }
+};
 </script>
 
 <template>
@@ -287,7 +329,7 @@ const displayImage = (input, imageUrl) => {
     </a-space>
   </div>
 
-  <div v-else class="bg-gray-200 h-[max-content]">
+  <div v-else>
     <div class="bg-white">
       <Header
         :isLoader="isLoader"
@@ -302,347 +344,353 @@ const displayImage = (input, imageUrl) => {
         :showBackButton="false"
       />
     </div>
-    <div
-      class="flex container pt-4 px-4 w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] justify-start"
-    >
-      <div class="w-full p-8 bg-white">
-        <div class="flex ml-4">
-          <label for="logoInput" class="">
-            <div
-              class="logo-placeholder hover:border-dashed border-none cursor-pointer w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
-            >
-              <div v-if="isLoadingImg">
-                <a-space class="w-full">
-                  <a-spin size="large" />
-                </a-space>
+    <div class="bg-gray-200 h-[max-content]">
+      <div
+        class="flex container pt-4 p-4 w-[100%] md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[50%] justify-start"
+      >
+        <div class="w-full p-8 bg-white">
+          <div class="flex ml-4">
+            <label for="logoInput" class="">
+              <div
+                class="logo-placeholder hover:border-dashed border-none cursor-pointer w-20 h-20 border-2 grid place-items-center text-slate-500 text-6xl font-bold"
+              >
+                <div v-if="isLoadingImg">
+                  <a-space class="w-full">
+                    <a-spin size="large" />
+                  </a-space>
+                </div>
+                <div v-else>
+                  <img
+                    v-if="!isLoadingImg"
+                    id="imagePreview"
+                    :src="
+                      profileType === 'individual'
+                        ? invoice.userProfileData.individualProfile.url ||
+                          'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'
+                        : invoice.userProfileData.organizationProfile.url ||
+                          'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'
+                    "
+                    alt="Logo"
+                    ref="logoPreview"
+                    class="w-20 mb-4 h-20 p-2 cursor-pointer"
+                  />
+                </div>
               </div>
-              <div v-else>
-                <img
-                  v-if="profileType === 'individual'"
-                  id="imagePreview"
-                  :src="
-                    invoice.userProfileData.individualProfile.url ||
-                    'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'
-                  "
-                  ref="logoPreview"
-                  alt="Logo for Individual"
-                  class="w-20 mb-4 h-20 p-2 cursor-pointer"
-                />
-                <img
-                  v-if="profileType === 'organization'"
-                  id="imagePreview"
-                  :src="
-                    invoice.userProfileData.organizationProfile.url ||
-                    'https://res.cloudinary.com/dfbsbullu/image/upload/v1709745593/iribv5nqn6iovph3buhe.png'
-                  "
-                  alt="Logo for Organization"
-                  ref="logoPreview"
-                  class="w-20 mb-4 h-20 p-2 cursor-pointer"
-                />
-              </div>
-            </div>
-            <input
-              id="logoInput"
-              type="file"
-              accept="image/*"
-              class=""
-              style="display: none"
-              @change="handleFileInputChange"
-              ref="logoInputRef"
-            />
-          </label>
+              <input
+                id="logoInput"
+                type="file"
+                accept="image/*"
+                class=""
+                style="display: none"
+                @change="handleFileInputChange"
+                ref="logoInputRef"
+              />
+            </label>
 
-          <div class="flex-right w-48 ml-6">
-            <table class="border border-black">
-              <tr class="border-black border">
-                <td>
-                  <div
-                    class="flex pl-4 cursor-pointer bg-gray-100"
-                    @click="switchProfileType('individual')"
-                  >
-                    <p class="mb-1 mt-4 mr-12 font-medium text-[14px]">Individual</p>
-                  </div>
-                </td>
-                <td class="bg-gray-100">
-                  <span
-                    v-if="profileType === 'individual'"
-                    class="text-orange-600 fa-solid fas fa-check mr-2"></span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div
-                    class="flex pl-4 cursor-pointer bg-gray-100"
-                    @click="switchProfileType('organization')"
-                  >
-                    <p class="mb-1 mt-3 mr-12 font-medium text-[14px]">Organization</p>
-                    <!-- <span v-if="selectedField === 'organization'" class="text-orange-500">&#10003;</span> -->
-                  </div>
-                </td>
-                <td class="bg-gray-100">
-                  <span
-                    v-if="profileType === 'organization'"
-                    class="text-orange-600 fa-solid fas fa-check mr-2"
-                    ></span
-                  >
-                </td>
-              </tr>
-            </table>
+            <div class="flex-right w-48 ml-6">
+              <table class="border border-black">
+                <tr class="border-black border">
+                  <td>
+                    <div
+                      class="flex pl-4 cursor-pointer bg-gray-100"
+                      @click="switchProfileType('individual')"
+                    >
+                      <p class="mb-1 mt-4 mr-12 font-medium text-[14px]">
+                        Individual
+                      </p>
+                    </div>
+                  </td>
+                  <td class="bg-gray-100">
+                    <span
+                      v-if="profileType === 'individual'"
+                      class="text-orange-600 fa-solid fas fa-check mr-2"
+                    ></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div
+                      class="flex pl-4 cursor-pointer bg-gray-100"
+                      @click="switchProfileType('organization')"
+                    >
+                      <p class="mb-1 mt-3 mr-12 font-medium text-[14px]">
+                        Organization
+                      </p>
+                      <!-- <span v-if="selectedField === 'organization'" class="text-orange-500">&#10003;</span> -->
+                    </div>
+                  </td>
+                  <td class="bg-gray-100">
+                    <span
+                      v-if="profileType === 'organization'"
+                      class="text-orange-600 fa-solid fas fa-check mr-2"
+                    ></span>
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
-        </div>
-        <!-- <div class="flex">
+          <!-- <div class="flex">
           Looking to Change your account Logo and Branding?
           <a @click="logo" class="cursor-pointer"> Account Customization</a>
         </div> -->
-        <hr class="my-4" />
-        <br />
-        <!-- <transition name="fade" mode="out-in"> -->
-        <div v-if="profileType === 'individual'" :key="1">
-          <div class="mb-4">
-            <div class="bg-[lightgray] py-2">
-              <label class="flex font-bold mb-2 ml-4 mt-2 "
-                >Personal Information
-              </label>
-            </div>
-            <div class="grid grid-cols-2 mt-4 gap-4">
-              <div>
+          <hr class="my-4" />
+          <br />
+          <div>
+            <div class="mb-4">
+              <div class="bg-[lightgray] py-2">
+                <label class="flex font-bold mb-2 ml-4 mt-2"
+                  >Personal Information
+                </label>
+              </div>
+              <div class="mt-4" v-if="profileType === 'organization'">
                 <p class="justify-start flex font-medium text-[14px]">
-                  <span class="text-[#ff0000] ">*</span>First Name
+                  Organization Name
                 </p>
                 <a-input
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.firstName
-                  "
+                  v-model:value="getProfileData().organizationName"
                   type="text"
-                  placeholder="First Name"
-                  class="w-full p-2"
-                />
-                <p v-if="firstNameError" class="text-red-500">
-                  {{ firstNameError }}
-                </p>
-              </div>
-              <div>
-                <p class="justify-start flex font-medium text-[14px]">
-                  <span class="text-[#ff0000]">*</span>Last Name
-                </p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.lastName
-                  "
-                  type="text"
-                  placeholder="Last Name"
-                  class="w-full p-2"
-                />
-                <p v-if="lastNameError" class="text-red-500">
-                  {{ lastNameError }}
-                </p>
-              </div>
-              <div>
-                <p class="justify-start flex font-medium text-[14px]">
-                  <span class="text-[#ff0000]">*</span>Email Address
-                </p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.email
-                  "
-                  type="email"
-                  placeholder="Email"
-                  class="w-full p-2"
-                />
-                <p v-if="emailError" class="text-red-500">{{ emailError }}</p>
-              </div>
-              <div>
-                <p class="justify-start flex font-medium text-[14px]">Website URL</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.websiteURL
-                  "
-                  type="text"
-                  placeholder="Website URL"
+                  placeholder="Organization Name"
                   class="w-full p-2"
                 />
               </div>
-            </div>
-          </div>
-
-          <div class="">
-            <div class="bg-[lightgray] py-2">
-              <label class="flex font-bold mb-2 ml-4  mt-2 c"> Contact Details</label>
-            </div>
-            <div class="grid grid-cols-2 mt-4 gap-4">
-              <div class="col-span-2">
-                <div class="flex">
-                  <div class="w-1/2 pr-2">
-                    <p class="justify-start flex font-medium text-[14px]">
-                      <span class="text-[#ff0000]">*</span>Address(Line 1)
-                    </p>
-                    <a-input
-                      v-model:value="
-                        invoice.userProfileData.individualProfile.address1
-                      "
-                      type="text"
-                      placeholder="Address"
-                      class="w-full p-2"
-
-                    />
-                    <p v-if="address1Error" class="text-red-500">
-                      {{ address1Error }}
-                    </p>
-                  </div>
-                  <div class="w-1/2 pl-2">
-                    <p class="justify-start flex font-medium text-[14px]">Address (Line 2)</p>
-                    <a-input
-                      v-model:value="
-                        invoice.userProfileData.individualProfile.address2
-                      "
-                      type="text"
-                      placeholder="Address2"
-                      class="w-full p-2"
-                    />
-                    <p v-if="address2Error" class="text-red-500">
-                      {{ address2Error }}
-                    </p>
-                  </div>
+              <div class="grid grid-cols-2 mt-4 gap-4">
+                <div>
+                  <p class="justify-start flex font-medium text-[14px]">
+                    <span class="text-[#ff0000]">*</span>First Name
+                  </p>
+                  <a-input
+                    v-model:value="getProfileData().firstName"
+                    type="text"
+                    placeholder="First Name"
+                    class="w-full p-2"
+                  />
+                  <p v-if="firstNameError" class="text-red-500">
+                    {{ firstNameError }}
+                  </p>
                 </div>
-
-                <div class="flex mt-4">
-                  <div class="w-1/2 pr-2">
-                    <p class="justify-start flex font-medium text-[14px]">Postal Code</p>
-                    <a-input
-                      v-model:value="
-                        invoice.userProfileData.individualProfile.postalCode
-                      "
-                      type="number"
-                      class="w-full border p-2"
-                    />
-                  </div>
-                  <div class="w-1/2 pl-2">
-                    <p class="justify-start flex font-medium text-[14px]">State</p>
-                    <a-input
-                      v-model:value="
-                        invoice.userProfileData.individualProfile.state
-                      "
-                      type="text"
-                      class="w-full border p-2"
-                    />
-                  </div>
+                <div>
+                  <p class="justify-start flex font-medium text-[14px]">
+                    <span class="text-[#ff0000]">*</span>Last Name
+                  </p>
+                  <a-input
+                    v-model:value="getProfileData().lastName"
+                    type="text"
+                    placeholder="Last Name"
+                    class="w-full p-2"
+                  />
+                  <p v-if="lastNameError" class="text-red-500">
+                    {{ lastNameError }}
+                  </p>
                 </div>
-                <div class="flex  mt-4">
-                  <div class="w-1/2 pr-2">
-                    <p class="justify-start flex font-medium text-[14px]">
-                      <span class="text-[#ff0000]">*</span>City
-                    </p>
-                    <a-input
-                      v-model:value="
-                        invoice.userProfileData.individualProfile.city
-                      "
-                      type="text"
-                      class="w-full border p-2"
-                    />
-                    <p v-if="cityError" class="text-red-500">{{ cityError }}</p>
+                <div>
+                  <p class="justify-start flex font-medium text-[14px]">
+                    <span class="text-[#ff0000]">*</span>Email Address
+                  </p>
+                  <a-input
+                    v-model:value="getProfileData().email"
+                    type="email"
+                    placeholder="Email"
+                    class="w-full p-2"
+                  />
+                  <p v-if="emailError" class="text-red-500">{{ emailError }}</p>
+                </div>
+                <div>
+                  <p class="justify-start flex font-medium text-[14px]">
+                    Website URL
+                  </p>
+                  <a-input
+                    v-model:value="getProfileData().websiteURL"
+                    type="text"
+                    placeholder="Website URL"
+                    class="w-full p-2"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="">
+              <div class="bg-[lightgray] py-2">
+                <label class="flex font-bold mb-2 ml-4 mt-2 c">
+                  Contact Details</label
+                >
+              </div>
+              <div class="grid grid-cols-2 mt-4 gap-4">
+                <div class="col-span-2">
+                  <div class="flex">
+                    <div class="w-1/2 pr-2">
+                      <p class="justify-start flex font-medium text-[14px]">
+                        <span class="text-[#ff0000]">*</span>Address(Line 1)
+                      </p>
+                      <a-input
+                        v-model:value="getProfileData().address1"
+                        type="text"
+                        placeholder="Address"
+                        class="w-full p-2"
+                      />
+                      <p v-if="address1Error" class="text-red-500">
+                        {{ address1Error }}
+                      </p>
+                    </div>
+                    <div class="w-1/2 pl-2">
+                      <p class="justify-start flex font-medium text-[14px]">
+                        Address (Line 2)
+                      </p>
+                      <a-input
+                        v-model:value="getProfileData().address2"
+                        type="text"
+                        placeholder="Address2"
+                        class="w-full p-2"
+                      />
+                      <p v-if="address2Error" class="text-red-500">
+                        {{ address2Error }}
+                      </p>
+                    </div>
                   </div>
-                  <div class="w-1/2 pl-2">
-                    <p class="justify-start flex font-medium text-[14px]">
-                      <span class="text-[#ff0000]">*</span>Country
-                    </p>
-                    <a-select
-                      v-model:value="
-                        invoice.userProfileData.individualProfile.country
-                      "
-                      size="large"
-                      class="w-full text-left"
-                    >
-                      <a-select-option
-                        v-for="country in invoice.countryOptions"
-                        :key="country.value"
-                        :value="country.value"
+
+                  <div class="flex mt-4">
+                    <div class="w-1/2 pr-2">
+                      <p class="justify-start flex font-medium text-[14px]">
+                        Postal Code
+                      </p>
+                      <a-input
+                        v-model:value="getProfileData().postalCode"
+                        type="number"
+                        class="w-full border p-2"
+                      />
+                    </div>
+                    <div class="w-1/2 pl-2">
+                      <p class="justify-start flex font-medium text-[14px]">
+                        State
+                      </p>
+                      <a-input
+                        v-model:value="getProfileData().state"
+                        type="text"
+                        class="w-full border p-2"
+                      />
+                    </div>
+                  </div>
+                  <div class="flex mt-4">
+                    <div class="w-1/2 pr-2">
+                      <p class="justify-start flex font-medium text-[14px]">
+                        <span class="text-[#ff0000]">*</span>City
+                      </p>
+                      <a-input
+                        v-model:value="getProfileData().city"
+                        type="text"
+                        class="w-full border p-2"
+                      />
+                      <p v-if="cityError" class="text-red-500">
+                        {{ cityError }}
+                      </p>
+                    </div>
+                    <div class="w-1/2 pl-2">
+                      <p class="justify-start flex font-medium text-[14px]">
+                        <span class="text-[#ff0000]">*</span>Country
+                      </p>
+                      <a-select
+                        v-model:value="getProfileData().country"
+                        size="large"
+                        class="w-full text-left"
                       >
-                        {{ country.label }}
-                      </a-select-option>
-                    </a-select>
+                        <a-select-option
+                          v-for="country in invoice.countryOptions"
+                          :key="country.value"
+                          :value="country.value"
+                        >
+                          {{ country.label }}
+                        </a-select-option>
+                      </a-select>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            <div class="my-4 flex flex-col">
+              <div class="bg-[lightgray] py-2">
+                <label class="flex font-bold mb-2 ml-4 mt-2">
+                  Additional Information
+                </label>
+              </div>
+              <div class="grid grid-cols-2 mt-4 gap-4 mb-2">
+                <div>
+                  <p class="justify-start flex font-medium text-[14px]">
+                    Phone Number
+                  </p>
+
+                  <a-input
+                    v-model:value="getProfileData().phone"
+                    type="text"
+                    class="w-full border p-2"
+                  />
+                </div>
+                <div>
+                  <p class="justify-start flex font-medium text-[14px]">
+                    Fax Number
+                  </p>
+                  <a-input
+                    v-model:value="getProfileData().faxNumber"
+                    type="number"
+                    class="w-full border p-2"
+                  />
+                </div>
+                <div>
+                  <p class="justify-start flex font-medium text-[14px]">
+                    Tax Identification Number
+                  </p>
+                  <a-input
+                    v-model:value="getProfileData().taxId"
+                    type="number"
+                    class="w-full border p-2"
+                  />
+                </div>
+                <div>
+                  <p class="justify-start flex font-medium text-[14px]">
+                    Notes
+                  </p>
+                  <a-textarea
+                    v-model:value="getProfileData().notes"
+                    type="text"
+                    class="w-full p-2"
+                  />
+                </div>
+              </div>
+
+              <hr class="my-4" />
+              <div
+      class="grid grid-cols-2 gap-4"
+      v-for="(customField, index) in getProfileData().customFields"
+      :key="index"
+    >
+      <div>
+        <p class="justify-start flex font-medium text-[14px]">
+          Custom Field
+        </p>
+        <a-input
+          v-model:value="customField.customFieldName"
+          type="text"
+          class="w-full p-2"
+          placeholder="Custom Field Name"
+        />
+      </div>
+      <div>
+        <p
+          @click="toggleCustomField(index)"
+          class="justify-end text-blue-600 cursor-pointer flex text-[14px]"
+        >
+          {{ index === 0 ? 'Add Custom Field' : 'Remove Custom Field' }}
+        </p>
+        <a-input
+          v-model:value="customField.customFieldValue"
+          type="text"
+          class="w-full p-2"
+          placeholder="Custom Field Value"
+        />
+      </div>
+    </div>
+            </div>
           </div>
-
-          <div class="my-4 flex flex-col">
-            <div class="bg-[lightgray] py-2">
-              <label class="flex font-bold mb-2 ml-4 mt-2">
-                Additional Information
-              </label>
-            </div>
-            <div class="grid grid-cols-2 mt-4 gap-4 mb-2">
-              <div>
-                <p class="justify-start flex font-medium text-[14px]">Phone Number</p>
-
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.phone
-                  "
-                  type="text"
-                  class="w-full border p-2"
-                />
-              </div>
-              <div>
-                <p class="justify-start flex font-medium text-[14px]">Fax Number</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.faxNumber
-                  "
-                  type="number"
-                  class="w-full border p-2"
-                />
-              </div>
-              <div>
-                <p class="justify-start flex font-medium text-[14px]">Tax Identification Number</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.taxId
-                  "
-                  type="number"
-                  class="w-full border p-2"
-                />
-              </div>
-              <div>
-                <p class="justify-start flex font-medium text-[14px]">Notes</p>
-                <a-textarea
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.notes
-                  "
-                  type="text"
-                                    class="w-full p-2"
-                />
-              </div>
-            </div>
-
-            <hr class="my-4"/>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <p class="justify-start flex font-medium text-[14px]">Custom Field</p>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.customFieldName
-                  "
-                  type="text"
-                  class="w-full p-2"
-                  placeholder="Custom Field Name"
-                />
-              </div>
-              <div>
-                <a-input
-                  v-model:value="
-                    invoice.userProfileData.individualProfile.customFieldValue
-                  "
-                  type="text"
-                  class="w-full p-2 mt-5"
-                  placeholder="Custom Field Value"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-else-if="profileType === 'organization'" :key="2">
+          <!-- <div v-else-if="profileType === 'organization'" :key="2">
           <div class="">
             <div class="bg-[lightgray] py-2">
               <label class="flex font-bold ml-4 my-2 c">
@@ -894,32 +942,24 @@ const displayImage = (input, imageUrl) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
+          
         <div class="flex justify-center mt-8">
-          <div v-if="isLoader"> <a-spin size="large"></a-spin></div>
-          <Button v-else
-          :bgColor="Colors.primary"
-          :textColor="Colors.white"
-          buttonText="Save Changes"
-          class="h-12 w-64"
-          @click="handleSaveDraftButtonClick()"
-        />
-  </div>
+            <div v-if="isLoader"><a-spin size="large"></a-spin></div>
+            <a-button
+              v-else
+              buttonText="Save Changes"
+              class="h-12 w-64 bg-blue-600 text-white"
+              @click="handleSaveDraftButtonClick()"
+            >Save Changes</a-button>
+          </div>
+        </div>
       </div>
-      <!-- </transition> -->
-      <!-- <button class="bg-orange-500 text-white py-2 px-4 rounded">Submit</button> -->
     </div>
   </div>
 </template>
+
 <style>
-/* .fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-} */
 .ant-select-selection {
   background-color: #15bb15;
 }

@@ -282,7 +282,7 @@ watch(filterStatus, (newFilterStatus) => {
       :showDropdown="true"
       :onDropdownItemClick="handleDropdownItemClickParent"
     />
-    <div class="content-center mt-6 px-6">
+    <div class="content-center mt-6 px-6 ">
       <div class="flex-col m-auto flex max-w-full p-2">
         <div class="flex flex-col max-w-[100%]">
           <span class="meta" style="display: inline"></span>

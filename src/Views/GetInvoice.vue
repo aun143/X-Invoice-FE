@@ -10,18 +10,15 @@ import {
 } from "../service/invoiceService";
 import Header from "../components/Header.vue";
 import { Colors } from "../utils/color";
-import { useInvoiceStore } from "../stores/index";
-// import { getSingleClient } from "../service/ClientService";
+import { useInvoiceStore } from "../stores/index"; 
 import Swal from "sweetalert2";
-// import { BASE_URL } from "../utils/config";
-import axiosInstance from "../service/axios"; 
+import axiosInstance from "../service/axios";
 const logoPreview = ref("");
 const invoice = useInvoiceStore();
 const router = useRouter();
 const route = useRoute();
 const invoiceId = route.params._id;
 const dropdownTitle = "Actions";
-const clientDetails = ref({});
 const dropdownItems = [
   { title: "Edit" },
   { title: "Download as Pdf" },
@@ -38,20 +35,29 @@ const clientId = ref("");
 const changeStatus = async () => {
   try {
     isLoading.value = true;
-    //console.log("Changing status for invoiceId:", invoiceId);
     const updateData = {
       paymentStatus: "Paid",
     };
-    const { success, data, error } = await updateInvoiceStatus(invoiceId, updateData);
+    const { success, data, error } = await updateInvoiceStatus(
+      invoiceId,
+      updateData
+    );
 
     if (success) {
       router.push("/Index");
-      openNotificationWithIcon("success", data.message || "Payment Method has been Updated successfully.")
-
+      openNotificationWithIcon(
+        "success",
+        data.message || "Payment Method has been Updated successfully."
+      );
     } else {
       console.error("Error During Payment Method updation:", error);
-      openNotificationWithIcon("error", error || "error During Payment Method  Updation.")
-      if (error === "Your subscription plan has expired. Please update your plan.") {
+      openNotificationWithIcon(
+        "error",
+        error || "error During Payment Method  Updation."
+      );
+      if (
+        error === "Your subscription plan has expired. Please update your plan."
+      ) {
         router.push("/subscription");
       } else {
         openNotificationWithIcon("error", error);
@@ -59,7 +65,10 @@ const changeStatus = async () => {
     }
   } catch (error) {
     console.error("Error During Payment Method Updation:", error);
-    openNotificationWithIcon("error", "An error occurred while updating the Payment Method.");
+    openNotificationWithIcon(
+      "error",
+      "An error occurred while updating the Payment Method."
+    );
   } finally {
     isLoading.value = false;
   }
@@ -74,21 +83,30 @@ const openNotificationWithIcon = (type, message) => {
 const changeUnpaidStatus = async () => {
   try {
     isLoading.value = true;
-    //console.log("Changing status for invoiceId:", invoiceId);
     const updateData = {
       paymentStatus: "Unpaid",
     };
-    const { success, data, error } = await updateUnpaidInvoiceStatus(invoiceId, updateData);
+    const { success, data, error } = await updateUnpaidInvoiceStatus(
+      invoiceId,
+      updateData
+    );
 
     if (success) {
       router.push("/Index");
-      openNotificationWithIcon("success", data.message || "Payment Method has been Updated successfully.")
-
+      openNotificationWithIcon(
+        "success",
+        data.message || "Payment Method has been Updated successfully."
+      );
     } else {
       console.error("Error During Payment Method updation:", error);
-      openNotificationWithIcon("error", error || "error During Payment Method  Updation.")
+      openNotificationWithIcon(
+        "error",
+        error || "error During Payment Method  Updation."
+      );
 
-      if (error === "Your subscription plan has expired. Please update your plan.") {
+      if (
+        error === "Your subscription plan has expired. Please update your plan."
+      ) {
         router.push("/subscription");
       } else {
         openNotificationWithIcon("error", error);
@@ -96,7 +114,10 @@ const changeUnpaidStatus = async () => {
     }
   } catch (error) {
     console.error("Error During Payment Method Updation:", error);
-    openNotificationWithIcon("error", "An error occurred while updating the Payment Method.");
+    openNotificationWithIcon(
+      "error",
+      "An error occurred while updating the Payment Method."
+    );
   } finally {
     isLoading.value = false;
   }
@@ -104,12 +125,12 @@ const changeUnpaidStatus = async () => {
 
 const deleteInvoicee = async () => {
   try {
-    // console.log("Changing status for invoiceId:", invoiceId);
     const status = await deleteInvoice(invoiceId);
     router.push("/Index");
-    openNotificationWithIcon("success", data.message || "Invoice has been deleted successfully.")
-
-    // console.log("invoice deleted successfully:", status);
+    openNotificationWithIcon(
+      "success",
+      data.message || "Invoice has been deleted successfully."
+    );
   } catch (error) {
     console.error("Error deleting invoice Deletion:", error);
   }
@@ -125,14 +146,10 @@ onMounted(async () => {
     isLoading.value = true;
     const response = await getSingleInvoice(invoiceId);
     invoiceDetails.value = response.data;
-    // console.log("response", response);
     business.value = invoiceDetails.value.sender;
     clientId.value = invoiceDetails.value.receiver._id;
-    // const clientResponse = await getSingleClient(clientId.value);
-    // clientDetails.value = clientResponse.data;
     invoice.updateFormData(invoiceDetails);
     logoPreview.value = invoiceDetails.logoPreview;
-    //console.log("Invoice details fetched successfully:", invoiceDetails);
   } catch (error) {
     console.error("Error fetching GetInvoice details:", error);
   } finally {
@@ -140,13 +157,12 @@ onMounted(async () => {
   }
 });
 
+const getInvoiceLink = () => {
+  // return `http://3. 1.100.174:5173/invoice/${invoiceId}`;
+  return `http://localhost:5173/invoice/${invoiceId}`;
+};
 const handleDropdownItemClickParent = (clickedItem) => {
-  // Handle the dropdown item click event in the parent component
-  //console.log("Clicked item in parent component:", clickedItem);
-
   if (clickedItem.title === "Download as Pdf") {
-    // alert("Download as Pdf");
-    // router.push(`/pdf/generate/${clientId.value}/${businessId.value}/${invoiceId}`);
     const url = new URL(axiosInstance.defaults.baseURL);
     // url.port = "3010";
     url.pathname = "/api/pdf/X-Invoice";
@@ -157,7 +173,6 @@ const handleDropdownItemClickParent = (clickedItem) => {
   } else if (clickedItem.title === "Edit") {
     router.push(`/GetInvoice/${invoiceId}/edit`);
   } else if (clickedItem.title === "Mark as Paid") {
-    // alert("Mark as Paid");
     changeStatus(invoiceId);
     router.push("/Index");
   } else if (clickedItem.title === "Delete") {
@@ -165,25 +180,17 @@ const handleDropdownItemClickParent = (clickedItem) => {
   } else if (clickedItem.title === "Send Invoice") {
     router.push(`/GetInvoice/${invoiceId}/send`);
   } else if (clickedItem.title === "Mark as Unpaid") {
-    // alert("Mark as Unpaid");
     changeUnpaidStatus(invoiceId);
     router.push("/Index");
   }
 };
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const formattedDate = date.toISOString().split("T")[0];
-  return formattedDate;
-};
-const info=()=>{
+const info = () => {
   Swal.fire({
-    title: 'Info',
-    html: `Description Item's are Resizeable`, 
-    confirmButtonText: 'Close',
+    title: "Info",
+    html: `Description Item's are Resizeable`,
+    confirmButtonText: "Close",
   });
-
-}
-    
+};
 </script>
 
 <template>
@@ -193,7 +200,7 @@ const info=()=>{
     </a-space>
   </div>
 
-  <div class="bg-gray-200 h-[max-content]" v-else>
+  <div v-else>
     <div class="bg-white">
       <Header
         headerTitle="View Invoice"
@@ -208,17 +215,34 @@ const info=()=>{
         :onDropdownItemClick="handleDropdownItemClickParent"
       />
     </div>
+<div class="bg-gray-200 h-[max-content] p-4">
     <section
-      class="w-[100%] 2xl:w-[50%] md:w-[93%] lg:w-[85%] xl:w-[63%] pt-4 px-4"
+      class="w-[100%] 2xl:w-[50%] md:w-[93%] lg:w-[85%] xl:w-[63%]"
     >
       <form @submit.prevent class="p-4 bg-gray-100">
+        <div class="border border-black py-4 bg-gray-200">
+          <div class="flex justify-center items-center">
+            <p class="px-2">
+              <!-- Link To Invoice: http://3.1.100.174:5173/invoice/{{ -->
+              Link To Invoice: http://3.1.100.174:5173/invoice/{{
+                invoiceDetails._id
+              }}
+              <a
+                class="text-blue-700 cursor-pointer"
+                :href="getInvoiceLink()"
+                target="_blank"
+                >(Preview)</a
+              > 
+            </p>
+          </div>
+        </div>
         <div class="grid grid-cols-2 items-center">
           <div class="flex w-full mt-8 pl-6">
             <div
               class="flex mr-5 items-center justify-center text-xl w-[60px] max-h-12 text-black"
             >
               <span
-                class="px-[15px] py-[4px] rounded "
+                class="px-[15px] py-[4px] rounded"
                 :class="{
                   'bg-[#10C0CB] text-white text-[12px] ':
                     invoiceDetails.paymentStatus === 'Paid',
@@ -232,7 +256,9 @@ const info=()=>{
               </span>
             </div>
             <div class="flex mt-2">
-              <p class="text-xl font-semibold">{{ invoiceDetails.invoiceName }}</p>
+              <p class="text-xl font-semibold">
+                {{ invoiceDetails.invoiceName }}
+              </p>
             </div>
           </div>
 
@@ -269,9 +295,7 @@ const info=()=>{
                 <span v-if="business.city">{{ business.city }}&nbsp;</span>
                 <span v-if="business.state">{{ business.state }}</span
                 ><br />
-                <span v-if="business.email"
-                  >{{ business.email }}<br
-                /></span>
+                <span v-if="business.email">{{ business.email }}<br /></span>
               </p>
             </div>
             <br />
@@ -298,12 +322,16 @@ const info=()=>{
                 <span v-if="invoiceDetails.receiver.city"
                   >{{ invoiceDetails.receiver.city }}&nbsp;</span
                 >
-                <span v-if="invoiceDetails.receiver.state">{{ invoiceDetails.receiver.state }}</span
+                <span v-if="invoiceDetails.receiver.state">{{
+                  invoiceDetails.receiver.state
+                }}</span
                 ><br />
-                <span v-if="invoiceDetails.receiver.email">{{ invoiceDetails.receiver.email }}</span
+                <span v-if="invoiceDetails.receiver.email">{{
+                  invoiceDetails.receiver.email
+                }}</span
                 ><br />
               </p>
-              <p v-else>Receiver Details Unavailable </p>
+              <p v-else>Receiver Details Unavailable</p>
             </div>
           </div>
           <div
@@ -315,7 +343,7 @@ const info=()=>{
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Date</p>
-              <div class="text-left">{{ (invoiceDetails.date) }}</div>
+              <div class="text-left">{{ invoiceDetails.date }}</div>
             </div>
             <div class="mb-4 mt-4">
               <p class="font-semibold">Invoice Due</p>
@@ -333,39 +361,62 @@ const info=()=>{
         <div class="border mx-6"></div>
         <br />
         <div class="flex lg:flex-row 2xl:flex-row xl:flex-row flex-col px-4">
-  <table class="w-full">
-    <thead>
-      <tr class="bg-gray-100 h-10">
-        <th class="text-center font-semibold cursor-pointer " @click="info">Description</th>
-        <th class="font-semibold text-center">Quantity</th>
-        <th class="font-semibold text-center">Rate</th>
-        <th class="font-semibold text-center">Amount</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(item, index) in invoiceDetails.items" :key="index">
-        <td style="width: 25%;">
-          <textarea disabled cols="25" rows=2  v-model="item.description" class="w-full h-full pl-0 text-justify" style="overflow: hidden;"></textarea>
-        </td>
-        <td style="width: 25%;">
-          <input disabled class="w-full h-full text-center" v-model="item.quantity" />
-        </td>
-        <td style="width: 25%;">
-          <input disabled class="w-full h-full text-center" v-model="item.rate" />
-          <!-- <select disabled class="w-full h-full mt-2">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gray-100 h-10">
+                <th
+                  class="text-center font-semibold cursor-pointer"
+                  @click="info"
+                >
+                  Description
+                </th>
+                <th class="font-semibold text-center">Quantity</th>
+                <th class="font-semibold text-center">Rate</th>
+                <th class="font-semibold text-center">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in invoiceDetails.items" :key="index">
+                <td style="width: 25%">
+                  <textarea
+                    disabled
+                    cols="25"
+                    rows="2"
+                    v-model="item.description"
+                    class="w-full h-full pl-0 text-justify"
+                    style="overflow: hidden"
+                  ></textarea>
+                </td>
+                <td style="width: 25%">
+                  <input
+                    disabled
+                    class="w-full h-full text-center"
+                    v-model="item.quantity"
+                  />
+                </td>
+                <td style="width: 25%">
+                  <input
+                    disabled
+                    class="w-full h-full text-center"
+                    v-model="item.rate"
+                  />
+                  <!-- <select disabled class="w-full h-full mt-2">
             <option v-for="unit in item.unit" :key="unit" :value="unit">
               {{ unit.name }}
             </option>
           </select> -->
-        </td>
-        <td style="width: 25%;">
-          <input disabled class="w-full h-full text-center" v-model="item.amount" />
-
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+                </td>
+                <td style="width: 25%">
+                  <input
+                    disabled
+                    class="w-full h-full text-center"
+                    v-model="item.amount"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <br />
         <div class="border mx-6"></div>
@@ -384,7 +435,7 @@ const info=()=>{
                 />
               </div>
               <hr /> -->
-        <div class="flex flex-col max-w-full items-end xl:mr-20 ">
+        <div class="flex flex-col max-w-full items-end xl:mr-20">
           <div
             class="flex justify-between xl:w-[70%] md:w-[75%] 2xl:w-[70%] items-end"
           >
@@ -455,6 +506,7 @@ const info=()=>{
       </form>
     </section>
   </div>
+  </div>
 </template>
 <style scoped>
 p {
@@ -471,10 +523,9 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-
 }
 .resizable-textarea {
-    resize: both;
-    overflow: auto;
-  }
+  resize: both;
+  overflow: auto;
+}
 </style>
