@@ -4,8 +4,8 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 const axiosInstance = axios.create({
-  // baseURL: 'http://3.1.100.174:3010/api',
-  baseURL:  'http://localhost:3010/api',
+  baseURL: 'http://3.1.100.174:3010/api',
+  // baseURL:  'http://localhost:3010/api',
   timeout: 10000, 
 });
 
